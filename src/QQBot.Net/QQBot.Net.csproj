@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../QQBot.Net.props"/>
+
+  <PropertyGroup>
+    <RootNamespace>QQBot</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>QQBot.Net</PackageId>
+    <Description>An unofficial C# .NET implementation for QQ Bot API, including all necessary components for building a QQ bot.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj" />
+    <ProjectReference Include="..\QQBot.Net.Rest\QQBot.Net.Rest.csproj" />
+    <ProjectReference Include="..\QQBot.Net.WebSocket\QQBot.Net.WebSocket.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../QQBot.Net.props"/>
+
+  <PropertyGroup>
+    <RootNamespace>QQBot.Rest</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <PackageId>QQBot.Net.Rest</PackageId>
+    <Description>The REST API implementation for QQBot.Net.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG_REST</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,42 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionSuffix>alpha1</VersionSuffix>
+    <IsPackable>false</IsPackable>
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+    <LangVersion>latest</LangVersion>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Authors>gehongyan</Authors>
+    <Company>gehongyan</Company>
+    <PackageProjectUrl>https://github.com/gehongyan/QQBot.Net</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/gehongyan/QQBot.Net.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>qq;qqbot</PackageTags>
+    <PackageReleaseNotes>See https://github.com/gehongyan/QQBot.Net/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>Logo_Small.png</PackageIcon>
+    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+    <NoWarn>$(NoWarn);NU1803</NoWarn>
+    <WarningLevel>6</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version Condition=" '$(VersionSuffix)' == '' ">$(VersionPrefix)</Version>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix)-$(VersionSuffix)</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../../LICENSE" Pack="true" PackagePath="\"/>
+    <None Include="../../THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="\"/>
+    <None Include="../../docs/logo/Logo_Small.png" Pack="true" PackagePath=""/>
+  </ItemGroup>
+</Project>

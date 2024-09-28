@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../QQBot.Net.props"/>
+
+  <PropertyGroup>
+    <RootNamespace>QQBot.WebSocket</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <PackageId>QQBot.Net.WebSocket</PackageId>
+    <Description>The WebSocket API implementation for QQBot.Net.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG_PACKETS,DEBUG_AUDIO</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj"/>
+    <ProjectReference Include="..\QQBot.Net.Rest\QQBot.Net.Rest.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="6.0.1"/>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,51 @@
+﻿using System.Diagnostics;
+using Model = QQBot.API.Channel;
+
+namespace QQBot.WebSocket;
+
+/// <summary>
+///     表示服务器中一个基于网关的具有文字聊天能力的频道，可以发送和接收消息。
+/// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+public class SocketTextChannel : SocketGuildChannel, ITextChannel
+{
+    /// <inheritdoc />
+    public ChannelSubType? SubType { get; private set; }
+
+    /// <inheritdoc />
+    public ulong? CategoryId { get; private set; }
+
+    /// <inheritdoc />
+    public ChannelPrivateType? PrivateType { get; private set; }
+
+    /// <inheritdoc />
+    public SpeakPermission? SpeakPermission { get; private set; }
+
+    /// <inheritdoc />
+    public ChannelPermission? Permission { get; private set; }
+
+    internal SocketTextChannel(QQBotSocketClient client, ulong id, SocketGuild guild)
+        : base(client, id, guild)
+    {
+        Type = ChannelType.Text;
+    }
+
+    internal static new SocketTextChannel Create(SocketGuild guild, ClientState state, Model model)
+    {
+        SocketTextChannel entity = new(guild.Client, model.Id, guild);
+        entity.Update(state, model);
+        return entity;
+    }
+
+    internal override void Update(ClientState state, Model model)
+    {
+        base.Update(state, model);
+        CategoryId = model.ParentId;
+        SubType = model.SubType;
+        PrivateType = model.PrivateType;
+        SpeakPermission = model.SpeakPermission;
+        Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
+    }
+
+    private string DebuggerDisplay => $"{Name} ({Id}, Text)";
+}
