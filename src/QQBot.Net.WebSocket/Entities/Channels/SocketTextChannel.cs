@@ -7,7 +7,7 @@ namespace QQBot.WebSocket;
 ///     表示服务器中一个基于网关的具有文字聊天能力的频道，可以发送和接收消息。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class SocketTextChannel : SocketGuildChannel, ITextChannel
+public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessageChannel
 {
     /// <inheritdoc />
     public ChannelSubType? SubType { get; private set; }

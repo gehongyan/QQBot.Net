@@ -23,6 +23,5 @@ public enum AttachmentType
     /// <summary>
     ///     文件。
     /// </summary>
-    [Obsolete("Not supported yet.")]
     File = 4
 }

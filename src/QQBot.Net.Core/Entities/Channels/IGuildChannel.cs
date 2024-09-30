@@ -3,12 +3,17 @@ namespace QQBot;
 /// <summary>
 ///     表示一个频道内的子频道。
 /// </summary>
-public interface IGuildChannel : IChannel
+public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
 {
     /// <summary>
     ///     获取此频道所属的服务器。
     /// </summary>
     IGuild Guild { get; }
+
+    /// <summary>
+    ///     获取此频道的名称。
+    /// </summary>
+    string Name { get; }
 
     /// <summary>
     ///     获取与此频道所属的服务器的 ID。

@@ -6,7 +6,7 @@ namespace QQBot.API.Rest;
 internal class MuteAllParams
 {
     [JsonPropertyName("mute_end_timestamp")]
-    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.TimestampUnit.Seconds)]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.Seconds)]
     public DateTimeOffset? MuteEndTimestamp { get; set; }
 
     [JsonPropertyName("mute_seconds")]

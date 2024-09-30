@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using QQBot.Net.Converters;
 
 namespace QQBot.API;
 
@@ -29,5 +30,6 @@ internal class Guild
     public required string Description { get; set; }
 
     [JsonPropertyName("joined_at")]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]
     public required DateTimeOffset JoinedAt { get; set; }
 }

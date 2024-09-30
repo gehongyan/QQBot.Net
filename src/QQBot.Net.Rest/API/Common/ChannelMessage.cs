@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using QQBot.Net.Converters;
 
 namespace QQBot.API;
 
 internal class ChannelMessage
 {
     [JsonPropertyName("id")]
-    public required ulong Id { get; set; }
+    public required string Id { get; set; }
 
     [JsonPropertyName("channel_id")]
     public required ulong ChannelId { get; set; }
@@ -17,31 +18,33 @@ internal class ChannelMessage
     public required string Content { get; set; }
 
     [JsonPropertyName("timestamp")]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.ISO8601)]
     public required DateTimeOffset Timestamp { get; set; }
 
     [JsonPropertyName("edited_timestamp")]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.ISO8601)]
     public DateTimeOffset? EditedTimestamp { get; set; }
 
     [JsonPropertyName("mention_everyone")]
-    public required bool MentionEveryone { get; set; }
+    public bool? MentionEveryone { get; set; }
 
     [JsonPropertyName("author")]
     public required User Author { get; set; }
 
     [JsonPropertyName("attachments")]
-    public required MessageAttachment[] Attachments { get; set; }
+    public MessageAttachment[]? Attachments { get; set; }
 
     [JsonPropertyName("embeds")]
-    public required MessageEmbed[] Embeds { get; set; }
+    public MessageEmbed[]? Embeds { get; set; }
 
     [JsonPropertyName("mentions")]
-    public required User[]? Mentions { get; set; }
+    public User[]? Mentions { get; set; }
 
     [JsonPropertyName("member")]
     public required Member Member { get; set; }
 
     [JsonPropertyName("ark")]
-    public required MessageArk Ark { get; set; }
+    public MessageArk? Ark { get; set; }
 
     [JsonPropertyName("seq")]
     public int? Sequence { get; set; }

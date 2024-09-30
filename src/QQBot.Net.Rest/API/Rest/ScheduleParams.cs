@@ -12,11 +12,11 @@ internal class ScheduleParams
     public string? Description { get; set; }
 
     [JsonPropertyName("start_timestamp")]
-    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.TimestampUnit.Milliseconds)]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.Milliseconds)]
     public DateTimeOffset? StartTimestamp { get; set; }
 
     [JsonPropertyName("end_timestamp")]
-    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.TimestampUnit.Milliseconds)]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.Milliseconds)]
     public DateTimeOffset? EndTimestamp { get; set; }
 
     [JsonPropertyName("creator")]

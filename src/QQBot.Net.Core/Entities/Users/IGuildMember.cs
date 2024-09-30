@@ -1,9 +1,9 @@
 ﻿namespace QQBot;
 
 /// <summary>
-///     表示一个频道
+///     表示一个频道内用户
 /// </summary>
-public interface IGuildMember : IUser
+public interface IGuildMember : IGuildUser
 {
     /// <summary>
     ///     获取此用户的昵称。

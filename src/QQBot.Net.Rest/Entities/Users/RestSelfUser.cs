@@ -5,7 +5,7 @@ namespace QQBot.Rest;
 /// <summary>
 ///     表示一个基于 REST 的当前用户。
 /// </summary>
-public class RestSelfUser : RestUser, ISelfUser
+public class RestSelfUser : RestGuildUser, ISelfUser
 {
     /// <inheritdoc />
     internal RestSelfUser(BaseQQBotClient client, ulong id)

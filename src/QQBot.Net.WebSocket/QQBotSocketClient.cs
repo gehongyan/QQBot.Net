@@ -33,7 +33,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
     private Guid? _sessionId;
     private int? _lastSeq;
-    internal Task? _heartbeatTask;
+    private int _heartbeatInterval;
+    private Task? _heartbeatTask;
     private Task? _guildDownloadTask;
     private long _lastMessageTime;
     private int _nextAudioId;
@@ -71,6 +72,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     internal StartupCacheFetchMode StartupCacheFetchMode { get; private set; }
     internal bool AlwaysDownloadUsers { get; private set; }
     internal int? HandlerTimeout { get; private set; }
+    internal bool LogGatewayIntentWarnings { get; private set; }
+    internal bool SuppressUnknownDispatchWarnings { get; private set; }
     internal new QQBotSocketApiClient ApiClient => base.ApiClient;
 
     // /// <inheritdoc />
@@ -111,10 +114,13 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         StartupCacheFetchMode = config.StartupCacheFetchMode;
         AlwaysDownloadUsers = config.AlwaysDownloadUsers;
         HandlerTimeout = config.HandlerTimeout;
-        State = new ClientState(0, 0);
+        State = new ClientState(0);
         Rest = new QQBotSocketRestClient(config, ApiClient);
-        _heartbeatTimes = new ConcurrentQueue<long>();
+        _heartbeatInterval = QQBotSocketConfig.HeartbeatIntervalMilliseconds;
+        _heartbeatTimes = [];
         _gatewayIntents = config.GatewayIntents;
+        LogGatewayIntentWarnings = config.LogGatewayIntentWarnings;
+        SuppressUnknownDispatchWarnings = config.SuppressUnknownDispatchWarnings;
 
         _stateLock = new SemaphoreSlim(1, 1);
         _gatewayLogger = LogManager.CreateLogger("Gateway");
@@ -251,6 +257,36 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     {
         _lastMessageTime = 0;
     }
+
+    /// <summary>
+    ///     获取一个用户单聊频道。
+    /// </summary>
+    /// <param name="id"> 参与到单聊频道中另一位用户的用户 ID。</param>
+    /// <returns> 如果找到了指定用户的单聊频道，则返回该单聊频道；否则返回 <c>null</c>。</returns>
+    public SocketUserChannel? GetUserChannel(Guid id) => State.GetUserChannel(id);
+
+    internal SocketUserChannel AddUserChannel(ClientState state, Guid id)
+    {
+        SocketUserChannel channel = SocketUserChannel.Create(this, state, id);
+        state.AddUserChannel(channel);
+        return channel;
+    }
+
+    internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id) =>
+        state.GetOrAddUserChannel(id, _ => SocketUserChannel.Create(this, state, id));
+
+    internal SocketGlobalUser GetOrCreateUser(ClientState state, User model) =>
+        state.GetOrAddUser(model.Id, _ => SocketGlobalUser.Create(this, state, model));
+
+    internal SocketGlobalUser GetOrCreateSelfUser(ClientState state, User model) =>
+        state.GetOrAddUser(model.Id, _ =>
+        {
+            SocketGlobalUser user = SocketGlobalUser.Create(this, state, model);
+            user.GlobalUser.AddRef();
+            return user;
+        });
+
+    internal void RemoveUser(string id) => State.RemoveUser(id);
 
     // /// <inheritdoc />
     // public override SocketGuild? GetGuild(ulong id) => State.GetGuild(id);
@@ -463,7 +499,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
                 default:
                 {
                     await _gatewayLogger
-                        .WarningAsync($"Unknown Socket Frame Type ({opCode}). Payload: {SerializePayload(payload)}")
+                        .WarningAsync($"Unknown OpCode ({opCode}). Payload: {SerializePayload(payload)}")
                         .ConfigureAwait(false);
                 }
                     break;
@@ -479,14 +515,43 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
     internal async Task ProcessGatewayEventAsync(int sequence, string type, object payload)
     {
-        await _gatewayLogger.DebugAsync("Received Dispatch (READY)").ConfigureAwait(false);
+        await _gatewayLogger.DebugAsync($"Received Dispatch ({type})").ConfigureAwait(false);
         switch (type)
         {
+            #region Connection
+
             case "READY":
                 await HandleReadyAsync(payload).ConfigureAwait(false);
                 break;
             case "RESUMED":
                 await HandleResumedAsync().ConfigureAwait(false);
+                break;
+
+            #endregion
+
+            #region Messages
+
+            case "C2C_MESSAGE_CREATE":
+                await HandleUserMessageCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GROUP_AT_MESSAGE_CREATE":
+                await HandleGroupMessageCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "DIRECT_MESSAGE_CREATE":
+                await HandleDirectMessageCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "AT_MESSAGE_CREATE":
+            case "MESSAGE_CREATE":
+                await HandleChannelMessageCreatedAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
+
+
+
+            default:
+                if (!SuppressUnknownDispatchWarnings)
+                    await _gatewayLogger.WarningAsync($"Unknown Dispatch ({type})").ConfigureAwait(false);
                 break;
         }
     }

@@ -9,6 +9,9 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildChannel : SocketChannel, IGuildChannel
 {
+    /// <inheritdoc />
+    public new ulong Id { get; }
+
     /// <inheritdoc cref="QQBot.IGuildChannel.Guild" />
     public SocketGuild Guild { get; }
 
@@ -25,8 +28,9 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
     public ulong? CreatorId { get; private set; }
 
     internal SocketGuildChannel(QQBotSocketClient client, ulong id, SocketGuild guild)
-        : base(client, id)
+        : base(client, id.ToString())
     {
+        Id = id;
         Name = string.Empty;
         Guild = guild;
         Type = ChannelType.Unspecified;
@@ -44,7 +48,7 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
             _ => new SocketGuildChannel(guild.Client, model.Id, guild)
         };
 
-    internal override void Update(ClientState state, Model model)
+    internal virtual void Update(ClientState state, Model model)
     {
         Name = model.Name;
         Position = model.Position;
@@ -52,7 +56,7 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
     }
 
     /// <inheritdoc />
-    public override Task UpdateAsync(RequestOptions? options = null) =>
+    public virtual Task UpdateAsync(RequestOptions? options = null) =>
         SocketChannelHelper.UpdateAsync(this, options);
 
     /// <inheritdoc cref="QQBot.WebSocket.SocketGuildChannel.Name" />

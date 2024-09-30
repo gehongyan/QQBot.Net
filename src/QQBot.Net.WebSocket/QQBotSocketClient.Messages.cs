@@ -67,7 +67,7 @@ public partial class QQBotSocketClient
         await _gatewayLogger.DebugAsync("Received Hello").ConfigureAwait(false);
         try
         {
-            _heartbeatTask = RunHeartbeatAsync(gatewayHelloPayload.HeartbeatInterval, Connection.CancellationToken);
+            _heartbeatInterval = gatewayHelloPayload.HeartbeatInterval;
         }
         catch (Exception ex)
         {
@@ -82,7 +82,7 @@ public partial class QQBotSocketClient
 
         if (_heartbeatTimes.TryDequeue(out long time))
         {
-            int latency = (int)(Environment.TickCount - time);
+            int latency = (int)(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - time);
             int before = Latency;
             Latency = latency;
 
@@ -101,7 +101,7 @@ public partial class QQBotSocketClient
         try
         {
             SelfUser selfUser = await ApiClient.GetSelfUserAsync().ConfigureAwait(false);
-            SocketSelfUser currentUser = SocketSelfUser.Create(this, selfUser);
+            SocketSelfUser currentUser = SocketSelfUser.Create(this, State, selfUser);
             Rest.CreateRestSelfUser(selfUser);
             ApiClient.CurrentUserId = currentUser.Id;
             Rest.CurrentUser = RestSelfUser.Create(this, selfUser);
@@ -130,7 +130,7 @@ public partial class QQBotSocketClient
                     StartupCacheFetchMode = StartupCacheFetchMode.Synchronous;
             }
 
-            ClientState state = new(models.Count, 0);
+            ClientState state = new(models.Count);
             foreach (Guild guild in models)
             {
                 SocketGuild socketGuild = AddGuild(guild, state);
@@ -234,12 +234,14 @@ public partial class QQBotSocketClient
     {
         if (DeserializePayload<ReadyEvent>(payload) is not { } data) return;
         _sessionId = data.SessionId;
+        _heartbeatTask = RunHeartbeatAsync(_heartbeatInterval, Connection.CancellationToken);
         await FetchRequiredDataAsync();
     }
 
     private async Task HandleResumedAsync()
     {
         _ = Connection.CompleteAsync();
+        _heartbeatTask = RunHeartbeatAsync(_heartbeatInterval, Connection.CancellationToken);
         //Notify the client that these guilds are available again
         foreach (SocketGuild guild in State.Guilds)
         {
@@ -249,6 +251,40 @@ public partial class QQBotSocketClient
         // Restore the previous sessions current user
         CurrentUser = _previousSessionUser;
         await _gatewayLogger.InfoAsync("Resumed previous session").ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Messages
+
+    private async Task HandleUserMessageCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<UserMessageCreatedEvent>(payload) is not { } data) return;
+        SocketUser author = State.GetOrAddUser(data.Author.Id,
+            _ => SocketGlobalUser.Create(this, State, data.Author));
+        SocketUserChannel channel = GetOrCreateUserChannel(State, data.Author.Id);
+        SocketMessage message = SocketMessage.Create(this, State, author, channel, data);
+        // SocketChannelHelper.AddMessage(channel, this, message);
+        await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleGroupMessageCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupMessageCreatedEvent>(payload) is not { } data) return;
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleDirectMessageCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<ChannelMessage>(payload) is not { } data) return;
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleChannelMessageCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<ChannelMessage>(payload) is not { } data) return;
+        await Task.CompletedTask;
     }
 
     #endregion
@@ -270,7 +306,6 @@ public partial class QQBotSocketClient
     }
 
     #endregion
-
 
     #region Helpers
 

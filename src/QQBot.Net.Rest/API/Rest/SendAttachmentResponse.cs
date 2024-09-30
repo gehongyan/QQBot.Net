@@ -14,5 +14,5 @@ internal class SendAttachmentResponse
     public required int TimeToLive { get; set; }
 
     [JsonPropertyName("id")]
-    public ulong? Id { get; set; }
+    public string? Id { get; set; }
 }

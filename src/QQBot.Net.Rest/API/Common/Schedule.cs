@@ -15,11 +15,11 @@ internal class Schedule
     public required string Description { get; set; }
 
     [JsonPropertyName("start_timestamp")]
-    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.TimestampUnit.Milliseconds)]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.Milliseconds)]
     public required DateTimeOffset StartTimestamp { get; set; }
 
     [JsonPropertyName("end_timestamp")]
-    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.TimestampUnit.Milliseconds)]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.Milliseconds)]
     public required DateTimeOffset EndTimestamp { get; set; }
 
     [JsonPropertyName("creator")]

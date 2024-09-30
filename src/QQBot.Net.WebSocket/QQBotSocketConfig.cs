@@ -55,7 +55,7 @@ public class QQBotSocketConfig : QQBotRestConfig
     /// <summary>
     ///     获取网关发送心跳包的时间间隔（毫秒）。
     /// </summary>
-    public int HeartbeatIntervalMilliseconds { get; internal set; } = 30000;
+    internal const int HeartbeatIntervalMilliseconds = 42500;
 
     /// <summary>
     ///     获取语音客户端 RTP 连接中发送 RTCP 数据报的时间间隔（毫秒）。
@@ -134,9 +134,14 @@ public class QQBotSocketConfig : QQBotRestConfig
     public GatewayIntents GatewayIntents { get; set; } = GatewayIntents.All;
 
     /// <summary>
-    ///     Gets or sets whether or not to log warnings related to guild intents and events.
+    ///     获取或设置是否记录与服务器意图和事件相关的警告。
     /// </summary>
     public bool LogGatewayIntentWarnings { get; set; } = true;
+
+    /// <summary>
+    ///     获取或设置是否应记录未知的网关事件消息。
+    /// </summary>
+    public bool SuppressUnknownDispatchWarnings { get; set; } = true;
 
     /// <summary>
     ///     初始化一个 <see cref="QQBotSocketConfig"/> 类的新实例。

@@ -6,7 +6,7 @@ namespace QQBot.API.Rest;
 internal class SendUserGroupMessageResponse
 {
     [JsonPropertyName("id")]
-    public required ulong Id { get; set; }
+    public required string Id { get; set; }
 
     [JsonPropertyName("timestamp")]
     [DateTimeOffsetTimestampJsonConverter]

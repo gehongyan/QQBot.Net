@@ -1,12 +1,29 @@
-﻿using Model = QQBot.API.User;
+﻿using QQBot.API;
 
 namespace QQBot.Rest;
 
 /// <summary>
 ///     表示一个基于 REST 的用户。
 /// </summary>
-public class RestUser : RestEntity<ulong>, IUser
+public abstract class RestUser : RestEntity<string>, IUser
 {
+    /// <inheritdoc />
+    protected RestUser(BaseQQBotClient client, string id)
+        : base(client, id)
+    {
+    }
+
+    internal virtual void Update(User model) { }
+}
+
+/// <summary>
+///     表示一个基于 REST 的频道用户。
+/// </summary>
+public class RestGuildUser : RestUser, IGuildUser
+{
+    /// <inheritdoc cref="QQBot.IGuildUser.Id" />
+    public new ulong Id { get; }
+
     /// <inheritdoc />
     public string Username { get; private set; }
 
@@ -23,21 +40,22 @@ public class RestUser : RestEntity<ulong>, IUser
     public string? UnionUserAccount { get; private set; }
 
     /// <inheritdoc />
-    internal RestUser(BaseQQBotClient client, ulong id)
-        : base(client, id)
+    internal RestGuildUser(BaseQQBotClient client, ulong id)
+        : base(client, id.ToString())
     {
+        Id = id;
         Username = string.Empty;
         Avatar = string.Empty;
     }
 
-    internal static RestUser Create(BaseQQBotClient client, Model model)
+    internal static RestGuildUser Create(BaseQQBotClient client, User model)
     {
-        RestUser entity = new(client, model.Id);
+        RestGuildUser entity = new(client, model.Id);
         entity.Update(model);
         return entity;
     }
 
-    internal virtual void Update(Model model)
+    internal override void Update(User model)
     {
         Username = model.Username;
         Avatar = model.Avatar;
