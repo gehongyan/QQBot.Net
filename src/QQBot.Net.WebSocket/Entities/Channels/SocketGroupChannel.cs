@@ -12,6 +12,9 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
     public new Guid Id { get; }
 
     /// <inheritdoc />
+    public IReadOnlyCollection<SocketMessage> CachedMessages => [];
+
+    /// <inheritdoc />
     internal SocketGroupChannel(QQBotSocketClient client, Guid id)
         : base(client, id.ToString("N").ToUpperInvariant())
     {
@@ -23,6 +26,8 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
         SocketGroupChannel channel = new(client, id);
         return channel;
     }
+
+    internal void AddMessage(SocketMessage message) { }
 
     private string DebuggerDisplay => $"Unknown ({Id}, Group)";
 }

@@ -54,6 +54,13 @@ internal class ClientState
 
     #endregion
 
+    #region GroupChannel
+
+    internal SocketGroupChannel GetOrAddGroupChannel(Guid id, Func<Guid, SocketGroupChannel> channelFactory) =>
+        _groupChannels.GetOrAdd(id, channelFactory);
+
+    #endregion
+
     #region Users
 
     internal SocketGlobalUser GetOrAddUser(ulong id, Func<ulong, SocketGlobalUser> userFactory) =>

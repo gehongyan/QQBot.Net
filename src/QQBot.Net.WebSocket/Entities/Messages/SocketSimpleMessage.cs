@@ -15,14 +15,14 @@ public class SocketSimpleMessage : SocketMessage, ISimpleMessage
     }
 
     internal static new SocketSimpleMessage Create(QQBotSocketClient client, ClientState state,
-        SocketUser author, ISocketMessageChannel channel, API.Gateway.UserMessageCreatedEvent model)
+        SocketUser author, ISocketMessageChannel channel, API.Gateway.MessageCreatedEvent model)
     {
         SocketSimpleMessage entity = new(client, model.Id, channel, author, MessageSource.User);
         entity.Update(state, model);
         return entity;
     }
 
-    internal override void Update(ClientState state, API.Gateway.UserMessageCreatedEvent model)
+    internal override void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
     {
         base.Update(state, model);
     }

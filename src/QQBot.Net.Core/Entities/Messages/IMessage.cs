@@ -28,7 +28,7 @@ public interface IMessage : IEntity<string>
     /// <summary>
     ///     获取消息的创建时间。
     /// </summary>
-    DateTimeOffset CreatedAt { get; }
+    DateTimeOffset Timestamp { get; }
 
     /// <summary>
     ///     获取此消息中包含的所有附件。

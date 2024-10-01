@@ -9,6 +9,8 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessageChannel
 {
+    private readonly MessageCache? _messages;
+
     /// <inheritdoc />
     public ChannelSubType? SubType { get; private set; }
 
@@ -24,10 +26,15 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
     /// <inheritdoc />
     public ChannelPermission? Permission { get; private set; }
 
+    /// <inheritdoc />
+    public IReadOnlyCollection<SocketMessage> CachedMessages => _messages?.Messages ?? [];
+
     internal SocketTextChannel(QQBotSocketClient client, ulong id, SocketGuild guild)
         : base(client, id, guild)
     {
         Type = ChannelType.Text;
+        if (Client.MessageCacheSize > 0)
+            _messages = new MessageCache(Client);
     }
 
     internal static new SocketTextChannel Create(SocketGuild guild, ClientState state, Model model)
@@ -46,6 +53,10 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
     }
+
+    internal void AddMessage(SocketMessage msg) => _messages?.Add(msg);
+
+    internal SocketMessage? RemoveMessage(string id) => _messages?.Remove(id);
 
     private string DebuggerDisplay => $"{Name} ({Id}, Text)";
 }

@@ -259,19 +259,30 @@ public partial class QQBotSocketClient
 
     private async Task HandleUserMessageCreatedAsync(object? payload)
     {
-        if (DeserializePayload<UserMessageCreatedEvent>(payload) is not { } data) return;
+        if (DeserializePayload<MessageCreatedEvent>(payload) is not { } data) return;
         SocketUser author = State.GetOrAddUser(data.Author.Id,
             _ => SocketGlobalUser.Create(this, State, data.Author));
         SocketUserChannel channel = GetOrCreateUserChannel(State, data.Author.Id);
         SocketMessage message = SocketMessage.Create(this, State, author, channel, data);
-        // SocketChannelHelper.AddMessage(channel, this, message);
+        SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
         await Task.CompletedTask;
     }
 
     private async Task HandleGroupMessageCreatedAsync(object? payload)
     {
-        if (DeserializePayload<GroupMessageCreatedEvent>(payload) is not { } data) return;
+        if (DeserializePayload<MessageCreatedEvent>(payload) is not { } data) return;
+        if (!data.GroupId.HasValue)
+        {
+            await LogGatewayErrorAsync("Received GroupMessageCreated with no GroupId", payload).ConfigureAwait(false);
+            return;
+        }
+        SocketUser author = State.GetOrAddUser(data.Author.Id,
+            _ => SocketGlobalUser.Create(this, State, data.Author));
+        SocketGroupChannel channel = GetOrCreateGroupChannel(State, data.GroupId.Value);
+        SocketMessage message = SocketMessage.Create(this, State, author, channel, data);
+        SocketChannelHelper.AddMessage(channel, this, message);
+        await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
         await Task.CompletedTask;
     }
 
@@ -304,6 +315,9 @@ public partial class QQBotSocketClient
         guild.IsConnected = false;
         await TimedInvokeAsync(_guildUnavailableEvent, nameof(GuildUnavailable), guild).ConfigureAwait(false);
     }
+
+    private async Task LogGatewayErrorAsync(string message, object? payload) =>
+        await _gatewayLogger.WarningAsync($"{message}. Payload: {SerializePayload(payload)}").ConfigureAwait(false);
 
     #endregion
 

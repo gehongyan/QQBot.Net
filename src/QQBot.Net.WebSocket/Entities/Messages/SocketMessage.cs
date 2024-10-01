@@ -22,7 +22,7 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     public string Content { get; internal set; } = string.Empty;
 
     /// <inheritdoc />
-    public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.Now;
+    public DateTimeOffset Timestamp { get; private set; } = DateTimeOffset.Now;
 
     /// <inheritdoc cref="QQBot.IMessage.Attachments" />
     public virtual IReadOnlyCollection<Attachment> Attachments { get; private set; }
@@ -39,13 +39,13 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     }
 
     internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
-        SocketUser author, ISocketMessageChannel channel, API.Gateway.UserMessageCreatedEvent model) =>
+        SocketUser author, ISocketMessageChannel channel, API.Gateway.MessageCreatedEvent model) =>
         SocketSimpleMessage.Create(client, state, author, channel, model);
 
-    internal virtual void Update(ClientState state, API.Gateway.UserMessageCreatedEvent model)
+    internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
     {
         Content = model.Content;
-        CreatedAt = model.Timestamp;
+        Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
     }

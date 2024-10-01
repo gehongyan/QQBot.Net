@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using QQBot.Net.Converters;
 
 namespace QQBot.API.Gateway;
 
-internal class UserMessageCreatedEvent
+internal class MessageCreatedEvent
 {
     [JsonPropertyName("id")]
     public required string Id { get; set; }
@@ -13,6 +13,14 @@ internal class UserMessageCreatedEvent
 
     [JsonPropertyName("content")]
     public required string Content { get; set; }
+
+    [JsonPropertyName("group_id")]
+    [GuidJsonConverter]
+    public Guid? GroupId { get; set; }
+
+    [JsonPropertyName("group_openid")]
+    [GuidJsonConverter]
+    public Guid? GroupOpenId { get; set; }
 
     [JsonPropertyName("timestamp")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]

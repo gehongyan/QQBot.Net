@@ -37,7 +37,6 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     private Task? _heartbeatTask;
     private Task? _guildDownloadTask;
     private long _lastMessageTime;
-    private int _nextAudioId;
     private readonly GatewayIntents _gatewayIntents;
     private SocketSelfUser? _previousSessionUser;
 
@@ -274,6 +273,9 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
     internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id) =>
         state.GetOrAddUserChannel(id, _ => SocketUserChannel.Create(this, state, id));
+
+    internal SocketGroupChannel GetOrCreateGroupChannel(ClientState state, Guid id) =>
+        state.GetOrAddGroupChannel(id, _ => SocketGroupChannel.Create(this, state, id));
 
     internal SocketGlobalUser GetOrCreateUser(ClientState state, User model) =>
         state.GetOrAddUser(model.Id, _ => SocketGlobalUser.Create(this, state, model));
@@ -758,92 +760,6 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
                 .ConfigureAwait(false);
         }
     }
-
-    private async Task UnknownChannelUserAsync(string evnt, ulong userId, Guid chatCode, object payload)
-    {
-        string details = $"{evnt} User={userId} ChatCode={chatCode}";
-        await _gatewayLogger.WarningAsync($"Unknown User ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownGlobalUserAsync(string evnt, ulong userId, object payload)
-    {
-        string details = $"{evnt} User={userId}";
-        await _gatewayLogger.WarningAsync($"Unknown User ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownChannelUserAsync(string evnt, ulong userId, ulong channelId, object payload)
-    {
-        string details = $"{evnt} User={userId} Channel={channelId}";
-        await _gatewayLogger.WarningAsync($"Unknown User ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownGuildUserAsync(string evnt, ulong userId, ulong guildId, object payload)
-    {
-        string details = $"{evnt} User={userId} Guild={guildId}";
-        await _gatewayLogger.WarningAsync($"Unknown User ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task IncompleteGuildUserAsync(string evnt, ulong userId, ulong guildId, object payload)
-    {
-        string details = $"{evnt} User={userId} Guild={guildId}";
-        await _gatewayLogger.DebugAsync($"User has not been downloaded ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownPrivateChannelAsync(string evnt, Guid chatCode, object payload)
-    {
-        string details = $"{evnt} Channel={chatCode}";
-        await _gatewayLogger.WarningAsync($"Unknown Private Channel ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownChannelAsync(string evnt, ulong channelId, object payload)
-    {
-        string details = $"{evnt} Channel={channelId}";
-        await _gatewayLogger.WarningAsync($"Unknown Channel ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownChannelAsync(string evnt, ulong channelId, ulong guildId, object payload)
-    {
-        if (guildId == 0)
-        {
-            await UnknownChannelAsync(evnt, channelId, payload).ConfigureAwait(false);
-            return;
-        }
-
-        string details = $"{evnt} Channel={channelId} Guild={guildId}";
-        await _gatewayLogger.WarningAsync($"Unknown Channel ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownRoleAsync(string evnt, ulong roleId, ulong guildId, object payload)
-    {
-        string details = $"{evnt} Role={roleId} Guild={guildId}";
-        await _gatewayLogger.WarningAsync($"Unknown Role ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnavailableGuildAsync(string evnt, ulong guildId, object payload)
-    {
-        string details = $"{evnt} Guild={guildId}";
-        await _gatewayLogger.WarningAsync($"Unable to perform action on an unavailable guild ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownGuildAsync(string evnt, ulong guildId, object payload)
-    {
-        string details = $"{evnt} Guild={guildId}";
-        await _gatewayLogger.WarningAsync($"Unknown Guild ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnknownGuildEventAsync(string evnt, ulong eventId, ulong guildId, object payload)
-    {
-        string details = $"{evnt} Event={eventId} Guild={guildId}";
-        await _gatewayLogger.WarningAsync($"Unknown Guild Event ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    private async Task UnsyncedGuildAsync(string evnt, ulong guildId, object payload)
-    {
-        string details = $"{evnt} Guild={guildId}";
-        await _gatewayLogger.DebugAsync($"Unsynced Guild ({details}). Payload: {SerializePayload(payload)}").ConfigureAwait(false);
-    }
-
-    internal int GetAudioId() => Interlocked.Increment(ref _nextAudioId);
 
     // #region IQQBotClient
     //

@@ -9,6 +9,9 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketMessageChannel
     public new ulong Id { get; }
 
     /// <inheritdoc />
+    public IReadOnlyCollection<SocketMessage> CachedMessages => [];
+
+    /// <inheritdoc />
     internal SocketDMChannel(QQBotSocketClient client, ulong id)
         : base(client, id.ToString())
     {
@@ -20,4 +23,6 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketMessageChannel
         SocketDMChannel channel = new(client, id);
         return channel;
     }
+
+    internal void AddMessage(SocketMessage message) { }
 }

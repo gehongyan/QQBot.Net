@@ -13,6 +13,10 @@ internal class Author
     [GuidJsonConverter]
     public Guid? UserOpenId { get; set; }
 
+    [JsonPropertyName("member_openid")]
+    [GuidJsonConverter]
+    public Guid? MemberOpenId { get; set; }
+
     [JsonPropertyName("union_openid")]
     [GuidJsonConverter]
     public Guid? UnionOpenId { get; set; }
