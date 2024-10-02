@@ -1,10 +1,12 @@
-﻿using QQBot.API;
+﻿using System.Diagnostics;
+using QQBot.API;
 
 namespace QQBot.WebSocket;
 
 /// <summary>
 ///     表示一个基于网关的频道用户。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public abstract class SocketGuildUser : SocketUser, IGuildUser
 {
     /// <inheritdoc cref="QQBot.IGuildUser.Id" />
@@ -40,4 +42,7 @@ public abstract class SocketGuildUser : SocketUser, IGuildUser
         UnionOpenId = model.UnionOpenId;
         UnionUserAccount = model.UnionUserAccount;
     }
+
+    private string DebuggerDisplay =>
+        $"{Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
 }

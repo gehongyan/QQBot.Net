@@ -15,6 +15,9 @@ internal static class SocketMessageHelper
             Height = model.Height
         };
 
+    public static Attachment CreateAttachment(API.MessageAttachment model) =>
+        new(AttachmentType.File, model.Url);
+
     private static AttachmentType GetAttachmentType(string contentType)
     {
         if (contentType.StartsWith("image"))

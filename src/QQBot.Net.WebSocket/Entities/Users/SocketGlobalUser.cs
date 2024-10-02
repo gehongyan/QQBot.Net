@@ -53,6 +53,5 @@ internal class SocketGlobalUser : SocketUser
         }
     }
 
-    private string DebuggerDisplay =>
-        $"Unknown ({Id} Global)";
+    private string DebuggerDisplay => $"Unknown ({Id} Global)";
 }

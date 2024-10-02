@@ -10,10 +10,10 @@ namespace QQBot.WebSocket;
 public abstract class SocketMessage : SocketEntity<string>, IMessage
 {
     /// <inheritdoc cref="QQBot.IMessage.Channel" />
-    public ISocketMessageChannel Channel { get; private set; }
+    public ISocketMessageChannel Channel { get; }
 
     /// <inheritdoc cref="QQBot.IMessage.Author" />
-    public SocketUser Author { get; private set; }
+    public SocketUser Author { get; }
 
     /// <inheritdoc />
     public MessageSource Source { get; }
@@ -41,6 +41,18 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
         SocketUser author, ISocketMessageChannel channel, API.Gateway.MessageCreatedEvent model) =>
         SocketSimpleMessage.Create(client, state, author, channel, model);
+
+    internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
+        SocketUser author, ISocketMessageChannel channel, API.ChannelMessage model) =>
+        SocketGuildMessage.Create(client, state, author, channel, model);
+
+    internal virtual void Update(ClientState state, API.ChannelMessage model)
+    {
+        Content = model.Content;
+        Timestamp = model.Timestamp;
+        if (model.Attachments is { Length: > 0 } attachments)
+            Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
+    }
 
     internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
     {

@@ -257,6 +257,9 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         _lastMessageTime = 0;
     }
 
+    /// <inheritdoc />
+    public override SocketGuild? GetGuild(ulong id) => State.GetGuild(id);
+
     /// <summary>
     ///     获取一个用户单聊频道。
     /// </summary>
@@ -264,15 +267,18 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     /// <returns> 如果找到了指定用户的单聊频道，则返回该单聊频道；否则返回 <c>null</c>。</returns>
     public SocketUserChannel? GetUserChannel(Guid id) => State.GetUserChannel(id);
 
-    internal SocketUserChannel AddUserChannel(ClientState state, Guid id)
+    internal SocketUserChannel AddUserChannel(ClientState state, Guid id, SocketUser recipient)
     {
-        SocketUserChannel channel = SocketUserChannel.Create(this, state, id);
+        SocketUserChannel channel = SocketUserChannel.Create(this, state, id, recipient);
         state.AddUserChannel(channel);
         return channel;
     }
 
-    internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id) =>
-        state.GetOrAddUserChannel(id, _ => SocketUserChannel.Create(this, state, id));
+    internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id, SocketUser recipient) =>
+        state.GetOrAddUserChannel(id, _ => SocketUserChannel.Create(this, state, id, recipient));
+
+    internal SocketDMChannel GetOrCreateDMChannel(ClientState state, ulong id, SocketUser recipient) =>
+        state.GetOrAddDMChannel(id, _ => SocketDMChannel.Create(this, state, id, recipient));
 
     internal SocketGroupChannel GetOrCreateGroupChannel(ClientState state, Guid id) =>
         state.GetOrAddGroupChannel(id, _ => SocketGroupChannel.Create(this, state, id));
@@ -534,17 +540,17 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             #region Messages
 
             case "C2C_MESSAGE_CREATE":
-                await HandleUserMessageCreatedAsync(payload).ConfigureAwait(false);
+                await HandleUserMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
             case "GROUP_AT_MESSAGE_CREATE":
-                await HandleGroupMessageCreatedAsync(payload).ConfigureAwait(false);
+                await HandleGroupMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
             case "DIRECT_MESSAGE_CREATE":
-                await HandleDirectMessageCreatedAsync(payload).ConfigureAwait(false);
+                await HandleDirectMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
             case "AT_MESSAGE_CREATE":
             case "MESSAGE_CREATE":
-                await HandleChannelMessageCreatedAsync(payload).ConfigureAwait(false);
+                await HandleChannelMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
 
             #endregion

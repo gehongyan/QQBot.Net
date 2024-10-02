@@ -3,7 +3,7 @@
 namespace QQBot.Rest;
 
 /// <inheritdoc cref="IAttachment"/>
-[DebuggerDisplay(@"{DebuggerDisplay,nq}")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class Attachment : IAttachment
 {
     /// <inheritdoc />

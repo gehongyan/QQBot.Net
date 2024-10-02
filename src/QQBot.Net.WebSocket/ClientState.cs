@@ -33,13 +33,17 @@ internal class ClientState
 
     #region Guild
 
+    internal SocketGuild? GetGuild(ulong id) => _guilds.GetValueOrDefault(id);
+
     internal void AddGuild(SocketGuild guild) => _guilds[guild.Id] = guild;
 
     #endregion
 
     #region GuildChannel
 
-    internal void AddChannel(SocketGuildChannel channel) => _channels[channel.Id] = channel;
+    internal SocketGuildChannel? GetGuildChannel(ulong channelId) => _channels.GetValueOrDefault(channelId);
+
+    internal void AddGuildChannel(SocketGuildChannel channel) => _channels[channel.Id] = channel;
 
     #endregion
 
@@ -51,6 +55,13 @@ internal class ClientState
 
     internal SocketUserChannel GetOrAddUserChannel(Guid id, Func<Guid, SocketUserChannel> channelFactory) =>
         _userChannels.GetOrAdd(id, channelFactory);
+
+    #endregion
+
+    #region DMChannel
+
+    internal SocketDMChannel GetOrAddDMChannel(ulong id, Func<ulong, SocketDMChannel> channelFactory) =>
+        _dmChannels.GetOrAdd(id, channelFactory);
 
     #endregion
 

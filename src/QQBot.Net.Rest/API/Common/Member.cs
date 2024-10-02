@@ -9,10 +9,10 @@ internal class Member
     public User? User { get; set; }
 
     [JsonPropertyName("nick")]
-    public required string Nickname { get; set; }
+    public string? Nickname { get; set; }
 
     [JsonPropertyName("roles")]
-    public required uint[] Roles { get; set; }
+    public uint[]? Roles { get; set; }
 
     [JsonPropertyName("joined_at")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]

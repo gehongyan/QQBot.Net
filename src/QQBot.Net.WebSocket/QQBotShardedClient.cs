@@ -249,9 +249,9 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
     public QQBotSocketClient? GetShardFor(IGuild guild)
         => GetShardFor(guild?.Id ?? 0);
 
-    // /// <inheritdoc />
-    // public override SocketGuild GetGuild(ulong id)
-    //     => GetShardFor(id).GetGuild(id);
+    /// <inheritdoc />
+    public override SocketGuild? GetGuild(ulong id)
+        => GetShardFor(id)?.GetGuild(id);
 
     // /// <inheritdoc />
     // public override SocketChannel GetChannel(ulong id)

@@ -90,13 +90,13 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     // /// <param name="userId"> 私聊频道中另一位用户的 ID。 </param>
     // /// <returns> 另一位用户具有指定用户 ID 的私聊频道；如果未找到，则返回 <c>null</c>。 </returns>
     // public abstract SocketDMChannel? GetDMChannel(ulong userId);
-    //
-    // /// <summary>
-    // ///     获取一个服务器。
-    // /// </summary>
-    // /// <param name="id"> 要获取的服务器的 ID。 </param>
-    // /// <returns> 与指定的 <paramref name="id"/> 关联的服务器；如果未找到，则返回 <c>null</c>。 </returns>
-    // public abstract SocketGuild? GetGuild(ulong id);
+
+    /// <summary>
+    ///     获取一个频道。
+    /// </summary>
+    /// <param name="id"> 要获取的频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public abstract SocketGuild? GetGuild(ulong id);
 
     /// <inheritdoc />
     public abstract Task StartAsync();

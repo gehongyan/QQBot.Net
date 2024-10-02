@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot.WebSocket;
 
 /// <summary>
 ///     表示一个基于网关的频道用户。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildMember : SocketGuildUser, IGuildMember
 {
     internal override SocketGlobalUser GlobalUser { get; }
@@ -23,10 +26,10 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember
     public override string? UnionUserAccount { get; internal set; }
 
     /// <inheritdoc />
-    public string Nickname { get; private set; }
+    public string? Nickname { get; private set; }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<uint> RoleIds { get; private set; }
+    public IReadOnlyCollection<uint>? RoleIds { get; private set; }
 
     /// <inheritdoc />
     public DateTimeOffset JoinedAt { get; private set; }
@@ -55,4 +58,7 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember
         RoleIds = model.Roles;
         JoinedAt = model.JoinedAt;
     }
+
+    private string DebuggerDisplay =>
+        $"{Nickname ?? Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild Member)";
 }

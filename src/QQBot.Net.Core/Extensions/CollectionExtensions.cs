@@ -19,7 +19,7 @@ internal static class CollectionExtensions
         => new CollectionWrapper<TValue>(query, countFunc);
 }
 
-[DebuggerDisplay(@"{DebuggerDisplay,nq}")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 internal struct CollectionWrapper<TValue> : IReadOnlyCollection<TValue>
 {
     private readonly IEnumerable<TValue> _query;

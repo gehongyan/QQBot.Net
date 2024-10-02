@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的群聊或单聊内的简单消息。
+///     表示一个基于网关的群聊或单聊内的消息。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketSimpleMessage : SocketMessage, ISimpleMessage
@@ -20,10 +20,5 @@ public class SocketSimpleMessage : SocketMessage, ISimpleMessage
         SocketSimpleMessage entity = new(client, model.Id, channel, author, MessageSource.User);
         entity.Update(state, model);
         return entity;
-    }
-
-    internal override void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
-    {
-        base.Update(state, model);
     }
 }

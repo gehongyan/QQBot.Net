@@ -6,28 +6,46 @@ namespace QQBot.WebSocket;
 ///     表示一个基于网关的群组频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class SocketUserChannel : SocketChannel, IUserChannel, ISocketMessageChannel
+public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChannel, ISocketMessageChannel
 {
     /// <inheritdoc cref="QQBot.IUserChannel.Id" />
     public new Guid Id { get; }
+
+    /// <inheritdoc cref="QQBot.IDMChannel.Recipient" />
+    public SocketUser Recipient { get; }
 
     /// <inheritdoc />
     public IReadOnlyCollection<SocketMessage> CachedMessages => [];
 
     /// <inheritdoc />
-    internal SocketUserChannel(QQBotSocketClient client, Guid id)
+    internal SocketUserChannel(QQBotSocketClient client, Guid id, SocketUser recipient)
         : base(client, id.ToString("N").ToUpperInvariant())
     {
         Id = id;
+        Recipient = recipient;
     }
 
-    internal static SocketUserChannel Create(QQBotSocketClient client, ClientState state, Guid id)
+    internal static SocketUserChannel Create(QQBotSocketClient client, ClientState state, Guid id, SocketUser recipient)
     {
-        SocketUserChannel channel = new(client, id);
+        SocketUserChannel channel = new(client, id, recipient);
         return channel;
     }
 
     internal void AddMessage(SocketMessage message) { }
+
+    #region ISocketPrivateChannel
+
+    /// <inheritdoc />
+    IReadOnlyCollection<SocketUser> ISocketPrivateChannel.Recipients => [Recipient];
+
+    #endregion
+
+    #region IPrivateChannel
+
+    /// <inheritdoc />
+    IReadOnlyCollection<IUser> IPrivateChannel.Recipients => [Recipient];
+
+    #endregion
 
     private string DebuggerDisplay => $"Unknown ({Id}, User)";
 }

@@ -5,5 +5,6 @@
 /// </summary>
 public interface ISocketPrivateChannel : IPrivateChannel
 {
-
+    /// <inheritdoc cref="QQBot.IPrivateChannel.Recipients" />
+    new IReadOnlyCollection<SocketUser> Recipients { get; }
 }

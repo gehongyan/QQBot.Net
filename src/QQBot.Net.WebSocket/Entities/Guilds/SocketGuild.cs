@@ -10,6 +10,7 @@ namespace QQBot.WebSocket;
 public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 {
     private readonly ConcurrentDictionary<ulong, SocketGuildChannel> _channels;
+    private readonly ConcurrentDictionary<ulong, SocketGuildMember> _members;
 
     /// <inheritdoc />
     public string Name { get; private set; }
@@ -31,6 +32,11 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     /// <inheritdoc />
     public DateTimeOffset JoinedAt { get; private set; }
+
+    /// <summary>
+    ///     获取此服务器内已缓存的成员数量。
+    /// </summary>
+    public int DownloadedMemberCount => _members.Count;
 
     /// <inheritdoc />
     public bool IsAvailable { get; private set; }
@@ -64,6 +70,12 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// </summary>
     public IReadOnlyCollection<SocketGuildChannel> Channels => [.._channels.Values];
 
+    /// <summary>
+    ///     获取当前登录的用户。
+    /// </summary>
+    public SocketGuildMember? CurrentUser =>
+        Client.CurrentUser is { Id: var id } && _members.TryGetValue(id, out SocketGuildMember? member) ? member : null;
+
     /// <inheritdoc />
     internal SocketGuild(QQBotSocketClient client, ulong id)
         : base(client, id)
@@ -71,6 +83,7 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
         Name = string.Empty;
         Description = string.Empty;
         _channels = [];
+        _members = [];
     }
 
     internal static SocketGuild Create(QQBotSocketClient client, ClientState state, Model model)
@@ -104,11 +117,57 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
                 continue;
             }
             SocketGuildChannel channel = SocketGuildChannel.Create(this, state, model);
-            state.AddChannel(channel);
+            state.AddGuildChannel(channel);
             _channels.TryAdd(channel.Id, channel);
         }
     }
 
     /// <inheritdoc />
     public Task UpdateAsync(RequestOptions? options = null) => SocketGuildHelper.UpdateAsync(this, Client, options);
+
+    #region Users
+
+    /// <summary>
+    ///     获取此频道内的用户。
+    /// </summary>
+    /// <remarks>
+    ///     此方法可能返回 <c>null</c>，因为在大型频道中，用户列表的缓存可能不完整。
+    /// </remarks>
+    /// <param name="id"> 要获取的用户的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketGuildMember? GetUser(ulong id) => _members.GetValueOrDefault(id);
+
+    internal SocketGuildMember AddOrUpdateUser(API.User userModel, API.Member memberModel)
+    {
+        if (_members.TryGetValue(userModel.Id, out SocketGuildMember? cachedMember))
+        {
+            cachedMember.Update(Client.State, userModel, memberModel);
+            return cachedMember;
+        }
+
+        SocketGuildMember member = SocketGuildMember.Create(this, Client.State, userModel, memberModel);
+        member.GlobalUser.AddRef();
+        _members[member.Id] = member;
+        return member;
+    }
+
+    #endregion
+
+    #region Channels
+
+    /// <summary>
+    ///     获取此服务器内的频道。
+    /// </summary>
+    /// <param name="id"> 要获取的频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketGuildChannel? GetChannel(ulong id) => Client.State.GetGuildChannel(id);
+
+    /// <summary>
+    ///     获取此频道中所有具有文字聊天能力的子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketTextChannel? GetTextChannel(ulong id) => GetChannel(id) as SocketTextChannel;
+
+    #endregion
 }
