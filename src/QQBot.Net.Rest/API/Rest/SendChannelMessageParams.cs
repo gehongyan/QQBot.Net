@@ -25,6 +25,6 @@ internal class SendChannelMessageParams
     [JsonPropertyName("event_id")]
     public string? EventId { get; set; }
 
-    [JsonPropertyName("mardown")]
+    [JsonPropertyName("markdown")]
     public MessageMarkdown? Markdown { get; set; }
 }

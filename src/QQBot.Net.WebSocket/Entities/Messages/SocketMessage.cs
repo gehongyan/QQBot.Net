@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using QQBot.Rest;
 
 namespace QQBot.WebSocket;
@@ -9,6 +10,8 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public abstract class SocketMessage : SocketEntity<string>, IMessage
 {
+    private ImmutableArray<Embed> _embeds = [];
+
     /// <inheritdoc cref="QQBot.IMessage.Channel" />
     public ISocketMessageChannel Channel { get; }
 
@@ -19,13 +22,22 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     public MessageSource Source { get; }
 
     /// <inheritdoc />
-    public string Content { get; internal set; } = string.Empty;
+    public MessageSourceIdentifier? SourceIdentifier { get; private set; }
+
+    /// <inheritdoc />
+    public string Content { get; private set; } = string.Empty;
 
     /// <inheritdoc />
     public DateTimeOffset Timestamp { get; private set; } = DateTimeOffset.Now;
 
     /// <inheritdoc cref="QQBot.IMessage.Attachments" />
     public virtual IReadOnlyCollection<Attachment> Attachments { get; private set; }
+
+    /// <inheritdoc />
+    public bool? MentionedEveryone { get; private set; }
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<Embed> Embeds => _embeds;
 
     /// <inheritdoc />
     protected SocketMessage(QQBotSocketClient client, string id,
@@ -39,27 +51,40 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     }
 
     internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
-        SocketUser author, ISocketMessageChannel channel, API.Gateway.MessageCreatedEvent model) =>
-        SocketSimpleMessage.Create(client, state, author, channel, model);
+        SocketUser author, ISocketMessageChannel channel, API.Gateway.MessageCreatedEvent model, string dispatch) =>
+        SocketUserMessage.Create(client, state, author, channel, model, dispatch);
 
     internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
-        SocketUser author, ISocketMessageChannel channel, API.ChannelMessage model) =>
-        SocketGuildMessage.Create(client, state, author, channel, model);
+        SocketUser author, ISocketMessageChannel channel, API.ChannelMessage model, string dispatch) =>
+        SocketUserMessage.Create(client, state, author, channel, model, dispatch);
 
-    internal virtual void Update(ClientState state, API.ChannelMessage model)
+    internal virtual void Update(ClientState state, API.ChannelMessage model, string dispatch)
     {
         Content = model.Content;
         Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
+        MentionedEveryone = model.MentionEveryone;
+        if (model.Embeds is { Length: > 0 } embedModels)
+            _embeds = [..embedModels.Select(x => x.ToEntity())];
+        SourceIdentifier = new MessageSourceIdentifier
+        {
+            Dispatch = dispatch,
+            MessageId = model.Id
+        };
     }
 
-    internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
+    internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model, string dispatch)
     {
         Content = model.Content;
         Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
+        SourceIdentifier = new MessageSourceIdentifier
+        {
+            Dispatch = dispatch,
+            MessageId = model.Id
+        };
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{

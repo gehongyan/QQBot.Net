@@ -59,4 +59,13 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
     internal SocketMessage? RemoveMessage(string id) => _messages?.Remove(id);
 
     private string DebuggerDisplay => $"{Name} ({Id}, Text)";
+
+    #region Messages
+
+    /// <inheritdoc />
+    public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
+        MessageSourceIdentifier? passiveSource = null, RequestOptions? options = null) =>
+        ChannelHelper.SendMessageAsync(this, Client, content, passiveSource, options);
+
+    #endregion
 }

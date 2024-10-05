@@ -41,7 +41,7 @@ internal class ChannelMessage
     public User[]? Mentions { get; set; }
 
     [JsonPropertyName("member")]
-    public required Member Member { get; set; }
+    public Member? Member { get; set; }
 
     [JsonPropertyName("ark")]
     public MessageArk? Ark { get; set; }

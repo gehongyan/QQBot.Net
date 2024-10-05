@@ -18,5 +18,5 @@ public interface IGuildMember : IGuildUser
     /// <summary>
     ///     获取此用户加入该频道的时间。
     /// </summary>
-    DateTimeOffset JoinedAt { get; }
+    DateTimeOffset? JoinedAt { get; }
 }

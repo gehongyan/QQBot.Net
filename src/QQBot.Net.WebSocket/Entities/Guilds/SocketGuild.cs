@@ -137,7 +137,7 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketGuildMember? GetUser(ulong id) => _members.GetValueOrDefault(id);
 
-    internal SocketGuildMember AddOrUpdateUser(API.User userModel, API.Member memberModel)
+    internal SocketGuildMember AddOrUpdateUser(API.User userModel, API.Member? memberModel)
     {
         if (_members.TryGetValue(userModel.Id, out SocketGuildMember? cachedMember))
         {

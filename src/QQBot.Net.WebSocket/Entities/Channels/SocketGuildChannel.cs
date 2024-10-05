@@ -9,7 +9,7 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildChannel : SocketChannel, IGuildChannel
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="QQBot.IGuildChannel.Id" />
     public new ulong Id { get; }
 
     /// <inheritdoc cref="QQBot.IGuildChannel.Guild" />

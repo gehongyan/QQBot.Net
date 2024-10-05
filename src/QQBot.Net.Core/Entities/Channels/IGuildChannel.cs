@@ -6,6 +6,11 @@ namespace QQBot;
 public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
 {
     /// <summary>
+    ///     获取此频道的唯一标识符。
+    /// </summary>
+    new ulong Id { get; }
+
+    /// <summary>
     ///     获取此频道所属的服务器。
     /// </summary>
     IGuild Guild { get; }

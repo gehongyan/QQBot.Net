@@ -11,11 +11,11 @@ public abstract partial class BaseSocketClient
     ///     <item> <see cref="QQBot.WebSocket.SocketMessage"/> 参数是新接收到的消息。 </item>
     ///     </list>
     /// </remarks>
-    public event Func<SocketMessage, Task> MessageReceived
+    public event Func<SocketUserMessage, Task> MessageReceived
     {
         add => _messageReceivedEvent.Add(value);
         remove => _messageReceivedEvent.Remove(value);
     }
 
-    internal readonly AsyncEvent<Func<SocketMessage, Task>> _messageReceivedEvent = new();
+    internal readonly AsyncEvent<Func<SocketUserMessage, Task>> _messageReceivedEvent = new();
 }

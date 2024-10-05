@@ -48,4 +48,13 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
     #endregion
 
     private string DebuggerDisplay => $"Unknown ({Id}, User)";
+
+    #region Messages
+
+    /// <inheritdoc />
+    public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
+        MessageSourceIdentifier? passiveSource = null, RequestOptions? options = null) =>
+        ChannelHelper.SendMessageAsync(this, Client, content, passiveSource, options);
+
+    #endregion
 }

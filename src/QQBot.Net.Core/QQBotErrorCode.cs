@@ -25,6 +25,7 @@ public enum QQBotErrorCode
     ErrorCheckAppPrivilegeFailed = 11252,
     ErrorCheckAppPrivilegeNotPass = 11253,
     ErrorInterfaceForbidden = 11254,
+    InvalidRequest = 11255,
     ErrorWrongAppidDuplicate = 11261, // Same as 11251
     ErrorCheckRobot = 11262,
     ErrorCheckGuildAuth = 11263,
@@ -56,6 +57,7 @@ public enum QQBotErrorCode
     #region Ratelimit Errors (20XXX)
 
     ChannelHitWriteRateLimit = 20028,
+    MessageLimitExceeded = 22009,
 
     #endregion
 
@@ -175,6 +177,8 @@ public enum QQBotErrorCode
     PrivateMessageTotalLimit = 304050,
     MessageSettingsGuideRequestError = 304051,
     SendMessageSettingsGuideOverLimit = 304052,
+    FetchUploadedMediaInfoFailed = 304082,
+    ConvertMediaInfoFailed = 304083,
 
     #endregion
 

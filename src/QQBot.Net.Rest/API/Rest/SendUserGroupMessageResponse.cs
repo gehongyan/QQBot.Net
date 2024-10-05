@@ -9,6 +9,6 @@ internal class SendUserGroupMessageResponse
     public required string Id { get; set; }
 
     [JsonPropertyName("timestamp")]
-    [DateTimeOffsetTimestampJsonConverter]
+    [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]
     public required DateTimeOffset Timestamp { get; set; }
 }

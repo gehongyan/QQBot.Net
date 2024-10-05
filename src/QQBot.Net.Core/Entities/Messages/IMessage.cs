@@ -21,6 +21,11 @@ public interface IMessage : IEntity<string>
     MessageSource Source { get; }
 
     /// <summary>
+    ///     获取消息的来源标识符。
+    /// </summary>
+    MessageSourceIdentifier? SourceIdentifier { get; }
+
+    /// <summary>
     ///     获取消息的内容。
     /// </summary>
     string Content { get; }
@@ -34,4 +39,14 @@ public interface IMessage : IEntity<string>
     ///     获取此消息中包含的所有附件。
     /// </summary>
     IReadOnlyCollection<IAttachment> Attachments { get; }
+
+    /// <summary>
+    ///     获取此消息是否提及了全体成员。
+    /// </summary>
+    bool? MentionedEveryone { get; }
+
+    /// <summary>
+    ///     获取此消息内包含的所有嵌入式内容。
+    /// </summary>
+    IReadOnlyCollection<Embed> Embeds { get; }
 }

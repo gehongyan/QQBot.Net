@@ -9,12 +9,20 @@ QQBotSocketClient client = new(new QQBotSocketConfig
     LogLevel = LogSeverity.Debug
 });
 client.Log += x => Task.Run(() => Console.WriteLine(x));
-client.MessageReceived += message =>
+client.MessageReceived += async message =>
 {
-    Console.WriteLine($"Received Message [Author] {message.Author.Id} [Channel] {message.Channel.Id} [Content] {message.Content}");
+    if (message.Source is not MessageSource.User) return;
+    string summary = $"""
+        Received Message
+        [Id] {message.Id}
+        [Author] {message.Author.Id}
+        [Channel] {message.Channel.Id}
+        [Content] {message.Content}
+        """;
+    Console.WriteLine(summary);
+    await message.ReplyAsync(summary);
     foreach (Attachment attachment in message.Attachments)
         Console.WriteLine($"Attachment [Type] {attachment.Type} [Url] {attachment.Url}");
-    return Task.CompletedTask;
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

@@ -26,10 +26,10 @@ internal class SendUserGroupMessageParams
     // public MessageReference? MessageReference { get; set; }
 
     [JsonPropertyName("event_id")]
-    public ulong? EventId { get; set; }
+    public string? EventId { get; set; }
 
     [JsonPropertyName("msg_id")]
-    public ulong? MsgId { get; set; }
+    public string? MessageId { get; set; }
 
     [JsonPropertyName("msg_seq")]
     public int? MessageSequence { get; set; }

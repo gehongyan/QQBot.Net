@@ -475,25 +475,27 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Messages
 
-    public async Task<SendUserGroupMessageResponse> SendUserMessageAsync(ulong openId, SendUserGroupMessageParams args, RequestOptions? options = null)
+    public async Task<SendUserGroupMessageResponse> SendUserMessageAsync(Guid openId, SendUserGroupMessageParams args, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(openId, 0, nameof(openId));
+        Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new();
+        string id = openId.ToString("N").ToUpperInvariant();
         return await SendJsonAsync<SendUserGroupMessageResponse>(HttpMethod.Post,
-                () => $"v2/users/{openId}/messages", args, ids, ClientBucketType.SendEdit, false, options)
+                () => $"v2/users/{id}/messages", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }
 
-    public async Task<SendUserGroupMessageResponse> SendGroupMessageAsync(ulong groupOpenid, SendUserGroupMessageParams args, RequestOptions? options = null)
+    public async Task<SendUserGroupMessageResponse> SendGroupMessageAsync(Guid groupOpenid, SendUserGroupMessageParams args, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(groupOpenid, 0, nameof(groupOpenid));
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new();
+        string id = groupOpenid.ToString("N").ToUpperInvariant();
         return await SendJsonAsync<SendUserGroupMessageResponse>(HttpMethod.Post,
-                () => $"v2/groups/{groupOpenid}/messages", args, ids, ClientBucketType.SendEdit, false, options)
+                () => $"v2/groups/{id}/messages", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }
 

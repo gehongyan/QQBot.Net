@@ -548,7 +548,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "DIRECT_MESSAGE_CREATE":
                 await HandleDirectMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
-            case "AT_MESSAGE_CREATE":
+            // case "AT_MESSAGE_CREATE":
             case "MESSAGE_CREATE":
                 await HandleChannelMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
