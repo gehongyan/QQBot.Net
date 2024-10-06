@@ -51,11 +51,11 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
 
     #region Messages
 
-    /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
+    /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.Ark,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
     public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
-        FileAttachment? attachment = null, Embed? embed = null,
+        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
-        ChannelHelper.SendMessageAsync(this, Client, content, attachment, embed, messageReference, passiveSource, options);
+        ChannelHelper.SendMessageAsync(this, Client, content, attachment, embed, ark, messageReference, passiveSource, options);
 
     #endregion
 
@@ -63,9 +63,9 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
 
     /// <inheritdoc />
     Task<Cacheable<IUserMessage, string>> IMessageChannel.SendMessageAsync(string? content,
-        FileAttachment? attachment, Embed? embed,
+        FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options) =>
-        SendMessageAsync(content, attachment, embed, messageReference, passiveSource, options);
+        SendMessageAsync(content, attachment, embed, ark, messageReference, passiveSource, options);
 
     #endregion
 }

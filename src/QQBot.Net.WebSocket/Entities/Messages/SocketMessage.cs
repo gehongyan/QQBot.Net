@@ -93,5 +93,8 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     /// <inheritdoc />
     IReadOnlyCollection<IAttachment> IMessage.Attachments => Attachments;
 
+    /// <inheritdoc />
+    IReadOnlyCollection<IEmbed> IMessage.Embeds => Embeds;
+
     #endregion
 }

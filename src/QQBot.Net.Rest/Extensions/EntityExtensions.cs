@@ -53,4 +53,31 @@ internal static class EntityExtensions
         };
 
     #endregion
+
+    #region Ark
+
+    public static MessageArk ToModel(this Ark entity) => new()
+    {
+        TemplateId = entity.TemplateId,
+        KeyValues = entity.Parameters.Select(x => x.ToModel()).ToArray()
+    };
+
+    private static MessageArkKeyValue ToModel(this KeyValuePair<string, IArkParameter> entity) => new()
+    {
+        Key = entity.Key,
+        Value = (entity.Value as ArkSingleParameter?)?.Value,
+        Obj = (entity.Value as ArkMultiDictionaryParameter?)?.Value.Select(x => x.ToModel()).ToArray()
+    };
+
+    private static MessageArkObject ToModel(this IReadOnlyDictionary<string,string> entity) => new()
+    {
+        ObjectKeyValues = entity.Select(x => new MessageArkObjectKeyValue
+        {
+            Key = x.Key,
+            Value = x.Value
+        }).ToArray()
+    };
+
+
+    #endregion
 }

@@ -8,7 +8,7 @@ namespace QQBot.WebSocket;
 internal static class ChannelHelper
 {
     public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(IUserChannel channel,
-        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed,
+        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
@@ -17,10 +17,10 @@ internal static class ChannelHelper
         SendUserGroupMessageParams args = new()
         {
             Content = content,
-            MessageType = GetMessageType(content, attachment, embed),
+            MessageType = GetMessageType(content, attachment, embed, ark),
             Markdown = null,
             Keyboard = null,
-            Ark = null,
+            Ark = ark?.ToModel(),
             MediaFileInfo = mediaFileInfo.HasValue
                 ? new API.Rest.MediaFileInfo { FileInfo = mediaFileInfo.Value.FileInfo }
                 : null,
@@ -35,7 +35,7 @@ internal static class ChannelHelper
     }
 
     public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(IGroupChannel channel,
-        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed,
+        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
@@ -44,10 +44,10 @@ internal static class ChannelHelper
         SendUserGroupMessageParams args = new()
         {
             Content = content,
-            MessageType = GetMessageType(content, attachment, embed),
+            MessageType = GetMessageType(content, attachment, embed, ark),
             Markdown = null,
             Keyboard = null,
-            Ark = null,
+            Ark = ark?.ToModel(),
             MediaFileInfo = mediaFileInfo.HasValue
                 ? new API.Rest.MediaFileInfo { FileInfo = mediaFileInfo.Value.FileInfo }
                 : null,
@@ -62,7 +62,7 @@ internal static class ChannelHelper
     }
 
     public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(ITextChannel channel,
-        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed,
+        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
     {
         (string? uri, MultipartFile? multipartFile, bool needDispose) = attachment.HasValue
@@ -73,7 +73,7 @@ internal static class ChannelHelper
             Content = content,
             Embed = embed?.ToModel(),
             Markdown = null,
-            Ark = null,
+            Ark = ark?.ToModel(),
             MessageReference = messageReference?.ToModel(),
             Image = uri,
             FileImage = multipartFile,
@@ -88,7 +88,7 @@ internal static class ChannelHelper
     }
 
     public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(IDMChannel channel,
-        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed,
+        BaseQQBotClient client, string? content, FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
     {
         (string? uri, MultipartFile? multipartFile, bool needDispose) = attachment.HasValue
@@ -99,7 +99,7 @@ internal static class ChannelHelper
             Content = content,
             Embed = embed?.ToModel(),
             Markdown = null,
-            Ark = null,
+            Ark = ark?.ToModel(),
             MessageReference = messageReference?.ToModel(),
             Image = uri,
             FileImage = multipartFile,
@@ -113,10 +113,11 @@ internal static class ChannelHelper
         return CreateCacheable(response.Id);
     }
 
-    private static MessageType GetMessageType(string? content, FileAttachment? attachment, Embed? embed)
+    private static MessageType GetMessageType(string? content, FileAttachment? attachment, Embed? embed, Ark? ark)
     {
         if (attachment is not null) return MessageType.Media;
         if (embed is not null) return MessageType.Embed;
+        if (ark is not null) return MessageType.Ark;
         return MessageType.Text;
     }
 
@@ -133,7 +134,7 @@ internal static class ChannelHelper
         {
             case CreateAttachmentMode.FilePath:
             case CreateAttachmentMode.Stream:
-                throw new NotSupportedException("CreateAttachmentMode.FilePath or CreateAttachmentMode.Stream is not supported when sending to a IUserChannel or IGroupChannel.");
+                throw new NotSupportedException("CreateAttachmentMode.FilePath and CreateAttachmentMode.Stream are not supported when sent to IUserChannel or IGroupChannel.");
             case CreateAttachmentMode.Uri:
                 if (attachment.Uri is null)
                     throw new InvalidOperationException("The Uri in the FileAttachment must not be null when creating a FileAttachment with CreateAttachmentMode.Uri.");

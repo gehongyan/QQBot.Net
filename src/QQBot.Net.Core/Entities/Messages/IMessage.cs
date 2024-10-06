@@ -43,5 +43,5 @@ public interface IMessage : IEntity<string>
     /// <summary>
     ///     获取此消息内包含的所有嵌入式内容。
     /// </summary>
-    IReadOnlyCollection<Embed> Embeds { get; }
+    IReadOnlyCollection<IEmbed> Embeds { get; }
 }
