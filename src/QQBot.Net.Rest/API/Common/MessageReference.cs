@@ -8,5 +8,5 @@ internal class MessageReference
     public required string MessageId { get; set; }
 
     [JsonPropertyName("ignore_get_message_error")]
-    public required bool IgnoreGetMessageError { get; set; }
+    public bool? IgnoreGetMessageError { get; set; }
 }

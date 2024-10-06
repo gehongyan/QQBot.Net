@@ -1,16 +1,33 @@
 using System.Collections.Immutable;
+using QQBot.API;
 
 namespace QQBot.Rest;
 
 internal static class EntityExtensions
 {
-    public static Embed ToEntity(this API.MessageEmbed model)
+    #region MessageReference
+
+    public static MessageReference ToEntity(this API.MessageReference model) =>
+        new(model.MessageId, !model.IgnoreGetMessageError);
+
+    public static API.MessageReference ToModel(this MessageReference entity) =>
+        new()
+        {
+            MessageId = entity.MessageId,
+            IgnoreGetMessageError = !entity.FailIfNotExists
+        };
+
+    #endregion
+
+    #region Embed
+
+    public static Embed ToEntity(this MessageEmbed model)
     {
         return new Embed(model.Title, model.Prompt, model.Thumbnail?.ToEntity(),
             model.Fields?.Select(x => x.ToEntity()).ToImmutableArray() ?? []);
     }
 
-    public static API.MessageEmbed ToModel(this Embed entity) =>
+    public static MessageEmbed ToModel(this Embed entity) =>
         new()
         {
             Title = entity.Title,
@@ -19,19 +36,21 @@ internal static class EntityExtensions
             Fields = entity.Fields.Select(x => x.ToModel()).ToArray()
         };
 
-    public static EmbedThumbnail ToEntity(this API.MessageEmbedThumbnail model) => new(model.Url);
+    public static EmbedThumbnail ToEntity(this MessageEmbedThumbnail model) => new(model.Url);
 
-    public static API.MessageEmbedThumbnail ToModel(this EmbedThumbnail entity) =>
+    public static MessageEmbedThumbnail ToModel(this EmbedThumbnail entity) =>
         new()
         {
             Url = entity.Url
         };
 
-    public static EmbedField ToEntity(this API.MessageEmbedField model) => new(model.Name);
+    public static EmbedField ToEntity(this MessageEmbedField model) => new(model.Name);
 
-    public static API.MessageEmbedField ToModel(this EmbedField entity) =>
+    public static MessageEmbedField ToModel(this EmbedField entity) =>
         new()
         {
             Name = entity.Name
         };
+
+    #endregion
 }

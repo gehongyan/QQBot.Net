@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace QQBot;
@@ -19,10 +18,10 @@ public record Embed : IEmbed
     public EmbedThumbnail? Thumbnail { get; }
 
     /// <inheritdoc />
-    public ImmutableArray<EmbedField> Fields { get; }
+    public IReadOnlyCollection<EmbedField> Fields { get; }
 
     internal Embed(string? title, string? prompt,
-        EmbedThumbnail? thumbnail, ImmutableArray<EmbedField> fields)
+        EmbedThumbnail? thumbnail, IReadOnlyCollection<EmbedField> fields)
     {
         Title = title;
         Prompt = prompt;

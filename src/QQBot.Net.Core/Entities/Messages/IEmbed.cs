@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace QQBot;
+﻿namespace QQBot;
 
 /// <summary>
 ///     表示一个通用的嵌入式消息。
@@ -25,5 +23,5 @@ public interface IEmbed
     /// <summary>
     ///     获取此嵌入式消息的字段。
     /// </summary>
-    ImmutableArray<EmbedField> Fields { get; }
+    IReadOnlyCollection<EmbedField> Fields { get; }
 }

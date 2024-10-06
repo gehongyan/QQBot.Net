@@ -12,17 +12,9 @@ client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    string summary = $"""
-        Received Message
-        [Id] {message.Id}
-        [Author] {message.Author.Id}
-        [Channel] {message.Channel.Id}
-        [Content] {message.Content}
-        """;
-    Console.WriteLine(summary);
-    await message.ReplyAsync(summary);
-    foreach (Attachment attachment in message.Attachments)
-        Console.WriteLine($"Attachment [Type] {attachment.Type} [Url] {attachment.Url}");
+    FileAttachment attachment =
+        new(new Uri("https://i0.hdslb.com/bfs/garb/f8d2355a8077875db0f596c5b1b02e44e209bfed.png"));
+    await message.ReplyAsync(attachment: attachment);
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

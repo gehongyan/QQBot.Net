@@ -5,7 +5,7 @@ namespace QQBot.API.Rest;
 internal class SendAttachmentResponse
 {
     [JsonPropertyName("file_uuid")]
-    public required Guid FileUuid { get; set; }
+    public required string FileUuid { get; set; }
 
     [JsonPropertyName("file_info")]
     public required string FileInfo { get; set; }

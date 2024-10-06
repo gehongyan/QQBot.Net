@@ -21,11 +21,6 @@ public interface IMessage : IEntity<string>
     MessageSource Source { get; }
 
     /// <summary>
-    ///     获取消息的来源标识符。
-    /// </summary>
-    MessageSourceIdentifier? SourceIdentifier { get; }
-
-    /// <summary>
     ///     获取消息的内容。
     /// </summary>
     string Content { get; }

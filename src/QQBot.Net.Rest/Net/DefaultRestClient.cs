@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text;
 
 #if DEBUG
@@ -42,7 +43,8 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         _serializerOptions = new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 #endif
     }
@@ -118,14 +120,14 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         //
         // See this comment explaining why this is safe: https://github.com/aspnet/Security/issues/886#issuecomment-229181249
         // See also the source for HttpRequestMessage: https://github.com/microsoft/referencesource/blob/master/System/net/System/Net/Http/HttpRequestMessage.cs
-        var restRequest = new HttpRequestMessage(method, uri);
+        HttpRequestMessage restRequest = new(method, uri);
 
         if (reason != null)
             restRequest.Headers.Add("X-Audit-Log-Reason", Uri.EscapeDataString(reason));
         if (requestHeaders != null)
-            foreach (var header in requestHeaders)
+            foreach (KeyValuePair<string, IEnumerable<string>> header in requestHeaders)
                 restRequest.Headers.Add(header.Key, header.Value);
-        var content = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
+        MultipartFormDataContent content = new("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
         static StreamContent GetStreamContent(Stream stream)
         {
@@ -143,22 +145,26 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
             switch (p.Value)
             {
                 case string stringValue:
-                    { content.Add(new StringContent(stringValue, Encoding.UTF8, "text/plain"), p.Key); continue; }
+                    content.Add(new StringContent(stringValue, Encoding.UTF8, MediaTypeNames.Text.Plain), p.Key);
+                    continue;
+                case JsonElement jsonElement:
+                    content.Add(new StringContent(jsonElement.GetRawText(), Encoding.UTF8, MediaTypeNames.Application.Json), p.Key);
+                    continue;
                 case byte[] byteArrayValue:
-                    { content.Add(new ByteArrayContent(byteArrayValue), p.Key); continue; }
+                    content.Add(new ByteArrayContent(byteArrayValue), p.Key);
+                    continue;
                 case Stream streamValue:
-                    { content.Add(GetStreamContent(streamValue), p.Key); continue; }
+                    content.Add(GetStreamContent(streamValue), p.Key);
+                    continue;
                 case MultipartFile fileValue:
-                    {
-                        StreamContent streamContent = GetStreamContent(fileValue.Stream);
-                        if (fileValue.ContentType != null)
-                            streamContent.Headers.ContentType = new MediaTypeHeaderValue(fileValue.ContentType);
-                        if (fileValue.Filename is not null)
-                            content.Add(streamContent, p.Key, fileValue.Filename);
-                        else
-                            content.Add(streamContent, p.Key);
-                        continue;
-                    }
+                    StreamContent streamContent = GetStreamContent(fileValue.Stream);
+                    if (fileValue.ContentType != null)
+                        streamContent.Headers.ContentType = new MediaTypeHeaderValue(fileValue.ContentType);
+                    if (fileValue.Filename is not null)
+                        content.Add(streamContent, p.Key, fileValue.Filename);
+                    else
+                        content.Add(streamContent, p.Key);
+                    continue;
                 default:
                     throw new InvalidOperationException($"Unsupported param type \"{p.Value.GetType().Name}\".");
             }

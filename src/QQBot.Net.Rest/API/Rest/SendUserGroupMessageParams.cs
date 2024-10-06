@@ -20,10 +20,10 @@ internal class SendUserGroupMessageParams
     public MessageArk? Ark { get; set; }
 
     [JsonPropertyName("media")]
-    public string? MediaFileInfo { get; set; }
+    public MediaFileInfo? MediaFileInfo { get; set; }
 
-    // [JsonPropertyName("message_reference")]
-    // public MessageReference? MessageReference { get; set; }
+    [JsonPropertyName("message_reference")]
+    public MessageReference? MessageReference { get; set; }
 
     [JsonPropertyName("event_id")]
     public string? EventId { get; set; }

@@ -290,4 +290,12 @@ internal static class Preconditions
         new ArgumentException(message: msg ?? $"Value must be less than {value}.", paramName: name);
 
     #endregion
+
+    #region Messages
+
+    public static void AttachmentType(FileAttachment? attachment, AttachmentType attachmentType, string name, string? msg = null)
+    {
+    }
+
+    #endregion
 }

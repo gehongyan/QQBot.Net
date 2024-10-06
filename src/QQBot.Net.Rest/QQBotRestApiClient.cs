@@ -65,6 +65,7 @@ internal class QQBotRestApiClient : IDisposable
             {
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 NumberHandling = JsonNumberHandling.AllowReadingFromString,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
         DefaultRatelimitCallback = defaultRatelimitCallback;
 
@@ -505,6 +506,13 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(0, channelId);
+        if (args.FileImage.HasValue)
+        {
+            return await SendMultipartAsync<ChannelMessage>(HttpMethod.Post,
+                    () => $"channels/{channelId}/messages", args.ToDictionary(_serializerOptions),
+                    ids, ClientBucketType.SendEdit, false, options)
+                .ConfigureAwait(false);
+        }
         return await SendJsonAsync<ChannelMessage>(HttpMethod.Post,
                 () => $"channels/{channelId}/messages", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
@@ -516,6 +524,13 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(0, directGuildId);
+        if (args.FileImage.HasValue)
+        {
+            return await SendMultipartAsync<ChannelMessage>(HttpMethod.Post,
+                    () => $"dms/{directGuildId}/messages", args.ToDictionary(_serializerOptions),
+                    ids, ClientBucketType.SendEdit, false, options)
+                .ConfigureAwait(false);
+        }
         return await SendJsonAsync<ChannelMessage>(HttpMethod.Post,
                 () => $"dms/{directGuildId}/messages", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
@@ -579,25 +594,27 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Files
 
-    public async Task<SendAttachmentResponse> SendUserAttachmentAsync(ulong openId, SendAttachmentParams args, RequestOptions? options = null)
+    public async Task<SendAttachmentResponse> CreateUserAttachmentAsync(Guid openId, SendAttachmentParams args, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(openId, 0, nameof(openId));
+        Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));
         options = RequestOptions.CreateOrClone(options);
 
-        BucketIds ids = new(0, openId);
+        BucketIds ids = new();
+        string id = openId.ToString("N").ToUpperInvariant();
         return await SendJsonAsync<SendAttachmentResponse>(HttpMethod.Post,
-                () => $"v2/users/{openId}/files", args, ids, ClientBucketType.SendEdit, false, options)
+                () => $"v2/users/{id}/files", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }
 
-    public async Task<SendAttachmentResponse> SendGroupAttachmentAsync(ulong groupOpenId, SendAttachmentParams args, RequestOptions? options = null)
+    public async Task<SendAttachmentResponse> CreateGroupAttachmentAsync(Guid groupOpenId, SendAttachmentParams args, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(groupOpenId, 0, nameof(groupOpenId));
+        Preconditions.NotEqual(groupOpenId, Guid.Empty, nameof(groupOpenId));
         options = RequestOptions.CreateOrClone(options);
 
-        BucketIds ids = new(0, groupOpenId);
+        BucketIds ids = new();
+        string id = groupOpenId.ToString("N").ToUpperInvariant();
         return await SendJsonAsync<SendAttachmentResponse>(HttpMethod.Post,
-                () => $"v2/groups/{groupOpenId}/files", args, ids, ClientBucketType.SendEdit, false, options)
+                () => $"v2/groups/{id}/files", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }
 

@@ -62,10 +62,21 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
 
     #region Messages
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
     public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
-        MessageSourceIdentifier? passiveSource = null, RequestOptions? options = null) =>
-        ChannelHelper.SendMessageAsync(this, Client, content, passiveSource, options);
+        FileAttachment? attachment = null, Embed? embed = null,
+        MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
+        ChannelHelper.SendMessageAsync(this, Client, content, attachment, embed, messageReference, passiveSource, options);
+
+    #endregion
+
+    #region IMessageChannel
+
+    /// <inheritdoc />
+    Task<Cacheable<IUserMessage, string>> IMessageChannel.SendMessageAsync(string? content,
+        FileAttachment? attachment, Embed? embed,
+        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options) =>
+        SendMessageAsync(content, attachment, embed, messageReference, passiveSource, options);
 
     #endregion
 }

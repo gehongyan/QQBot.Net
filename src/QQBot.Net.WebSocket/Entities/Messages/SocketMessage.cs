@@ -22,9 +22,6 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     public MessageSource Source { get; }
 
     /// <inheritdoc />
-    public MessageSourceIdentifier? SourceIdentifier { get; private set; }
-
-    /// <inheritdoc />
     public string Content { get; private set; } = string.Empty;
 
     /// <inheritdoc />
@@ -67,11 +64,6 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         MentionedEveryone = model.MentionEveryone;
         if (model.Embeds is { Length: > 0 } embedModels)
             _embeds = [..embedModels.Select(x => x.ToEntity())];
-        SourceIdentifier = new MessageSourceIdentifier
-        {
-            Dispatch = dispatch,
-            MessageId = model.Id
-        };
     }
 
     internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model, string dispatch)
@@ -80,11 +72,6 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
-        SourceIdentifier = new MessageSourceIdentifier
-        {
-            Dispatch = dispatch,
-            MessageId = model.Id
-        };
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{
@@ -107,5 +94,4 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     IReadOnlyCollection<IAttachment> IMessage.Attachments => Attachments;
 
     #endregion
-
 }

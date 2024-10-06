@@ -135,7 +135,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         _serializerOptions = new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
         ApiClient.SentGatewayMessage += async socketFrameType =>
