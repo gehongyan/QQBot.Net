@@ -4,6 +4,15 @@ namespace QQBot.API;
 
 internal class Keyboard
 {
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+
+    [JsonPropertyName("content")]
+    public KeyboardContent? Content { get; set; }
+}
+
+internal class KeyboardContent
+{
     [JsonPropertyName("rows")]
     public required KeyboardRow[] Rows { get; set; }
 }
