@@ -44,6 +44,7 @@ public partial class QQBotSocketClient
 
         _sessionId = null;
         _lastSeq = 0;
+        _messageIdCache.Clear();
 
         if (_shardedClient != null)
         {
@@ -301,6 +302,7 @@ public partial class QQBotSocketClient
     private async Task HandleChannelMessageCreatedAsync(object? payload, string dispatch)
     {
         if (DeserializePayload<ChannelMessage>(payload) is not { } data) return;
+        if (!_messageIdCache.TryAdd(data.Id)) return;
         if (GetGuild(data.GuildId) is not { } guild)
         {
             await UnknownGuildAsync(dispatch, data.GuildId, payload).ConfigureAwait(false);

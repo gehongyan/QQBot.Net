@@ -15,7 +15,7 @@ internal class MessageCache
     {
         _size = client.MessageCacheSize;
         _messages = new ConcurrentDictionary<string, SocketMessage>(ConcurrentHashSet.DefaultConcurrencyLevel, (int)(_size * 1.05));
-        _orderedMessages = new ConcurrentQueue<(string Id, DateTimeOffset Timestamp)>();
+        _orderedMessages = [];
     }
 
     public void Add(SocketMessage message)

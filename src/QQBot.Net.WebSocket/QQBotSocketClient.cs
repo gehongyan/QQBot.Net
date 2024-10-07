@@ -30,6 +30,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     private readonly ConcurrentQueue<long> _heartbeatTimes;
     private readonly Logger _gatewayLogger;
     private readonly SemaphoreSlim _stateLock;
+    private readonly MessageIdCache _messageIdCache;
 
     private Guid? _sessionId;
     private int? _lastSeq;
@@ -123,6 +124,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
         _stateLock = new SemaphoreSlim(1, 1);
         _gatewayLogger = LogManager.CreateLogger("Gateway");
+        _messageIdCache = new MessageIdCache();
         ConnectionManager connectionManager = new(_stateLock, _gatewayLogger, config.ConnectionTimeout,
             OnConnectingAsync, OnDisconnectingAsync, x => ApiClient.Disconnected += x);
         connectionManager.Connected += () => TimedInvokeAsync(_connectedEvent, nameof(Connected));
@@ -549,7 +551,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "DIRECT_MESSAGE_CREATE":
                 await HandleDirectMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
-            // case "AT_MESSAGE_CREATE":
+            case "AT_MESSAGE_CREATE":
             case "MESSAGE_CREATE":
                 await HandleChannelMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
