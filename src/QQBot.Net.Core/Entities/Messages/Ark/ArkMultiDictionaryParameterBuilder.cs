@@ -14,9 +14,9 @@ public class ArkMultiDictionaryParameterBuilder : IArkParameterBuilder, IEquatab
     ///     初始化一个 <see cref="ArkMultiDictionaryParameterBuilder"/> 类的新实例。
     /// </summary>
     /// <param name="values"></param>
-    public ArkMultiDictionaryParameterBuilder(List<IReadOnlyDictionary<string, string>>? values = null)
+    public ArkMultiDictionaryParameterBuilder(IEnumerable<IReadOnlyDictionary<string, string>>? values = null)
     {
-        Values = values ?? [];
+        Values = values?.ToList() ?? [];
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class ArkMultiDictionaryParameterBuilder : IArkParameterBuilder, IEquatab
     /// <returns> 当前构建器。 </returns>
     public ArkMultiDictionaryParameterBuilder AddValue(IReadOnlyDictionary<string, string> value)
     {
-        Values = Values.Append(value).ToList();
+        Values.Add(value);
         return this;
     }
 
@@ -44,7 +44,7 @@ public class ArkMultiDictionaryParameterBuilder : IArkParameterBuilder, IEquatab
             if (Values.Skip(1).Any(dict => !referenceKeys.SetEquals(dict.Keys)))
                 throw new InvalidOperationException("Keys must be the same.");
         }
-        return new ArkMultiDictionaryParameter(Values);
+        return new ArkMultiDictionaryParameter([..Values]);
     }
 
     /// <inheritdoc />

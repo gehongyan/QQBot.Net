@@ -19,6 +19,6 @@ internal class MessageMarkdownParam
     [JsonPropertyName("key")]
     public required string Key { get; set; }
 
-    [JsonPropertyName("value")]
-    public required string Value { get; set; }
+    [JsonPropertyName("values")]
+    public required string[] Values { get; set; }
 }

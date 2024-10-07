@@ -6,7 +6,8 @@ using QQBot.WebSocket;
 QQBotSocketClient client = new(new QQBotSocketConfig
 {
     LogLevel = LogSeverity.Debug,
-    AccessEnvironment = AccessEnvironment.Sandbox
+    AccessEnvironment = AccessEnvironment.Sandbox,
+    GatewayIntents = GatewayIntents.All
 });
 client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.MessageReceived += async message =>

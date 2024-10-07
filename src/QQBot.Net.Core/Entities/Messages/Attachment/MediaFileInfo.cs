@@ -10,11 +10,6 @@ public readonly record struct MediaFileInfo
     /// </summary>
     public string? FileId { get; internal init; }
 
-    // /// <summary>
-    // ///     获取此富媒体文件信息的网络地址。
-    // /// </summary>
-    // public Uri? Uri { get; internal init; }
-
     /// <summary>
     ///     获取此富媒体文件信息的类型。
     /// </summary>

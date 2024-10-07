@@ -19,6 +19,21 @@ internal static class EntityExtensions
 
     #endregion
 
+    #region Markdown
+
+    public static MessageMarkdown ToModel(this IMarkdownContent entity) => new()
+    {
+        Content = (entity as MarkdownTextContent)?.Text,
+        CustomTemplateId = (entity as MarkdownTemplateContent)?.TemplateId,
+        Params = (entity as MarkdownTemplateContent)?.Parameters.Select(x => new MessageMarkdownParam
+        {
+            Key = x.Key,
+            Values = [..x.Value]
+        }).ToArray()
+    };
+
+    #endregion
+
     #region Embed
 
     public static Embed ToEntity(this MessageEmbed model)
@@ -77,7 +92,6 @@ internal static class EntityExtensions
             Value = x.Value
         }).ToArray()
     };
-
 
     #endregion
 }

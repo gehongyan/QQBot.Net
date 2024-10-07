@@ -41,9 +41,19 @@ public class ArkBuilder : IEquatable<ArkBuilder>
     /// </summary>
     /// <param name="key"> 参数的键。 </param>
     /// <param name="values"> 多字典参数的值。 </param>
-    public void AddParameter(string key, List<IReadOnlyDictionary<string, string>> values)
+    public void AddParameter(string key, params IReadOnlyDictionary<string, string>[] values)
     {
-        AddParameter(key, new ArkMultiDictionaryParameterBuilder(values));
+        AddParameter(key, new ArkMultiDictionaryParameterBuilder([..values]));
+    }
+
+    /// <summary>
+    ///     设置一个参数。
+    /// </summary>
+    /// <param name="key"> 参数的键。 </param>
+    /// <param name="values"> 多字典参数的值。 </param>
+    public void AddParameter(string key, IEnumerable<IReadOnlyDictionary<string, string>> values)
+    {
+        AddParameter(key, new ArkMultiDictionaryParameterBuilder([..values]));
     }
 
     /// <summary>
