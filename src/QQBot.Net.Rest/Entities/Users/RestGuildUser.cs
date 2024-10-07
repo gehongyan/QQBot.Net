@@ -3,20 +3,6 @@
 namespace QQBot.Rest;
 
 /// <summary>
-///     表示一个基于 REST 的用户。
-/// </summary>
-public abstract class RestUser : RestEntity<string>, IUser
-{
-    /// <inheritdoc />
-    protected RestUser(BaseQQBotClient client, string id)
-        : base(client, id)
-    {
-    }
-
-    internal virtual void Update(User model) { }
-}
-
-/// <summary>
 ///     表示一个基于 REST 的频道用户。
 /// </summary>
 public class RestGuildUser : RestUser, IGuildUser

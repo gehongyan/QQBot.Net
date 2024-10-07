@@ -29,6 +29,9 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
     /// <inheritdoc />
     public IReadOnlyCollection<SocketMessage> CachedMessages => _messages?.Messages ?? [];
 
+    /// <inheritdoc />
+    public string Mention => MentionUtils.MentionChannel(this);
+
     internal SocketTextChannel(QQBotSocketClient client, ulong id, SocketGuild guild)
         : base(client, id, guild)
     {
