@@ -38,6 +38,18 @@ public enum GatewayIntents
     DirectMessages = 1 << 12,
 
     /// <summary>
+    ///     此网关意图包括 <c>OPEN_FORUM_THREAD_CREATE</c>, <c>OPEN_FORUM_THREAD_UPDATE</c>,
+    ///     <c>OPEN_FORUM_THREAD_DELETE</c>, <c>OPEN_FORUM_POST_CREATE</c>, <c>OPEN_FORUM_POST_DELETE</c>,
+    ///     <c>OPEN_FORUM_REPLY_CREATE</c>, <c>OPEN_FORUM_REPLY_DELETE</c>
+    /// </summary>
+    OpenForumsEvent = 1 << 18,
+
+    /// <summary>
+    ///     此网关意图包括 <c>AUDIO_OR_LIVE_CHANNEL_MEMBER_ENTER</c>, <c>AUDIO_OR_LIVE_CHANNEL_MEMBER_EXIT</c>
+    /// </summary>
+    AudioOrLiveChannelMember = 1 << 19,
+
+    /// <summary>
     ///     此网关意图包括 <c>C2C_MESSAGE_CREATE</c>, <c>FRIEND_ADD</c>, <c>FRIEND_DEL</c>, <c>C2C_MSG_REJECT</c>,
     ///     <c>C2C_MSG_RECEIVE</c>, <c>GROUP_AT_MESSAGE_CREATE</c>, <c>GROUP_ADD_ROBOT</c>, <c>GROUP_DEL_ROBOT</c>,
     ///     <c>GROUP_MSG_REJECT</c>, <c>GROUP_MSG_RECEIVE</c>
@@ -72,17 +84,22 @@ public enum GatewayIntents
     PublicGuildMessages = 1 << 30,
 
     /// <summary>
-    ///     此网关意图包括所有事件
+    ///     此网关意图包括所有公域机器人可以订阅的事件
     /// </summary>
-    All = Guilds
+    AllPublicDomain = Guilds
         | GuildMembers
-        | GuildMessages
         | GuildMessageReactions
         | DirectMessages
+        | OpenForumsEvent
+        | AudioOrLiveChannelMember
         | GroupAndC2CEvent
         | Interaction
         | MessageAudit
-        | ForumsEvent
         | AudioAction
-        | PublicGuildMessages
+        | PublicGuildMessages,
+
+    /// <summary>
+    ///     此网关意图包括所有事件
+    /// </summary>
+    All = AllPublicDomain | GuildMessages | ForumsEvent
 }

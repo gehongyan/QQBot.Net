@@ -125,13 +125,14 @@ public class QQBotSocketConfig : QQBotRestConfig
     public MessageQueueProvider MessageQueueProvider { get; set; }
 
     /// <summary>
-    ///     获取或设置网关意图以限制从 QQ Bot 弯管 发送的事件。默认值为 <see cref="GatewayIntents.All"/>。
+    ///     获取或设置网关意图以限制从 QQ Bot 网关下发的事件。默认值为 <see cref="GatewayIntents.AllPublicDomain"/>。
     /// </summary>
     /// <remarks>
-    ///     更多信息，请参见 QQ Bot API 官方文档上的
-    ///     <see href="https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/interface-framework/event-emit.html#%E4%BA%8B%E4%BB%B6%E8%AE%A2%E9%98%85Intents">有关网关意图的说明</see>。
+    ///     更多信息，请参见 QQ Bot API 官方文档上的有关网关意图的说明：
+    ///     <see href="https://bot.q.qq.com/wiki/develop/api/gateway/intents.html">v1</see>
+    ///     <see href="https://bot.q.qq.com/wiki/develop/api-v2/dev-prepare/interface-framework/event-emit.html#事件订阅Intents">v2</see>。
     /// </remarks>
-    public GatewayIntents GatewayIntents { get; set; } = GatewayIntents.All;
+    public GatewayIntents GatewayIntents { get; set; } = GatewayIntents.AllPublicDomain;
 
     /// <summary>
     ///     获取或设置是否记录与服务器意图和事件相关的警告。
