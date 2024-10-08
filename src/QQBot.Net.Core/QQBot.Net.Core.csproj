@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <RootNamespace>QQBot</RootNamespace>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
     <PackageId>QQBot.Net.Core</PackageId>
     <Description>The core definition library for QQBot.Net.</Description>
   </PropertyGroup>

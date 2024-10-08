@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <RootNamespace>QQBot.Rest</RootNamespace>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
     <PackageId>QQBot.Net.Rest</PackageId>
     <Description>The REST API implementation for QQBot.Net.</Description>
   </PropertyGroup>
