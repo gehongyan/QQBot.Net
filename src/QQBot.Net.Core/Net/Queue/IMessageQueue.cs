@@ -1,9 +1,7 @@
-﻿using System.Text.Json;
-
-namespace QQBot.Net.Queue;
+﻿namespace QQBot.Net.Queue;
 
 /// <summary>
-///     表示一个消息队列，用于从 KOOK 网关接收并处理事件。
+///     表示一个消息队列，用于从 QQ 机器人网关接收并处理事件。
 /// </summary>
 public interface IMessageQueue
 {

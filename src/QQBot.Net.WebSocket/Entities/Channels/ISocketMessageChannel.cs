@@ -14,7 +14,7 @@ public interface ISocketMessageChannel : IMessageChannel
     ///         <see cref="QQBot.WebSocket.QQBotSocketConfig.MessageCacheSize"/>。
     ///     </note>
     ///     <br />
-    ///     此属性从本地的内存缓存中获取消息实体，不会向 KOOK 发送额外的 API 请求。所获取的消息也可能是已经被删除的消息。
+    ///     此属性从本地的内存缓存中获取消息实体，不会向 QQ 服务端发送额外的 API 请求。所获取的消息也可能是已经被删除的消息。
     /// </remarks>
     IReadOnlyCollection<SocketMessage> CachedMessages { get; }
 }
