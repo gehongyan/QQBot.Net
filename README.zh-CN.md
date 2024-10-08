@@ -6,9 +6,7 @@
 [![Nuget](https://img.shields.io/nuget/dt/QQBot.Net?color=%230099ff)](https://www.nuget.org/packages/QQBot.Net)
 [![License](https://img.shields.io/github/license/gehongyan/QQBot.Net)](https://github.com/gehongyan/QQBot.Net/blob/master/LICENSE)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgehongyan%2FQQBot.Net.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgehongyan%2FQQBot.Net?ref=badge_shield)
-<a href="https://chat.xiaoheihe.cn/iugh82ns">
-    <img src="https://imgQQBot.max-c.com/oa/2023/03/21/47912df9f48f030c784dd6115b91274b.png" height="20" alt="Chat on QQBot"/>
-</a>
+[![QQChat](https://img.shields.io/badge/QQ-EB1923?logo=tencent-qq&logoColor=white)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=QiRvU4EFUavyNKQLKyfymezkG9H46cY6&authKey=OnAwAOWySUTds7YJUhaiS%2Bpr%2FWYLKSIPAPzdnhsM4RgAgWRQKZywjc6RSEAnDfNM&noverify=0&group_code=849595128)
 
 ---
 

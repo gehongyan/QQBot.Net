@@ -12,8 +12,8 @@
         },
         {
             icon: 'chat',
-            href: 'https://chat.xiaoheihe.cn/iugh82ns',
-            title: 'QQ 群'
+            href: 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=QiRvU4EFUavyNKQLKyfymezkG9H46cY6&authKey=OnAwAOWySUTds7YJUhaiS%2Bpr%2FWYLKSIPAPzdnhsM4RgAgWRQKZywjc6RSEAnDfNM&noverify=0&group_code=849595128',
+            title: 'QQGroup'
         }
     ],
     start: () =>
