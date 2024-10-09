@@ -16,11 +16,6 @@ public interface IGuildUser : IUser, IEntity<ulong>
     string Username { get; }
 
     /// <summary>
-    ///     获取此用户的头像图像的 URL。
-    /// </summary>
-    string? Avatar { get; }
-
-    /// <summary>
     ///     获取此用户是否为 Bot。
     /// </summary>
     bool? IsBot { get; }

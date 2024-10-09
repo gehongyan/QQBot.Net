@@ -14,9 +14,6 @@ public class RestGuildUser : RestUser, IGuildUser
     public string Username { get; private set; }
 
     /// <inheritdoc />
-    public string? Avatar { get; private set; }
-
-    /// <inheritdoc />
     public bool? IsBot { get; private set; }
 
     /// <inheritdoc />

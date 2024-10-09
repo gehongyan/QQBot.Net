@@ -13,13 +13,9 @@ client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    ArkBuilder arkBuilder = new(24);
-    arkBuilder.WithParameter("#DESC#", "描述");
-    arkBuilder.WithParameter("#PROMPT#", "通知");
-    arkBuilder.WithParameter("#TITLE#", "标题");
-    arkBuilder.WithParameter("#METADESC#", "描述信息");
-    arkBuilder.WithParameter("#SUBTITLE#", "子标题");
-    await message.ReplyAsync(ark: arkBuilder.Build());
+    KeyboardContentBuilder keyboard = new();
+    keyboard.AddButton(new KeyboardButtonBuilder(label: "测试"));
+    await message.ReplyAsync(keyboard: keyboard.Build());
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

@@ -12,6 +12,9 @@ public abstract class SocketUser : SocketEntity<string>, IUser
     internal abstract SocketGlobalUser GlobalUser { get; }
 
     /// <inheritdoc />
+    public abstract string? Avatar { get; internal set;  }
+
+    /// <inheritdoc />
     public string Mention => MentionUtils.MentionUser(this);
 
     /// <inheritdoc />

@@ -13,6 +13,17 @@ internal class SocketGlobalUser : SocketUser
     /// <inheritdoc />
     internal override SocketGlobalUser GlobalUser => this;
 
+    /// <inheritdoc />
+    public override string? Avatar
+    {
+        get => Client.ApiClient.AppId.HasValue && OpenId.HasValue
+            ? UrlUtils.GetUserAvatarUrl(Client.ApiClient.AppId.Value, OpenId.Value)
+            : null;
+        internal set { }
+    }
+
+    internal Guid? OpenId { get; set; }
+
     public SocketGlobalUser(QQBotSocketClient client, string id, UserScope scope)
         : base(client, id)
     {
@@ -31,6 +42,13 @@ internal class SocketGlobalUser : SocketUser
         SocketGlobalUser entity = new(client, model.Id.ToString("N").ToUpperInvariant(), UserScope.Normal);
         entity.Update(state, model);
         return entity;
+    }
+
+    /// <inheritdoc />
+    internal override void Update(ClientState state, API.Gateway.Author model)
+    {
+        base.Update(state, model);
+        OpenId = model.MemberOpenId ?? model.UserOpenId ?? model.UnionOpenId;
     }
 
     internal void AddRef()

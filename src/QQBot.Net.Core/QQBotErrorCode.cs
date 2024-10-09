@@ -177,6 +177,7 @@ public enum QQBotErrorCode
     PrivateMessageTotalLimit = 304050,
     MessageSettingsGuideRequestError = 304051,
     SendMessageSettingsGuideOverLimit = 304052,
+    CustomKeyboardNotAllow = 304057,
     FetchUploadedMediaInfoFailed = 304082,
     ConvertMediaInfoFailed = 304083,
 

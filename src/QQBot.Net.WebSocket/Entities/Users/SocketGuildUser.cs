@@ -16,9 +16,6 @@ public abstract class SocketGuildUser : SocketUser, IGuildUser
     public abstract string Username { get; internal set; }
 
     /// <inheritdoc />
-    public abstract string? Avatar { get; internal set; }
-
-    /// <inheritdoc />
     public abstract bool? IsBot { get; internal set; }
 
     /// <inheritdoc />

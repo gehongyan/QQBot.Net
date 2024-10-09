@@ -9,6 +9,9 @@ public abstract class RestUser : RestEntity<string>, IUser
 {
     /// <inheritdoc />
     public string Mention => MentionUtils.MentionUser(this);
+
+    /// <inheritdoc />
+    public string? Avatar { get; internal set; }
     /// <inheritdoc />
     protected RestUser(BaseQQBotClient client, string id)
         : base(client, id)
