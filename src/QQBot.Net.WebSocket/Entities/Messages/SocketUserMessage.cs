@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using QQBot.API;
+using QQBot.API.Gateway;
 
 namespace QQBot.WebSocket;
 
@@ -8,7 +10,6 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketUserMessage : SocketMessage, IUserMessage
 {
-
     internal SocketUserMessage(QQBotSocketClient client, string id,
         ISocketMessageChannel channel, SocketUser author, MessageSource source)
         : base(client, id, channel, author, source)
@@ -16,18 +17,18 @@ public class SocketUserMessage : SocketMessage, IUserMessage
     }
 
     internal static new SocketUserMessage Create(QQBotSocketClient client, ClientState state,
-        SocketUser author, ISocketMessageChannel channel, API.Gateway.MessageCreatedEvent model, string dispatch)
+        ISocketMessageChannel channel, SocketUser author, MessageCreatedEvent model, string dispatch)
     {
         SocketUserMessage entity = new(client, model.Id, channel, author, MessageSource.User);
-        entity.Update(state, model, dispatch);
+        entity.Update(state, model);
         return entity;
     }
 
     internal static new SocketUserMessage Create(QQBotSocketClient client, ClientState state,
-        SocketUser author, ISocketMessageChannel channel, API.ChannelMessage model, string dispatch)
+        ISocketMessageChannel channel, SocketUser author, ChannelMessage model, string dispatch)
     {
         SocketUserMessage entity = new(client, model.Id, channel, author, MessageSource.User);
-        entity.Update(state, model, dispatch);
+        entity.Update(state, model);
         return entity;
     }
 }

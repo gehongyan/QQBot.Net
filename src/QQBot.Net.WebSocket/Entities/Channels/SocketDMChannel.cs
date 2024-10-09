@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
+using QQBot.Rest;
 
 namespace QQBot.WebSocket;
 

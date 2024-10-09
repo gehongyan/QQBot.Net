@@ -1,9 +1,8 @@
 ﻿using QQBot.API;
 using QQBot.API.Rest;
 using QQBot.Net.Rest;
-using QQBot.Rest;
 
-namespace QQBot.WebSocket;
+namespace QQBot.Rest;
 
 internal static class ChannelHelper
 {
@@ -87,7 +86,7 @@ internal static class ChannelHelper
             .SendChannelMessageAsync(channel.Id, args, options).ConfigureAwait(false);
         if (needDispose && multipartFile.HasValue)
             await multipartFile.Value.Stream.DisposeAsync();
-        return CreateCacheable(response.Id);
+        return CreateCacheable(client, channel, response);
     }
 
     public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(
@@ -114,7 +113,7 @@ internal static class ChannelHelper
             .SendDirectMessageAsync(channel.Id, args, options).ConfigureAwait(false);
         if (needDispose && multipartFile.HasValue)
             await multipartFile.Value.Stream.DisposeAsync();
-        return CreateCacheable(response.Id);
+        return CreateCacheable(client, channel, response);
     }
 
     private static MessageType InferMessageType(string? content, IMarkdown? markdown, FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard)
@@ -133,6 +132,15 @@ internal static class ChannelHelper
 
     private static Cacheable<IUserMessage, string> CreateCacheable(string id) =>
         new(null, id, false, () => Task.FromResult<IUserMessage?>(null));
+
+    private static Cacheable<IUserMessage, string> CreateCacheable(BaseQQBotClient client, IMessageChannel channel, ChannelMessage model)
+    {
+        if (client.CurrentUser is null)
+            throw new InvalidOperationException("The client must have a current user.");
+        IUserMessage message = RestUserMessage.Create(client, channel, client.CurrentUser, model);
+        // TODO: channel.GetMessageAsync(model.Id)
+        return new Cacheable<IUserMessage, string>(message, message.Id, true, () => Task.FromResult<IUserMessage?>(message));
+    }
 
     private static async Task<MediaFileInfo?> EnsureUserGroupFileAttachmentAsync(BaseQQBotClient client, IMessageChannel channel, FileAttachment attachment)
     {

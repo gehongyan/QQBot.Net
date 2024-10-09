@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using QQBot.Rest;
 using Model = QQBot.API.Channel;
 
 namespace QQBot.WebSocket;

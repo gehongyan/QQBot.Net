@@ -264,7 +264,7 @@ public partial class QQBotSocketClient
         SocketUser author = State.GetOrAddUser(data.Author.Id,
             _ => SocketGlobalUser.Create(this, State, data.Author));
         SocketUserChannel channel = GetOrCreateUserChannel(State, data.Author.Id, author);
-        SocketUserMessage message = SocketUserMessage.Create(this, State, author, channel, data, dispatch);
+        SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
         await Task.CompletedTask;
@@ -282,7 +282,7 @@ public partial class QQBotSocketClient
         SocketUser author = State.GetOrAddUser(data.Author.Id,
             _ => SocketGlobalUser.Create(this, State, data.Author));
         SocketGroupChannel channel = GetOrCreateGroupChannel(State, data.GroupId.Value);
-        SocketUserMessage message = SocketUserMessage.Create(this, State, author, channel, data, dispatch);
+        SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
         await Task.CompletedTask;
@@ -294,7 +294,7 @@ public partial class QQBotSocketClient
         SocketUser author = State.GetOrAddUser(data.Author.Id,
             _ => SocketGlobalUser.Create(this, State, data.Author));
         SocketDMChannel channel = GetOrCreateDMChannel(State, data.GuildId, author);
-        SocketUserMessage message = SocketUserMessage.Create(this, State, author, channel, data, dispatch);
+        SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
     }
@@ -314,7 +314,7 @@ public partial class QQBotSocketClient
             return;
         }
         SocketGuildMember author = guild.GetUser(data.Author.Id) ?? guild.AddOrUpdateUser(data.Author, data.Member);
-        SocketUserMessage message = SocketUserMessage.Create(this, State, author, channel, data, dispatch);
+        SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
     }

@@ -476,6 +476,18 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Messages
 
+    public async Task<ChannelMessage> GetMessageAsync(ulong channelId, string messageId, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(channelId, 0, nameof(channelId));
+        Preconditions.NotNullOrWhiteSpace(messageId, nameof(messageId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new(0, channelId);
+        return await SendAsync<ChannelMessage>(HttpMethod.Get,
+                () => $"channels/{channelId}/messages/{messageId}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<SendUserGroupMessageResponse> SendUserMessageAsync(Guid openId, SendUserGroupMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));

@@ -1,22 +1,21 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
-using QQBot.Rest;
 
-namespace QQBot.WebSocket;
+namespace QQBot.Rest;
 
 /// <summary>
-///     表示一个基于网关的通用消息。
+///     表示一个基于 REST 的通用消息。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public abstract class SocketMessage : SocketEntity<string>, IMessage
+public abstract class RestMessage : RestEntity<string>, IMessage
 {
     private ImmutableArray<Embed> _embeds = [];
 
-    /// <inheritdoc cref="QQBot.IMessage.Channel" />
-    public ISocketMessageChannel Channel { get; }
+    /// <inheritdoc />
+    public IMessageChannel Channel { get; }
 
-    /// <inheritdoc cref="QQBot.IMessage.Author" />
-    public SocketUser Author { get; }
+    /// <inheritdoc />
+    public IUser Author { get; }
 
     /// <inheritdoc />
     public MessageSource Source { get; }
@@ -37,8 +36,8 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     public IReadOnlyCollection<Embed> Embeds => _embeds;
 
     /// <inheritdoc />
-    protected SocketMessage(QQBotSocketClient client, string id,
-        ISocketMessageChannel channel, SocketUser author, MessageSource source)
+    protected RestMessage(BaseQQBotClient client, string id,
+        IMessageChannel channel, IUser author, MessageSource source)
         : base(client, id)
     {
         Channel = channel;
@@ -47,15 +46,11 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         Attachments = [];
     }
 
-    internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
-        ISocketMessageChannel channel, SocketUser author, API.Gateway.MessageCreatedEvent model, string dispatch) =>
-        SocketUserMessage.Create(client, state, channel, author, model, dispatch);
+    internal static RestMessage Create(BaseQQBotClient client,
+        IMessageChannel channel, IUser author, API.ChannelMessage model) =>
+        RestUserMessage.Create(client, channel, author, model);
 
-    internal static SocketMessage Create(QQBotSocketClient client, ClientState state,
-        ISocketMessageChannel channel, SocketUser author, API.ChannelMessage model, string dispatch) =>
-        SocketUserMessage.Create(client, state, channel, author, model, dispatch);
-
-    internal virtual void Update(ClientState state, API.ChannelMessage model)
+    internal virtual void Update(API.ChannelMessage model)
     {
         Content = model.Content;
         Timestamp = model.Timestamp;
@@ -64,14 +59,6 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         MentionedEveryone = model.MentionEveryone;
         if (model.Embeds is { Length: > 0 } embedModels)
             _embeds = [..embedModels.Select(x => x.ToEntity())];
-    }
-
-    internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
-    {
-        Content = model.Content;
-        Timestamp = model.Timestamp;
-        if (model.Attachments is { Length: > 0 } attachments)
-            Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{
@@ -83,12 +70,6 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         }})";
 
     #region IMessage
-
-    /// <inheritdoc />
-    IMessageChannel IMessage.Channel => Channel;
-
-    /// <inheritdoc />
-    IUser IMessage.Author => Author;
 
     /// <inheritdoc />
     IReadOnlyCollection<IAttachment> IMessage.Attachments => Attachments;

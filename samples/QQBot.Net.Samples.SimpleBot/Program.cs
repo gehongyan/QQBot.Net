@@ -13,9 +13,7 @@ client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    KeyboardContentBuilder keyboard = new();
-    keyboard.AddButton(new KeyboardButtonBuilder(label: "测试"));
-    await message.ReplyAsync(keyboard: keyboard.Build());
+    await message.ReplyAsync(message.Content);
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

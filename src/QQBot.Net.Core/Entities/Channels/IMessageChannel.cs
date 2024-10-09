@@ -20,6 +20,5 @@ public interface IMessageChannel : IChannel
     /// <returns> 一个表示异步发送操作的任务。任务的结果包含所发送消息的可延迟加载的消息对象。 </returns>
     Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
-        MessageReference? messageReference = null, IUserMessage? passiveSource = null,
-        RequestOptions? options = null);
+        MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null);
 }
