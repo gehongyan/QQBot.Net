@@ -19,7 +19,7 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
 
     /// <inheritdoc />
     internal SocketUserChannel(QQBotSocketClient client, Guid id, SocketUser recipient)
-        : base(client, id.ToString("N").ToUpperInvariant())
+        : base(client, id.ToIdString())
     {
         Id = id;
         Recipient = recipient;

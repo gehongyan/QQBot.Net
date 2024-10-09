@@ -494,7 +494,7 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new();
-        string id = groupOpenid.ToString("N").ToUpperInvariant();
+        string id = groupOpenid.ToIdString();
         return await SendJsonAsync<SendUserGroupMessageResponse>(HttpMethod.Post,
                 () => $"v2/groups/{id}/messages", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);

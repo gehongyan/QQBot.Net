@@ -28,7 +28,7 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
 
     /// <inheritdoc />
     internal SocketDMChannel(QQBotSocketClient client, ulong id, SocketUser recipient)
-        : base(client, id.ToString())
+        : base(client, id.ToIdString())
     {
         Id = id;
         Recipient = recipient;

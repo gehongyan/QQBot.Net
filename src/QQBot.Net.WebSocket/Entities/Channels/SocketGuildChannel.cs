@@ -28,7 +28,7 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
     public ulong? CreatorId { get; private set; }
 
     internal SocketGuildChannel(QQBotSocketClient client, ulong id, SocketGuild guild)
-        : base(client, id.ToString())
+        : base(client, id.ToIdString())
     {
         Id = id;
         Name = string.Empty;

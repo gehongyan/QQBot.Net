@@ -16,7 +16,7 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
 
     /// <inheritdoc />
     internal SocketGroupChannel(QQBotSocketClient client, Guid id)
-        : base(client, id.ToString("N").ToUpperInvariant())
+        : base(client, id.ToIdString())
     {
         Id = id;
     }

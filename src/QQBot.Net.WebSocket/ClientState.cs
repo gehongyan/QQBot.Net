@@ -78,7 +78,7 @@ internal class ClientState
         _users.GetOrAdd(id.ToString(), _ => userFactory(id));
 
     internal SocketGlobalUser GetOrAddUser(Guid id, Func<Guid, SocketGlobalUser> userFactory) =>
-        _users.GetOrAdd(id.ToString("N").ToUpperInvariant(), _ => userFactory(id));
+        _users.GetOrAdd(id.ToIdString(), _ => userFactory(id));
 
     internal SocketGlobalUser? RemoveUser(string id) =>
         _users.TryRemove(id, out SocketGlobalUser? user) ? user : null;

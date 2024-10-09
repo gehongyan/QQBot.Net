@@ -24,7 +24,7 @@ public class RestGuildUser : RestUser, IGuildUser
 
     /// <inheritdoc />
     internal RestGuildUser(BaseQQBotClient client, ulong id)
-        : base(client, id.ToString())
+        : base(client, id.ToIdString())
     {
         Id = id;
         Username = string.Empty;

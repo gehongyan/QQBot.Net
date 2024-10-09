@@ -26,7 +26,7 @@ public abstract class SocketGuildUser : SocketUser, IGuildUser
 
     /// <inheritdoc />
     internal SocketGuildUser(QQBotSocketClient client, ulong id)
-        : base(client, id.ToString())
+        : base(client, id.ToIdString())
     {
         Id = id;
     }
