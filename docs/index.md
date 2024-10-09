@@ -42,4 +42,4 @@ QQBot.Net 是一个对 QQ 机器人 API [v1] 及 [v2] 进行功能封装的类�
 [GitHub]: https://github.com/gehongyan/QQBot.Net
 [用户指南]: ./guides/introduction/intro.md
 [API 文档]: ./api/index.md
-[QQ 频道 QQBot.Net 社区]: https://chat.xiaoheihe.cn/iugh82ns
+[QQ 机器人 QQBot.Net 社区]: https://chat.xiaoheihe.cn/iugh82ns
