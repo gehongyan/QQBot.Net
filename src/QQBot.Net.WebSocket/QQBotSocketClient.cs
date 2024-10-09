@@ -765,7 +765,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         }
         catch (Exception ex)
         {
-            await _gatewayLogger.WarningAsync($"A {name} handler has thrown an unhandled exception.", ex)
+            await _gatewayLogger.WarningAsync($"A {name} handler has thrown an unhandled exception", ex)
                 .ConfigureAwait(false);
         }
     }

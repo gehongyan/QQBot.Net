@@ -50,7 +50,7 @@ public class HttpException : Exception
     /// <param name="traceId"> 跟踪 ID。 </param>
     public HttpException(HttpStatusCode httpCode, IRequest request,
         QQBotErrorCode? qqBotCode = null, string? reason = null, int? errorCode = null, string? traceId = null)
-        : base(CreateMessage(httpCode, (int?)qqBotCode, reason))
+        : base(CreateMessage(httpCode, qqBotCode, reason, traceId))
     {
         HttpCode = httpCode;
         Request = request;
@@ -60,13 +60,14 @@ public class HttpException : Exception
         TraceId = traceId;
     }
 
-    private static string CreateMessage(HttpStatusCode httpCode, int? qqBotCode = null, string? reason = null)
+    private static string CreateMessage(HttpStatusCode httpCode, QQBotErrorCode? qqBotCode = null, string? reason = null, string? traceId = null)
     {
         int closeCode = qqBotCode.HasValue && qqBotCode != 0
-            ? qqBotCode.Value
+            ? (int) qqBotCode.Value
             : (int) httpCode;
-        return reason != null
-            ? $"The server responded with error {closeCode}: {reason}"
-            : $"The server responded with error {closeCode}: {httpCode}";
+        string closeInfo = qqBotCode.HasValue && qqBotCode != 0
+            ? qqBotCode.Value.ToString()
+            : httpCode.ToString();
+        return $"The server responded with error {closeInfo}: {reason ?? httpCode.ToString()} ({closeCode}, {traceId})";
     }
 }
