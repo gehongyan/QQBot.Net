@@ -3,7 +3,7 @@
 /// <summary>
 ///     表示键盘按钮的样式。
 /// </summary>
-public enum KeyboardButtonStyle
+public enum ButtonStyle
 {
     /// <summary>
     /// 灰色线框

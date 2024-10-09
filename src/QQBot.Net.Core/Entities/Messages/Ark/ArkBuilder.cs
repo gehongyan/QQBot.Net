@@ -31,9 +31,9 @@ public class ArkBuilder : IEquatable<ArkBuilder>
     /// </summary>
     /// <param name="key"> 参数的键。 </param>
     /// <param name="value"> 单值参数的值。 </param>
-    public void AddParameter(string key, string value)
+    public void WithParameter(string key, string value)
     {
-        AddParameter(key, new ArkSingleParameterBuilder().WithValue(value));
+        WithParameter(key, new ArkSingleParameterBuilder().WithValue(value));
     }
 
     /// <summary>
@@ -41,9 +41,9 @@ public class ArkBuilder : IEquatable<ArkBuilder>
     /// </summary>
     /// <param name="key"> 参数的键。 </param>
     /// <param name="values"> 多字典参数的值。 </param>
-    public void AddParameter(string key, params IReadOnlyDictionary<string, string>[] values)
+    public void WithParameter(string key, params IReadOnlyDictionary<string, string>[] values)
     {
-        AddParameter(key, new ArkMultiDictionaryParameterBuilder([..values]));
+        WithParameter(key, new ArkMultiDictionaryParameterBuilder([..values]));
     }
 
     /// <summary>
@@ -51,9 +51,9 @@ public class ArkBuilder : IEquatable<ArkBuilder>
     /// </summary>
     /// <param name="key"> 参数的键。 </param>
     /// <param name="values"> 多字典参数的值。 </param>
-    public void AddParameter(string key, IEnumerable<IReadOnlyDictionary<string, string>> values)
+    public void WithParameter(string key, IEnumerable<IReadOnlyDictionary<string, string>> values)
     {
-        AddParameter(key, new ArkMultiDictionaryParameterBuilder([..values]));
+        WithParameter(key, new ArkMultiDictionaryParameterBuilder([..values]));
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public class ArkBuilder : IEquatable<ArkBuilder>
     /// </summary>
     /// <param name="key"> 参数的键。 </param>
     /// <param name="value"> 参数值构建器。 </param>
-    public void AddParameter(string key, IArkParameterBuilder value)
+    public void WithParameter(string key, IArkParameterBuilder value)
     {
         Parameters[key] = value;
     }
@@ -72,11 +72,11 @@ public class ArkBuilder : IEquatable<ArkBuilder>
     /// <param name="key"> 参数的键。 </param>
     /// <param name="action"> 一个包含对要添加的新创建的参数进行配置的操作的委托。 </param>
     /// <typeparam name="T"> 参数值构建器的类型。 </typeparam>
-    public void AddParameter<T>(string key, Action<T> action) where T : IArkParameterBuilder, new()
+    public void WithParameter<T>(string key, Action<T> action) where T : IArkParameterBuilder, new()
     {
         T builder = new();
         action(builder);
-        AddParameter(key, builder);
+        WithParameter(key, builder);
     }
 
     /// <summary>

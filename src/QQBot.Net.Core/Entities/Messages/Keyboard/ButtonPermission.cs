@@ -3,7 +3,7 @@ namespace QQBot;
 /// <summary>
 ///     表示键盘按钮的权限类型。
 /// </summary>
-public enum KeyboardPermissionType
+public enum ButtonPermission
 {
     /// <summary>
     ///     指定用户可操作

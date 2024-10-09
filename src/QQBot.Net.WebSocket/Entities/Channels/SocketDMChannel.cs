@@ -67,9 +67,20 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
 
     #region Messages
 
-    /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,QQBot.IMarkdownContent,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.Ark,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
+    /// <summary>
+    ///     向此频道发送消息。
+    /// </summary>
+    /// <param name="content"> 要发送的消息内容。 </param>
+    /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>
+    /// <param name="attachment"> 要发送的文件附件。 </param>
+    /// <param name="embed"> 要发送的嵌入式消息内容。 </param>
+    /// <param name="ark"> 要发送的模板消息内容。 </param>
+    /// <param name="messageReference"> 消息引用，用于回复消息。 </param>
+    /// <param name="passiveSource"> 被动消息来源。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步发送操作的任务。任务的结果包含所发送消息的可延迟加载的消息对象。 </returns>
     public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
-        IMarkdownContent? markdown = null, FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
+        IMarkdown? markdown = null, FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
 
@@ -78,10 +89,14 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
     #region IMessageChannel
 
     /// <inheritdoc />
-    Task<Cacheable<IUserMessage, string>> IMessageChannel.SendMessageAsync(string? content,
-        IMarkdownContent? markdown, FileAttachment? attachment, Embed? embed, Ark? ark,
-        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options) =>
-        SendMessageAsync(content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
+    Task<Cacheable<IUserMessage, string>> IMessageChannel.SendMessageAsync(string? content, IMarkdown? markdown,
+        FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
+        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
+    {
+        if (keyboard is not null)
+            throw new NotSupportedException("Cannot send a keyboard to IDMChannel.");
+        return SendMessageAsync(content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
+    }
 
     #endregion
 }

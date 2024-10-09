@@ -21,11 +21,11 @@ internal static class EntityExtensions
 
     #region Markdown
 
-    public static MessageMarkdown ToModel(this IMarkdownContent entity) => new()
+    public static MessageMarkdown ToModel(this IMarkdown entity) => new()
     {
-        Content = (entity as MarkdownTextContent)?.Text,
-        CustomTemplateId = (entity as MarkdownTemplateContent)?.TemplateId,
-        Params = (entity as MarkdownTemplateContent)?.Parameters.Select(x => new MessageMarkdownParam
+        Content = (entity as MarkdownText)?.Text,
+        CustomTemplateId = (entity as MarkdownTemplate)?.TemplateId,
+        Params = (entity as MarkdownTemplate)?.Parameters.Select(x => new MessageMarkdownParam
         {
             Key = x.Key,
             Values = [..x.Value]
@@ -91,6 +91,52 @@ internal static class EntityExtensions
             Key = x.Key,
             Value = x.Value
         }).ToArray()
+    };
+
+    #endregion
+
+    #region Keyboard
+
+    public static Keyboard ToModel(this IKeyboard entity) => new()
+    {
+        Id = (entity as KeyboardTemplate)?.TemplateId,
+        Content = (entity as KeyboardContent)?.ToModel()
+    };
+
+    private static API.KeyboardContent ToModel(this KeyboardContent entity) => new()
+    {
+        Rows = entity.Rows.Select(x => x.ToModel()).ToArray()
+    };
+
+    private static KeyboardRow ToModel(this KeyboardButtonRow entity) => new()
+    {
+        Buttons = entity.Buttons.Select(x => x.ToModel()).ToArray()
+    };
+
+    private static API.KeyboardButton ToModel(this KeyboardButton entity) => new()
+    {
+        Id = entity.Id,
+        RenderData = new KeyboardRenderData
+        {
+            Label = entity.Label,
+            LabelVisited = entity.LabelVisited,
+            Style = entity.Style
+        },
+        Action = new KeyboardAction
+        {
+            Type = entity.Action,
+            Permission = new KeyboardPermission
+            {
+                Type = entity.Permission,
+                SpecifyUserIds = entity.AllowedUserIds?.ToArray(),
+                SpecifyRoleIds = entity.AllowedRoleIds?.ToArray()
+            },
+            Data = entity.Data,
+            Reply = entity.IsCommandReply,
+            Enter = entity.IsCommandAutoSend,
+            Anchor = entity.ActionAnchor,
+            UnsupportedTips = entity.UnsupportedVersionTip
+        }
     };
 
     #endregion

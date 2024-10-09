@@ -3,7 +3,7 @@ namespace QQBot;
 /// <summary>
 ///     表示键盘按钮的动作类型。
 /// </summary>
-public enum KeyboardActionType
+public enum ButtonAction
 {
     /// <summary>
     ///     跳转按钮

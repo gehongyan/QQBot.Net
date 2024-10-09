@@ -41,16 +41,16 @@ internal class KeyboardRenderData
     public required string Label { get; set; }
 
     [JsonPropertyName("visited_label")]
-    public required string VisitedLabel { get; set; }
+    public required string LabelVisited { get; set; }
 
     [JsonPropertyName("style")]
-    public required KeyboardButtonStyle Style { get; set; }
+    public required ButtonStyle Style { get; set; }
 }
 
 internal class KeyboardAction
 {
     [JsonPropertyName("type")]
-    public required KeyboardActionType Type { get; set; }
+    public required ButtonAction Type { get; set; }
 
     [JsonPropertyName("permission")]
     public required KeyboardPermission Permission { get; set; }
@@ -65,7 +65,7 @@ internal class KeyboardAction
     public bool? Enter { get; set; }
 
     [JsonPropertyName("anchor")]
-    public int? Anchor { get; set; }
+    public ButtonActionAnchor? Anchor { get; set; }
 
     [Obsolete]
     [JsonPropertyName("click_limit")]
@@ -82,11 +82,11 @@ internal class KeyboardAction
 internal class KeyboardPermission
 {
     [JsonPropertyName("type")]
-    public required int Type { get; set; }
+    public required ButtonPermission Type { get; set; }
 
     [JsonPropertyName("specify_user_ids")]
     public string[]? SpecifyUserIds { get; set; }
 
     [JsonPropertyName("specify_role_ids")]
-    public string[]? SpecifyRoleIds { get; set; }
+    public uint[]? SpecifyRoleIds { get; set; }
 }

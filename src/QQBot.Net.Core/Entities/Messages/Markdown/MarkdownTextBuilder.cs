@@ -5,9 +5,9 @@ using System.Text;
 namespace QQBot;
 
 /// <summary>
-///     表示一个用于创建 <see cref="QQBot.MarkdownTextContent"/> 实例的构建器。
+///     表示一个用于创建 <see cref="MarkdownText"/> 实例的构建器。
 /// </summary>
-public class MarkdownTextContentBuilder : IMarkdownContentBuilder, IEquatable<MarkdownTextContentBuilder>
+public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuilder>
 {
     [MemberNotNullWhen(true, nameof(_textBuilder))]
     [MemberNotNullWhen(false, nameof(_simpleText))]
@@ -35,27 +35,27 @@ public class MarkdownTextContentBuilder : IMarkdownContentBuilder, IEquatable<Ma
     }
 
     /// <summary>
-    ///     初始化一个 <see cref="MarkdownTextContentBuilder"/> 类的新实例。
+    ///     初始化一个 <see cref="MarkdownTextBuilder"/> 类的新实例。
     /// </summary>
-    public MarkdownTextContentBuilder()
+    public MarkdownTextBuilder()
     {
         Text = string.Empty;
     }
 
     /// <summary>
-    ///     初始化一个 <see cref="MarkdownTextContentBuilder"/> 类的新实例。
+    ///     初始化一个 <see cref="MarkdownTextBuilder"/> 类的新实例。
     /// </summary>
     /// <param name="text"> Markdown 文本内容。 </param>
-    public MarkdownTextContentBuilder(string text)
+    public MarkdownTextBuilder(string text)
     {
         Text = text;
     }
 
     /// <summary>
-    ///     初始化一个 <see cref="MarkdownTextContentBuilder"/> 类的新实例。
+    ///     初始化一个 <see cref="MarkdownTextBuilder"/> 类的新实例。
     /// </summary>
     /// <param name="textBuilder"> 用于构建 Markdown 文本内容的 <see cref="StringBuilder"/> 实例。 </param>
-    public MarkdownTextContentBuilder(StringBuilder textBuilder)
+    public MarkdownTextBuilder(StringBuilder textBuilder)
     {
         UseStringBuilder = true;
         _textBuilder = textBuilder;
@@ -70,14 +70,14 @@ public class MarkdownTextContentBuilder : IMarkdownContentBuilder, IEquatable<Ma
         _simpleText = null;
     }
 
-    /// <inheritdoc cref="QQBot.IMarkdownContentBuilder.Build" />
-    public MarkdownTextContent Build() => new(Text);
+    /// <inheritdoc cref="IMarkdownBuilder.Build" />
+    public MarkdownText Build() => new(Text);
 
     /// <inheritdoc />
-    IMarkdownContent IMarkdownContentBuilder.Build() => new MarkdownTextContent(Text);
+    IMarkdown IMarkdownBuilder.Build() => new MarkdownText(Text);
 
     /// <inheritdoc />
-    public bool Equals(MarkdownTextContentBuilder? other)
+    public bool Equals(MarkdownTextBuilder? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -331,23 +331,23 @@ public class MarkdownTextContentBuilder : IMarkdownContentBuilder, IEquatable<Ma
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => obj is MarkdownTextContentBuilder builder && Equals(builder);
+    public override bool Equals(object? obj) => obj is MarkdownTextBuilder builder && Equals(builder);
 
     /// <summary>
-    ///     确定两个 <see cref="MarkdownTextContentBuilder"/> 实例是否相等。
+    ///     确定两个 <see cref="MarkdownTextBuilder"/> 实例是否相等。
     /// </summary>
     /// <param name="left"> 要比较的第一个实例。 </param>
     /// <param name="right"> 要比较的第二个实例。 </param>
     /// <returns> 如果两个实例相等，则为 <c>true</c>；否则为 <c>false</c>。 </returns>
-    public static bool operator ==(MarkdownTextContentBuilder? left, MarkdownTextContentBuilder? right) => left?.Equals(right) ?? right is null;
+    public static bool operator ==(MarkdownTextBuilder? left, MarkdownTextBuilder? right) => left?.Equals(right) ?? right is null;
 
     /// <summary>
-    ///     确定两个 <see cref="MarkdownTextContentBuilder"/> 实例是否不相等。
+    ///     确定两个 <see cref="MarkdownTextBuilder"/> 实例是否不相等。
     /// </summary>
     /// <param name="left"> 要比较的第一个实例。 </param>
     /// <param name="right"> 要比较的第二个实例。 </param>
     /// <returns> 如果两个实例不相等，则为 <c>true</c>；否则为 <c>false</c>。 </returns>
-    public static bool operator !=(MarkdownTextContentBuilder? left, MarkdownTextContentBuilder? right) => !(left == right);
+    public static bool operator !=(MarkdownTextBuilder? left, MarkdownTextBuilder? right) => !(left == right);
 
     /// <inheritdoc />
     public override int GetHashCode() => base.GetHashCode();

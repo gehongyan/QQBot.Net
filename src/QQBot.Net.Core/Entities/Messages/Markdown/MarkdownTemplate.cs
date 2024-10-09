@@ -6,7 +6,7 @@ namespace QQBot;
 ///     表示一个 Markdown 模板。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class MarkdownTemplateContent : IMarkdownContent, IEquatable<MarkdownTemplateContent>
+public class MarkdownTemplate : IMarkdown, IEquatable<MarkdownTemplate>
 {
     /// <summary>
     ///     获取模板的 ID。
@@ -19,11 +19,11 @@ public class MarkdownTemplateContent : IMarkdownContent, IEquatable<MarkdownTemp
     public IReadOnlyDictionary<string, IReadOnlyCollection<string>> Parameters { get; }
 
     /// <summary>
-    ///     初始化一个 <see cref="MarkdownTemplateContent"/> 类的新实例。
+    ///     初始化一个 <see cref="MarkdownTemplate"/> 类的新实例。
     /// </summary>
     /// <param name="templateId"> Markdown 模板 ID。 </param>
     /// <param name="parameters"> Markdown 模板内容参数。 </param>
-    internal MarkdownTemplateContent(string templateId,
+    internal MarkdownTemplate(string templateId,
         IReadOnlyDictionary<string, IReadOnlyCollection<string>> parameters)
     {
         TemplateId = templateId;
@@ -33,7 +33,7 @@ public class MarkdownTemplateContent : IMarkdownContent, IEquatable<MarkdownTemp
     private string DebuggerDisplay => $"TemplateId: {TemplateId}, Parameters: {Parameters.Count}";
 
     /// <inheritdoc />
-    public bool Equals(MarkdownTemplateContent? other)
+    public bool Equals(MarkdownTemplate? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -49,23 +49,23 @@ public class MarkdownTemplateContent : IMarkdownContent, IEquatable<MarkdownTemp
     }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj) => obj is MarkdownTemplateContent content && Equals(content);
+    public override bool Equals(object? obj) => obj is MarkdownTemplate content && Equals(content);
 
     /// <summary>
-    ///     确定两个 <see cref="MarkdownTemplateContent"/> 实例是否相等。
+    ///     确定两个 <see cref="MarkdownTemplate"/> 实例是否相等。
     /// </summary>
     /// <param name="left"> 要比较的第一个实例。 </param>
     /// <param name="right"> 要比较的第二个实例。 </param>
     /// <returns> 如果两个实例相等，则为 <c>true</c>；否则为 <c>false</c>。 </returns>
-    public static bool operator ==(MarkdownTemplateContent? left, MarkdownTemplateContent? right) => left?.Equals(right) ?? right is null;
+    public static bool operator ==(MarkdownTemplate? left, MarkdownTemplate? right) => left?.Equals(right) ?? right is null;
 
     /// <summary>
-    ///     确定两个 <see cref="MarkdownTemplateContent"/> 实例是否不相等。
+    ///     确定两个 <see cref="MarkdownTemplate"/> 实例是否不相等。
     /// </summary>
     /// <param name="left"> 要比较的第一个实例。 </param>
     /// <param name="right"> 要比较的第二个实例。 </param>
     /// <returns> 如果两个实例不相等，则为 <c>true</c>；否则为 <c>false</c>。 </returns>
-    public static bool operator !=(MarkdownTemplateContent? left, MarkdownTemplateContent? right) => !(left == right);
+    public static bool operator !=(MarkdownTemplate? left, MarkdownTemplate? right) => !(left == right);
 
     /// <inheritdoc />
     public override int GetHashCode() => base.GetHashCode();
