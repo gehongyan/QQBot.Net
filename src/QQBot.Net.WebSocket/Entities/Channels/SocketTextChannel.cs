@@ -77,8 +77,8 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
     /// <param name="passiveSource"> 被动消息来源。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步发送操作的任务。任务的结果包含所发送消息的可延迟加载的消息对象。 </returns>
-    public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
-        IMarkdown? markdown = null, FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
+    public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
+        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
 

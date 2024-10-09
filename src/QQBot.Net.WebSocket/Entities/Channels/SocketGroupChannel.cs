@@ -34,8 +34,8 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
     #region Messages
 
     /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,IMarkdown,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.Ark,QQBot.IKeyboard,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
-    public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null,
-        IMarkdown? markdown = null, FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
+    public Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
+        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, keyboard, messageReference, passiveSource, options);
 
