@@ -21,7 +21,7 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
     /// <inheritdoc />
     public MessageSource Source { get; }
 
-    /// <inheritdoc />
+     /// <inheritdoc />
     public string Content { get; private set; } = string.Empty;
 
     /// <inheritdoc />

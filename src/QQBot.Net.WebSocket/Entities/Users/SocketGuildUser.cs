@@ -7,28 +7,39 @@ namespace QQBot.WebSocket;
 ///     表示一个基于网关的频道用户。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public abstract class SocketGuildUser : SocketUser, IGuildUser
+public class SocketGuildUser : SocketUser, IGuildUser
 {
-    /// <inheritdoc cref="QQBot.IGuildUser.Id" />
-    public new ulong Id { get; }
+    /// <inheritdoc />
+    internal override SocketGlobalUser GlobalUser { get; }
 
     /// <inheritdoc />
-    public abstract string Username { get; internal set; }
-
-    /// <inheritdoc />
-    public abstract bool? IsBot { get; internal set; }
-
-    /// <inheritdoc />
-    public abstract string? UnionOpenId { get; internal set; }
-
-    /// <inheritdoc />
-    public abstract string? UnionUserAccount { get; internal set; }
-
-    /// <inheritdoc />
-    internal SocketGuildUser(QQBotSocketClient client, ulong id)
-        : base(client, id.ToIdString())
+    public override string? Avatar
     {
-        Id = id;
+        get => GlobalUser.Avatar;
+        internal set => GlobalUser.Avatar = value;
+    }
+
+    /// <inheritdoc cref="QQBot.IGuildUser.Id" />
+    public new ulong Id => ulong.Parse(GlobalUser.Id);
+
+    /// <inheritdoc />
+    public string Username { get; private set; }
+
+    /// <inheritdoc />
+    public bool? IsBot { get; private set; }
+
+    /// <inheritdoc />
+    public string? UnionOpenId { get; private set; }
+
+    /// <inheritdoc />
+    public string? UnionUserAccount { get; private set; }
+
+    /// <inheritdoc />
+    internal SocketGuildUser(QQBotSocketClient client, SocketGlobalUser globalUser)
+        : base(client, globalUser.Id)
+    {
+        GlobalUser = globalUser;
+        Username = string.Empty;
     }
 
     internal override void Update(ClientState state, User model)

@@ -87,6 +87,13 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
 
     #endregion
 
+    #region ISocketMessageChannel
+
+    /// <inheritdoc />
+    SocketMessage? ISocketMessageChannel.GetCachedMessage(string id) => null;
+
+    #endregion
+
     #region IMessageChannel
 
     /// <inheritdoc />
@@ -98,6 +105,10 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
             throw new NotSupportedException("Cannot send a keyboard to IDMChannel.");
         return SendMessageAsync(content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
     }
+
+    /// <inheritdoc />
+    Task<IMessage?> IMessageChannel.GetMessageAsync(string id, CacheMode mode, RequestOptions? options)
+        => Task.FromResult<IMessage?>(null);
 
     #endregion
 }

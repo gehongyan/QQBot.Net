@@ -60,6 +60,13 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
 
     #endregion
 
+    #region ISocketMessageChannel
+
+    /// <inheritdoc />
+    SocketMessage? ISocketMessageChannel.GetCachedMessage(string id) => null;
+
+    #endregion
+
     #region IMessageChannel
 
     /// <inheritdoc />
@@ -67,6 +74,10 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options) =>
         SendMessageAsync(content, markdown, attachment, embed, ark, keyboard, messageReference, passiveSource, options);
+
+    /// <inheritdoc />
+    Task<IMessage?> IMessageChannel.GetMessageAsync(string id, CacheMode mode, RequestOptions? options)
+        => Task.FromResult<IMessage?>(null);
 
     #endregion
 }

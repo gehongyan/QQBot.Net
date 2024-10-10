@@ -8,22 +8,11 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildMember : SocketGuildUser, IGuildMember
 {
-    internal override SocketGlobalUser GlobalUser { get; }
+    /// <inheritdoc />
+    public IGuild Guild { get; }
 
     /// <inheritdoc />
-    public override string Username { get; internal set; } = string.Empty;
-
-    /// <inheritdoc />
-    public override string? Avatar { get; internal set; }
-
-    /// <inheritdoc />
-    public override bool? IsBot { get; internal set; }
-
-    /// <inheritdoc />
-    public override string? UnionOpenId { get; internal set; }
-
-    /// <inheritdoc />
-    public override string? UnionUserAccount { get; internal set; }
+    public ulong GuildId { get; }
 
     /// <inheritdoc />
     public string? Nickname { get; private set; }
@@ -36,12 +25,10 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember
 
     /// <inheritdoc />
     internal SocketGuildMember(SocketGuild guild, SocketGlobalUser globalUser)
-        : base(guild.Client, ulong.Parse(globalUser.Id))
+        : base(guild.Client, globalUser)
     {
-        GlobalUser = globalUser;
-        Nickname = string.Empty;
-        RoleIds = [];
-        JoinedAt = default;
+        Guild = guild;
+        GuildId = guild.Id;
     }
 
     internal static SocketGuildMember Create(SocketGuild guild, ClientState state, API.User userModel, API.Member? memberModel)

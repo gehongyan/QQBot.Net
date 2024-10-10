@@ -21,4 +21,13 @@ public interface IMessageChannel : IChannel
     Task<Cacheable<IUserMessage, string>> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     从此消息频道获取一条消息。
+    /// </summary>
+    /// <param name="id"> 消息的 ID。 </param>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务结果包含检索到的消息；如果未找到具有指定 ID 的消息，则返回 <c>null</c>。 </returns>
+    Task<IMessage?> GetMessageAsync(string id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 }

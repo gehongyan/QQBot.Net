@@ -6,6 +6,8 @@ namespace QQBot.Rest;
 
 internal static class ChannelHelper
 {
+    #region Send Message
+
     public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
@@ -139,7 +141,9 @@ internal static class ChannelHelper
             throw new InvalidOperationException("The client must have a current user.");
         IUserMessage message = RestUserMessage.Create(client, channel, client.CurrentUser, model);
         // TODO: channel.GetMessageAsync(model.Id)
-        return new Cacheable<IUserMessage, string>(message, message.Id, true, () => Task.FromResult<IUserMessage?>(message));
+        return new Cacheable<IUserMessage, string>(
+            message, message.Id, true,
+            async () => await channel.GetMessageAsync(message.Id) as IUserMessage ?? message);
     }
 
     private static async Task<MediaFileInfo?> EnsureUserGroupFileAttachmentAsync(BaseQQBotClient client, IMessageChannel channel, FileAttachment attachment)
@@ -251,4 +255,21 @@ internal static class ChannelHelper
                 throw new NotSupportedException("Unsupported attachment mode.");
         }
     }
+
+    #endregion
+
+    #region GetMessage
+
+    public static async Task<RestUserMessage> GetMessageAsync<T>(T channel, BaseQQBotClient client,
+        string id, RequestOptions? options)
+        where T : IMessageChannel, IEntity<ulong>
+    {
+        ulong channelId = (channel as IEntity<ulong>).Id;
+        IGuild? guild = (channel as IGuildChannel)?.Guild;
+        ChannelMessage model = await client.ApiClient.GetMessageAsync(channelId, id, options).ConfigureAwait(false);
+        IUser author = await MessageHelper.GetAuthorAsync(client, guild, model.Author);
+        return RestUserMessage.Create(client, channel, author, model);
+    }
+
+    #endregion
 }

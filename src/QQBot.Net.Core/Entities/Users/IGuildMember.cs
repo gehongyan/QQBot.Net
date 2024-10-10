@@ -6,6 +6,16 @@
 public interface IGuildMember : IGuildUser
 {
     /// <summary>
+    ///     获取此服务器用户所属的服务器。
+    /// </summary>
+    IGuild Guild { get; }
+
+    /// <summary>
+    ///     获取此用户所属服务器的 ID。
+    /// </summary>
+    ulong GuildId { get; }
+
+    /// <summary>
     ///     获取此用户的昵称。
     /// </summary>
     string? Nickname { get; }

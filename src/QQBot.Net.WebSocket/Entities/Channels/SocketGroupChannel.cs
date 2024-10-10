@@ -42,6 +42,13 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
 
     #endregion
 
+    #region ISocketMessageChannel
+
+    /// <inheritdoc />
+    SocketMessage? ISocketMessageChannel.GetCachedMessage(string id) => null;
+
+    #endregion
+
     #region IMessageChannel
 
     /// <inheritdoc />
@@ -49,6 +56,10 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options) =>
         SendMessageAsync(content, markdown, attachment, embed, ark, keyboard, messageReference, passiveSource, options);
+
+    /// <inheritdoc />
+    Task<IMessage?> IMessageChannel.GetMessageAsync(string id, CacheMode mode, RequestOptions? options)
+        => Task.FromResult<IMessage?>(null);
 
     #endregion
 }

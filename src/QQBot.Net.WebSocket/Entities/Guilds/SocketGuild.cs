@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using QQBot.Rest;
 using Model = QQBot.API.Guild;
 using ChannelModel = QQBot.API.Channel;
 
@@ -168,6 +169,19 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <param name="id"> 要获取的子频道的 ID。 </param>
     /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketTextChannel? GetTextChannel(ulong id) => GetChannel(id) as SocketTextChannel;
+
+    #endregion
+
+    #region IGuild
+
+    /// <inheritdoc />
+    async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)
+    {
+        IGuildMember? user = GetUser(id);
+        if (user is not null || mode == CacheMode.CacheOnly)
+            return user;
+        return await GuildHelper.GetUserAsync(this, Client, id, options).ConfigureAwait(false);
+    }
 
     #endregion
 }

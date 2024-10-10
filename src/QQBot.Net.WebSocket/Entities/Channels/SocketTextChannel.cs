@@ -66,6 +66,9 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
 
     #region Messages
 
+    /// <inheritdoc />
+    public SocketMessage? GetCachedMessage(string id) => _messages?.Get(id);
+
     /// <summary>
     ///     向此频道发送消息。
     /// </summary>
@@ -83,6 +86,15 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
 
+    /// <summary>
+    ///     从此消息频道获取一条消息。
+    /// </summary>
+    /// <param name="id"> 消息的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务结果包含检索到的消息；如果未找到具有指定 ID 的消息，则返回 <c>null</c>。 </returns>
+    public async Task<RestUserMessage> GetMessageAsync(string id, RequestOptions? options = null) =>
+        await ChannelHelper.GetMessageAsync(this, Client, id, options);
+
     #endregion
 
     #region IMessageChannel
@@ -95,6 +107,15 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
         if (keyboard is not null)
             throw new NotSupportedException("Cannot send a keyboard to ITextChannel.");
         return SendMessageAsync(content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
+    }
+
+    /// <inheritdoc />
+    async Task<IMessage?> IMessageChannel.GetMessageAsync(string id, CacheMode mode, RequestOptions? options)
+    {
+        IMessage? message = GetCachedMessage(id);
+        if (message is not null || mode is CacheMode.CacheOnly)
+            return message;
+        return await GetMessageAsync(id, options);
     }
 
     #endregion

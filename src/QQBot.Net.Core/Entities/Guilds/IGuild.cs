@@ -51,4 +51,19 @@ public interface IGuild : IEntity<ulong>
     ///     缓存基础数据包括服务器基本信息、频道、角色、频道权限重写、当前用户在服务器内的昵称。
     /// </remarks>
     bool IsAvailable { get; }
+
+    /// <summary>
+    ///     获取此服务器内的用户。
+    /// </summary>
+    /// <remarks>
+    ///     此方法获取加入到此服务器内的用户。
+    ///     <note>
+    ///         此方法在网关的实现中可能返回 <c>null</c>，因为在大型服务器中，用户列表的缓存可能不完整。
+    ///     </note>
+    /// </remarks>
+    /// <param name="id"> 要获取的用户的 ID。 </param>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
+    Task<IGuildMember?> GetUserAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 }
