@@ -24,3 +24,5 @@ jobs:
     secrets:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       GITHUB_PACKAGES_KEY: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      packages: write
