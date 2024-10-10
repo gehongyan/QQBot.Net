@@ -42,6 +42,19 @@ public class SocketGuildUser : SocketUser, IGuildUser
         Username = string.Empty;
     }
 
+    internal static SocketGuildUser Create(QQBotSocketClient client, ClientState state, User model)
+    {
+        SocketGlobalUser globalUser = state.GetOrAddGlobalUser(model.Id, _ =>
+        {
+            SocketGlobalUser user = SocketGlobalUser.Create(client, state, model);
+            user.GlobalUser.AddRef();
+            return user;
+        });
+        SocketGuildUser entity = new(client, globalUser);
+        entity.Update(state, model);
+        return entity;
+    }
+
     internal override void Update(ClientState state, User model)
     {
         Username = model.Username;

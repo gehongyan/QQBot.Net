@@ -11,7 +11,8 @@ internal class ClientState
     private readonly ConcurrentDictionary<Guid, SocketGroupChannel> _groupChannels;
     private readonly ConcurrentDictionary<Guid, SocketUserChannel> _userChannels;
     private readonly ConcurrentDictionary<ulong, SocketGuild> _guilds;
-    private readonly ConcurrentDictionary<string, SocketGlobalUser> _users;
+    private readonly ConcurrentDictionary<string, SocketGlobalUser> _globalUsers;
+    private readonly ConcurrentDictionary<string, SocketGuildUser> _guildUsers;
 
     internal IReadOnlyCollection<SocketChannel> Channels => _channels.ToReadOnlyCollection();
 
@@ -19,7 +20,8 @@ internal class ClientState
     internal IReadOnlyCollection<SocketGroupChannel> GroupChannels => _groupChannels.ToReadOnlyCollection();
     internal IReadOnlyCollection<SocketUserChannel> UserChannels => _userChannels.ToReadOnlyCollection();
     internal IReadOnlyCollection<SocketGuild> Guilds => _guilds.ToReadOnlyCollection();
-    internal IReadOnlyCollection<SocketGlobalUser> Users => _users.ToReadOnlyCollection();
+    internal IReadOnlyCollection<SocketGlobalUser> GlobalUsers => _globalUsers.ToReadOnlyCollection();
+    internal IReadOnlyCollection<SocketGuildUser> GuildUsers => _guildUsers.ToReadOnlyCollection();
 
     public ClientState(int guildCount)
     {
@@ -28,7 +30,8 @@ internal class ClientState
         _groupChannels = new ConcurrentDictionary<Guid, SocketGroupChannel>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
         _userChannels = new ConcurrentDictionary<Guid, SocketUserChannel>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
         _guilds = new ConcurrentDictionary<ulong, SocketGuild>(ConcurrentHashSet.DefaultConcurrencyLevel, (int)(guildCount * CollectionMultiplier));
-        _users = new ConcurrentDictionary<string, SocketGlobalUser>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
+        _globalUsers = new ConcurrentDictionary<string, SocketGlobalUser>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
+        _guildUsers = new ConcurrentDictionary<string, SocketGuildUser>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
     }
 
     #region Guild
@@ -72,17 +75,29 @@ internal class ClientState
 
     #endregion
 
-    #region Users
+    #region Global Users
 
-    internal SocketGlobalUser GetOrAddUser(ulong id, Func<ulong, SocketGlobalUser> userFactory) =>
-        _users.GetOrAdd(id.ToString(), _ => userFactory(id));
+    internal SocketGlobalUser GetOrAddGlobalUser(ulong id, Func<ulong, SocketGlobalUser> userFactory) =>
+        _globalUsers.GetOrAdd(id.ToIdString(), _ => userFactory(id));
 
-    internal SocketGlobalUser GetOrAddUser(Guid id, Func<Guid, SocketGlobalUser> userFactory) =>
-        _users.GetOrAdd(id.ToIdString(), _ => userFactory(id));
+    internal SocketGlobalUser GetOrAddGlobalUser(Guid id, Func<Guid, SocketGlobalUser> userFactory) =>
+        _globalUsers.GetOrAdd(id.ToIdString(), _ => userFactory(id));
 
-    internal SocketGlobalUser? RemoveUser(string id) =>
-        _users.TryRemove(id, out SocketGlobalUser? user) ? user : null;
+    internal SocketGlobalUser? RemoveGlobalUser(string id) =>
+        _globalUsers.TryRemove(id, out SocketGlobalUser? user) ? user : null;
 
+    #endregion
+
+    #region Guild Users
+
+    internal SocketGuildUser GetOrAddGuildUser(ulong id, Func<ulong, SocketGuildUser> userFactory) =>
+        _guildUsers.GetOrAdd(id.ToString(), _ => userFactory(id));
+
+    internal SocketGuildUser GetOrAddGuildUser(Guid id, Func<Guid, SocketGuildUser> userFactory) =>
+        _guildUsers.GetOrAdd(id.ToIdString(), _ => userFactory(id));
+
+    internal SocketGuildUser? RemoveGuildUser(string id) =>
+        _guildUsers.TryRemove(id, out SocketGuildUser? user) ? user : null;
 
     #endregion
 }

@@ -261,7 +261,7 @@ public partial class QQBotSocketClient
     private async Task HandleUserMessageCreatedAsync(object? payload, string dispatch)
     {
         if (DeserializePayload<MessageCreatedEvent>(payload) is not { } data) return;
-        SocketUser author = State.GetOrAddUser(data.Author.Id,
+        SocketUser author = State.GetOrAddGlobalUser(data.Author.Id,
             _ => SocketGlobalUser.Create(this, State, data.Author));
         SocketUserChannel channel = GetOrCreateUserChannel(State, data.Author.Id, author);
         SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
@@ -279,7 +279,7 @@ public partial class QQBotSocketClient
                 "Received GroupMessageCreated with no GroupId.", payload).ConfigureAwait(false);
             return;
         }
-        SocketUser author = State.GetOrAddUser(data.Author.Id,
+        SocketUser author = State.GetOrAddGlobalUser(data.Author.Id,
             _ => SocketGlobalUser.Create(this, State, data.Author));
         SocketGroupChannel channel = GetOrCreateGroupChannel(State, data.GroupId.Value);
         SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
@@ -291,8 +291,8 @@ public partial class QQBotSocketClient
     private async Task HandleDirectMessageCreatedAsync(object? payload, string dispatch)
     {
         if (DeserializePayload<ChannelMessage>(payload) is not { } data) return;
-        SocketUser author = State.GetOrAddUser(data.Author.Id,
-            _ => SocketGlobalUser.Create(this, State, data.Author));
+        SocketGuildUser author = State.GetOrAddGuildUser(data.Author.Id,
+            _ => SocketGuildUser.Create(this, State, data.Author));
         SocketDMChannel channel = GetOrCreateDMChannel(State, data.GuildId, author);
         SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);

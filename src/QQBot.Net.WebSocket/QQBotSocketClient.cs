@@ -287,17 +287,17 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         state.GetOrAddGroupChannel(id, _ => SocketGroupChannel.Create(this, state, id));
 
     internal SocketGlobalUser GetOrCreateUser(ClientState state, User model) =>
-        state.GetOrAddUser(model.Id, _ => SocketGlobalUser.Create(this, state, model));
+        state.GetOrAddGlobalUser(model.Id, _ => SocketGlobalUser.Create(this, state, model));
 
     internal SocketGlobalUser GetOrCreateSelfUser(ClientState state, User model) =>
-        state.GetOrAddUser(model.Id, _ =>
+        state.GetOrAddGlobalUser(model.Id, _ =>
         {
             SocketGlobalUser user = SocketGlobalUser.Create(this, state, model);
             user.GlobalUser.AddRef();
             return user;
         });
 
-    internal void RemoveUser(string id) => State.RemoveUser(id);
+    internal void RemoveUser(string id) => State.RemoveGlobalUser(id);
 
     // /// <inheritdoc />
     // public override SocketGuild? GetGuild(ulong id) => State.GetGuild(id);
