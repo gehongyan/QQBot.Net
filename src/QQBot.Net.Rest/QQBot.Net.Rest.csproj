@@ -14,11 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj" />
   </ItemGroup>
 
