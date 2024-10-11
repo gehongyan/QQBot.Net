@@ -494,7 +494,7 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new();
-        string id = openId.ToString("N").ToUpperInvariant();
+        string id = openId.ToIdString();
         return await SendJsonAsync<SendUserGroupMessageResponse>(HttpMethod.Post,
                 () => $"v2/users/{id}/messages", args, ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
@@ -548,27 +548,28 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
-    public async Task DeleteUserMessageAsync(ulong openId, string messageId, RequestOptions? options = null)
+    public async Task DeleteUserMessageAsync(Guid openId, string messageId, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(openId, 0, nameof(openId));
+        Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));
         Preconditions.NotNullOrWhiteSpace(messageId, nameof(messageId));
         options = RequestOptions.CreateOrClone(options);
 
-        BucketIds ids = new(0, openId);
+        BucketIds ids = new();
         await SendAsync(HttpMethod.Delete,
-                () => $"v2/users/{openId}/messages/{messageId}", ids, ClientBucketType.SendEdit, options)
+                () => $"v2/users/{openId.ToIdString()}/messages/{messageId}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 
-    public async Task DeleteGroupMessageAsync(ulong groupOpenId, string messageId, RequestOptions? options = null)
+    public async Task DeleteGroupMessageAsync(Guid groupOpenId, string messageId, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(groupOpenId, 0, nameof(groupOpenId));
+        Preconditions.NotEqual(groupOpenId, Guid.Empty, nameof(groupOpenId));
         Preconditions.NotNullOrWhiteSpace(messageId, nameof(messageId));
         options = RequestOptions.CreateOrClone(options);
 
-        BucketIds ids = new(0, groupOpenId);
+        BucketIds ids = new();
+        string id = groupOpenId.ToIdString();
         await SendAsync(HttpMethod.Delete,
-                () => $"v2/groups/{groupOpenId}/messages/{messageId}", ids, ClientBucketType.SendEdit, options)
+                () => $"v2/groups/{id}/messages/{messageId}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 
@@ -582,8 +583,9 @@ internal class QQBotRestApiClient : IDisposable
             ? $"?hidetip={args.HideTip.Value.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()}"
             : string.Empty;
         BucketIds ids = new(0, channelId);
+        string id = channelId.ToIdString();
         await SendAsync(HttpMethod.Delete,
-                () => $"v2/groups/{channelId}/messages/{messageId}{query}", ids, ClientBucketType.SendEdit, options)
+                () => $"v2/groups/{id}/messages/{messageId}{query}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 

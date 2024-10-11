@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using QQBot.API;
 using QQBot.API.Gateway;
+using QQBot.Rest;
 
 namespace QQBot.WebSocket;
 
@@ -31,4 +32,8 @@ public class SocketUserMessage : SocketMessage, IUserMessage
         entity.Update(state, model);
         return entity;
     }
+
+    /// <inheritdoc />
+    public Task DeleteAsync(bool? hideTip = null, RequestOptions? options = null) =>
+        MessageHelper.DeleteAsync(this, Client, hideTip, options);
 }

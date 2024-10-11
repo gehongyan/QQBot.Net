@@ -22,4 +22,8 @@ public class RestUserMessage : RestMessage, IUserMessage
         entity.Update(model);
         return entity;
     }
+
+    /// <inheritdoc />
+    public Task DeleteAsync(bool? hideTip = null, RequestOptions? options = null) =>
+        MessageHelper.DeleteAsync(this, Client, hideTip, options);
 }

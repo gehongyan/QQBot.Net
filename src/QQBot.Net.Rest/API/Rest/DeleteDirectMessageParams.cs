@@ -1,6 +1,6 @@
 namespace QQBot.API.Rest;
 
-internal class DeleteChannelMessageParams
+internal class DeleteDirectMessageParams
 {
     public bool? HideTip { get; set; }
 }
