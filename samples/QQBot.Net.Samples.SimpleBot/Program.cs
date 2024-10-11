@@ -13,7 +13,9 @@ client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    await message.ReplyAsync(message.Content);
+    IUserMessage msg = await message.ReplyAsync(message.Content);
+    await Task.Delay(TimeSpan.FromSeconds(1));
+    await msg.DeleteAsync();
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

@@ -18,7 +18,7 @@ public static class MessageExtensions
     /// <param name="messageReference"> 消息引用，用于回复消息。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步发送操作的任务。任务的结果包含所发送消息的可延迟加载的消息对象。 </returns>
-    public static async Task<Cacheable<IUserMessage, string>> ReplyAsync(this IUserMessage message,
+    public static async Task<IUserMessage> ReplyAsync(this IUserMessage message,
         string? content = null, IMarkdown? markdown = null, FileAttachment? attachment = null,
         Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
         MessageReference? messageReference = null, RequestOptions? options = null) =>

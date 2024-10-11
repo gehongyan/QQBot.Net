@@ -21,16 +21,16 @@ public abstract class RestMessage : RestEntity<string>, IMessage
     public MessageSource Source { get; }
 
     /// <inheritdoc />
-    public string Content { get; private set; } = string.Empty;
+    public string Content { get; internal set; } = string.Empty;
 
     /// <inheritdoc />
-    public DateTimeOffset Timestamp { get; private set; } = DateTimeOffset.Now;
+    public DateTimeOffset Timestamp { get; internal set; } = DateTimeOffset.Now;
 
     /// <inheritdoc cref="QQBot.IMessage.Attachments" />
-    public virtual IReadOnlyCollection<Attachment> Attachments { get; private set; }
+    public IReadOnlyCollection<Attachment> Attachments { get; internal set; }
 
     /// <inheritdoc />
-    public bool? MentionedEveryone { get; private set; }
+    public bool? MentionedEveryone { get; internal set; }
 
     /// <inheritdoc cref="QQBot.IMessage.Embeds" />
     public IReadOnlyCollection<Embed> Embeds => _embeds;
@@ -50,6 +50,15 @@ public abstract class RestMessage : RestEntity<string>, IMessage
         IMessageChannel channel, IUser author, API.ChannelMessage model) =>
         RestUserMessage.Create(client, channel, author, model);
 
+    internal static RestUserMessage Create(BaseQQBotClient client,
+        IMessageChannel channel, IUser author,
+        API.Rest.SendUserGroupMessageParams args, API.Rest.SendUserGroupMessageResponse model)
+    {
+        RestUserMessage entity = new(client, model.Id, channel, author, MessageSource.User);
+        entity.Update(args, model);
+        return entity;
+    }
+
     internal virtual void Update(API.ChannelMessage model)
     {
         Content = model.Content;
@@ -59,6 +68,12 @@ public abstract class RestMessage : RestEntity<string>, IMessage
         MentionedEveryone = model.MentionEveryone;
         if (model.Embeds is { Length: > 0 } embedModels)
             _embeds = [..embedModels.Select(x => x.ToEntity())];
+    }
+
+    internal virtual void Update(API.Rest.SendUserGroupMessageParams args, API.Rest.SendUserGroupMessageResponse model)
+    {
+        Content = args.Content ?? string.Empty;
+        Timestamp = model.Timestamp;
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{

@@ -8,7 +8,7 @@ internal static class ChannelHelper
 {
     #region Send Message
 
-    public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(
+    public static async Task<IUserMessage> SendMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
@@ -33,10 +33,10 @@ internal static class ChannelHelper
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendUserMessageAsync(channel.Id, args, options).ConfigureAwait(false);
-        return CreateCacheable(response.Id);
+        return CreateMessageEntity(client, channel, args, response);
     }
 
-    public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(
+    public static async Task<IUserMessage> SendMessageAsync(
         IGroupChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
@@ -61,10 +61,10 @@ internal static class ChannelHelper
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendGroupMessageAsync(channel.Id, args, options).ConfigureAwait(false);
-        return CreateCacheable(response.Id);
+        return CreateMessageEntity(client, channel, args, response);
     }
 
-    public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(
+    public static async Task<IUserMessage> SendMessageAsync(
         ITextChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
@@ -88,10 +88,10 @@ internal static class ChannelHelper
             .SendChannelMessageAsync(channel.Id, args, options).ConfigureAwait(false);
         if (needDispose && multipartFile.HasValue)
             await multipartFile.Value.Stream.DisposeAsync();
-        return CreateCacheable(client, channel, response);
+        return CreateMessageEntity(client, channel, response);
     }
 
-    public static async Task<Cacheable<IUserMessage, string>> SendMessageAsync(
+    public static async Task<IUserMessage> SendMessageAsync(
         IDMChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark,
         MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
@@ -115,7 +115,7 @@ internal static class ChannelHelper
             .SendDirectMessageAsync(channel.Id, args, options).ConfigureAwait(false);
         if (needDispose && multipartFile.HasValue)
             await multipartFile.Value.Stream.DisposeAsync();
-        return CreateCacheable(client, channel, response);
+        return CreateMessageEntity(client, channel, response);
     }
 
     private static MessageType InferMessageType(string? content, IMarkdown? markdown, FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard)
@@ -132,18 +132,19 @@ internal static class ChannelHelper
         MessageReference? messageReference, IUserMessage? passiveSource) =>
         HashCode.Combine(content, embed, messageReference, passiveSource?.Id) & int.MaxValue;
 
-    private static Cacheable<IUserMessage, string> CreateCacheable(string id) =>
-        new(null, id, false, () => Task.FromResult<IUserMessage?>(null));
-
-    private static Cacheable<IUserMessage, string> CreateCacheable(BaseQQBotClient client, IMessageChannel channel, ChannelMessage model)
+    private static RestUserMessage CreateMessageEntity(BaseQQBotClient client, IMessageChannel channel,
+        SendUserGroupMessageParams args, SendUserGroupMessageResponse model)
     {
         if (client.CurrentUser is null)
             throw new InvalidOperationException("The client must have a current user.");
-        IUserMessage message = RestUserMessage.Create(client, channel, client.CurrentUser, model);
-        // TODO: channel.GetMessageAsync(model.Id)
-        return new Cacheable<IUserMessage, string>(
-            message, message.Id, true,
-            async () => await channel.GetMessageAsync(message.Id) as IUserMessage ?? message);
+        return RestUserMessage.Create(client, channel, client.CurrentUser, args, model);
+    }
+
+    private static RestUserMessage CreateMessageEntity(BaseQQBotClient client, IMessageChannel channel, ChannelMessage model)
+    {
+        if (client.CurrentUser is null)
+            throw new InvalidOperationException("The client must have a current user.");
+        return RestUserMessage.Create(client, channel, client.CurrentUser, model);
     }
 
     private static async Task<MediaFileInfo?> EnsureUserGroupFileAttachmentAsync(BaseQQBotClient client, IMessageChannel channel, FileAttachment attachment)

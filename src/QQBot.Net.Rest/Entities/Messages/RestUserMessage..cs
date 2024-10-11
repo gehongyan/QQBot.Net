@@ -23,6 +23,15 @@ public class RestUserMessage : RestMessage, IUserMessage
         return entity;
     }
 
+    internal static new RestUserMessage Create(BaseQQBotClient client,
+        IMessageChannel channel, IUser author,
+        API.Rest.SendUserGroupMessageParams args, API.Rest.SendUserGroupMessageResponse model)
+    {
+        RestUserMessage entity = new(client, model.Id, channel, author, MessageSource.User);
+        entity.Update(args, model);
+        return entity;
+    }
+
     /// <inheritdoc />
     public Task DeleteAsync(bool? hideTip = null, RequestOptions? options = null) =>
         MessageHelper.DeleteAsync(this, Client, hideTip, options);

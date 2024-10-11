@@ -585,7 +585,7 @@ internal class QQBotRestApiClient : IDisposable
         BucketIds ids = new(0, channelId);
         string id = channelId.ToIdString();
         await SendAsync(HttpMethod.Delete,
-                () => $"v2/groups/{id}/messages/{messageId}{query}", ids, ClientBucketType.SendEdit, options)
+                () => $"channels/{id}/messages/{messageId}{query}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 
