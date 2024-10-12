@@ -6,7 +6,7 @@ using ChannelModel = QQBot.API.Channel;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的频道。
+///     表示一个基于网关的子频道。
 /// </summary>
 public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 {
@@ -35,7 +35,7 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     public DateTimeOffset JoinedAt { get; private set; }
 
     /// <summary>
-    ///     获取此服务器内已缓存的成员数量。
+    ///     获取此频道内已缓存的成员数量。
     /// </summary>
     public int DownloadedMemberCount => _members.Count;
 
@@ -43,31 +43,31 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     public bool IsAvailable { get; private set; }
 
     /// <summary>
-    ///     获取此服务器是否已连接至网关。
+    ///     获取此频道是否已连接至网关。
     /// </summary>
     public bool IsConnected { get; internal set; }
 
     /// <summary>
-    ///     获取此服务器中所有具有文字聊天能力的频道。
+    ///     获取此频道中所有具有文字聊天能力的子频道。
     /// </summary>
     /// <remarks>
-    ///     语音频道也是一种文字频道，此属性本意用于获取所有具有文字聊天能力的频道，通过此方法获取到的文字频道列表中也包含了语音频道。
-    ///     如需获取频道的实际类型，请参考 <see cref="QQBot.ChannelExtensions.GetChannelType(QQBot.IChannel)"/>。
+    ///     语音子频道也是一种文字子频道，此属性本意用于获取所有具有文字聊天能力的子频道，通过此方法获取到的文字子频道列表中也包含了语音子频道。
+    ///     如需获取子频道的实际类型，请参考 <see cref="QQBot.ChannelExtensions.GetChannelType(QQBot.IChannel)"/>。
     /// </remarks>
     public IReadOnlyCollection<SocketTextChannel> TextChannels => [..Channels.OfType<SocketTextChannel>()];
 
     /// <summary>
-    ///     获取此服务器中所有具有语音聊天能力的频道。
+    ///     获取此频道中所有具有语音聊天能力的子频道。
     /// </summary>
     public IReadOnlyCollection<SocketVoiceChannel> VoiceChannels => [..Channels.OfType<SocketVoiceChannel>()];
 
     /// <summary>
-    ///     获取此服务器中的所有分组频道。
+    ///     获取此频道中的所有分组子频道。
     /// </summary>
     public IReadOnlyCollection<SocketCategoryChannel> CategoryChannels => [..Channels.OfType<SocketCategoryChannel>()];
 
     /// <summary>
-    ///     获取此服务器的所有频道。
+    ///     获取此频道的所有子频道。
     /// </summary>
     public IReadOnlyCollection<SocketGuildChannel> Channels => [.._channels.Values];
 
@@ -129,10 +129,10 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     #region Users
 
     /// <summary>
-    ///     获取此频道内的用户。
+    ///     获取此子频道内的用户。
     /// </summary>
     /// <remarks>
-    ///     此方法可能返回 <c>null</c>，因为在大型频道中，用户列表的缓存可能不完整。
+    ///     此方法可能返回 <c>null</c>，因为在大型子频道中，用户列表的缓存可能不完整。
     /// </remarks>
     /// <param name="id"> 要获取的用户的 ID。 </param>
     /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
@@ -157,14 +157,14 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     #region Channels
 
     /// <summary>
-    ///     获取此服务器内的频道。
+    ///     获取此频道内的子频道。
     /// </summary>
-    /// <param name="id"> 要获取的频道的 ID。 </param>
-    /// <returns> 与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketGuildChannel? GetChannel(ulong id) => Client.State.GetGuildChannel(id);
 
     /// <summary>
-    ///     获取此频道中所有具有文字聊天能力的子频道。
+    ///     获取此子频道中所有具有文字聊天能力的子频道。
     /// </summary>
     /// <param name="id"> 要获取的子频道的 ID。 </param>
     /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>

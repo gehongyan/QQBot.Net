@@ -1,17 +1,17 @@
 ﻿namespace QQBot;
 
 /// <summary>
-///     表示一个频道内用户
+///     表示一个子频道内用户
 /// </summary>
 public interface IGuildMember : IGuildUser
 {
     /// <summary>
-    ///     获取此服务器用户所属的服务器。
+    ///     获取此频道用户所属的频道。
     /// </summary>
     IGuild Guild { get; }
 
     /// <summary>
-    ///     获取此用户所属服务器的 ID。
+    ///     获取此用户所属频道的 ID。
     /// </summary>
     ulong GuildId { get; }
 
@@ -21,12 +21,12 @@ public interface IGuildMember : IGuildUser
     string? Nickname { get; }
 
     /// <summary>
-    ///     获取此用户在该频道内拥有的所有身份组的 ID。
+    ///     获取此用户在该子频道内拥有的所有身份组的 ID。
     /// </summary>
     IReadOnlyCollection<uint>? RoleIds { get; }
 
     /// <summary>
-    ///     获取此用户加入该频道的时间。
+    ///     获取此用户加入该子频道的时间。
     /// </summary>
     DateTimeOffset? JoinedAt { get; }
 }

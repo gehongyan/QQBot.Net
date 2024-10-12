@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的频道用户。
+///     表示一个基于网关的子频道用户。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildMember : SocketGuildUser, IGuildMember

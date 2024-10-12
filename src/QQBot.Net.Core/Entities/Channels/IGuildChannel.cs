@@ -1,27 +1,27 @@
 namespace QQBot;
 
 /// <summary>
-///     表示一个频道内的子频道。
+///     表示一个子频道内的子频道。
 /// </summary>
 public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
 {
     /// <summary>
-    ///     获取此频道的唯一标识符。
+    ///     获取此子频道的唯一标识符。
     /// </summary>
     new ulong Id { get; }
 
     /// <summary>
-    ///     获取此频道所属的服务器。
+    ///     获取此子频道所属的频道。
     /// </summary>
     IGuild Guild { get; }
 
     /// <summary>
-    ///     获取此频道的名称。
+    ///     获取此子频道的名称。
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    ///     获取与此频道所属的服务器的 ID。
+    ///     获取与此子频道所属的频道的 ID。
     /// </summary>
     ulong GuildId { get; }
 
@@ -39,7 +39,7 @@ public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
     int Position { get; }
 
     /// <summary>
-    ///     获取创建此频道的用户的 ID。
+    ///     获取创建此子频道的用户的 ID。
     /// </summary>
     ulong? CreatorId { get; }
 }

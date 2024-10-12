@@ -6,7 +6,7 @@
 public static class MessageExtensions
 {
     /// <summary>
-    ///     向消息所属的频道回复文字消息。
+    ///     向消息所属的子频道回复消息。
     /// </summary>
     /// <param name="message"> 要回复的消息。 </param>
     /// <param name="markdown"> 要回复的 Markdown 消息内容。 </param>

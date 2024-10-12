@@ -6,7 +6,7 @@
 public interface IMessage : IEntity<string>
 {
     /// <summary>
-    ///     获取消息的来源频道。
+    ///     获取消息的来源子频道。
     /// </summary>
     IMessageChannel Channel { get; }
 

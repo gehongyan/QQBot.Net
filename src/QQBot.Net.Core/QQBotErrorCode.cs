@@ -320,6 +320,13 @@ public enum QQBotErrorCode
 
     #endregion
 
+    #region Media Errors (8XXXXX)
+
+    MediaFileDownloadFailed = 850026,
+    MediaFileUploadTimeout = 850027,
+
+    #endregion
+
     #region Message Sending Errors (1XXXXXX)
 
     SecurityHitMessageRateLimited = 1100100,

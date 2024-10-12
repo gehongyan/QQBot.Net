@@ -31,7 +31,7 @@ public class RequestOptions
     public RetryMode? RetryMode { get; set; }
 
     /// <summary>
-    ///     获取或设置要写入到服务器审计日志中的操作原因。
+    ///     获取或设置要写入到频道审计日志中的操作原因。
     /// </summary>
     /// <remarks>
     ///     默认的 API 客户端不支持设置此属性。

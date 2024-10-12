@@ -47,12 +47,12 @@ public class QQBotConfig
     public const int DefaultRequestTimeout = 6000;
 
     /// <summary>
-    ///     获取每请求获取频道的最大数量。
+    ///     获取每请求获取子频道的最大数量。
     /// </summary>
     public const int MaxGuildsPerBatch = 100;
 
     /// <summary>
-    ///     获取每请求获取频道成员的最大数量。
+    ///     获取每请求获取子频道成员的最大数量。
     /// </summary>
     public const int MaxMembersPerBatch = 400;
 

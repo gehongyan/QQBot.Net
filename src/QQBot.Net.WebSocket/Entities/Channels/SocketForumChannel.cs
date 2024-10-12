@@ -4,7 +4,7 @@ using QQBot.API;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示服务器中的一个基于网关的论坛子频道。
+///     表示频道中的一个基于网关的论坛子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketForumChannel : SocketGuildChannel, IForumChannel

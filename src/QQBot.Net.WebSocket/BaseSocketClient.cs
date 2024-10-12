@@ -14,7 +14,7 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     protected readonly QQBotSocketConfig BaseConfig;
 
     /// <summary>
-    ///     获取到网关服务器的往返延迟估计值（以毫秒为单位）。
+    ///     获取到网关频道的往返延迟估计值（以毫秒为单位）。
     /// </summary>
     /// <remarks>
     ///     此往返估计值源于心跳包的延迟，不代表诸如发送消息等操作的真实延迟。
@@ -37,7 +37,7 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     }
 
     // /// <summary>
-    // ///     获取当前用户所在的所有服务器。
+    // ///     获取当前用户所在的所有频道。
     // /// </summary>
     // public abstract IReadOnlyCollection<SocketGuild> Guilds { get; }
 
@@ -71,31 +71,31 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     // public abstract SocketUser? GetUser(string username, string identifyNumber);
     //
     // /// <summary>
-    // ///     获取一个服务器频道。
+    // ///     获取一个频道子频道。
     // /// </summary>
-    // /// <param name="id"> 要获取的频道的 ID。 </param>
-    // /// <returns> 与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
+    // /// <param name="id"> 要获取的子频道的 ID。 </param>
+    // /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
     // public abstract SocketChannel? GetChannel(ulong id);
     //
     // /// <summary>
-    // ///     获取一个私聊频道。
+    // ///     获取一个私聊子频道。
     // /// </summary>
-    // /// <param name="chatCode"> 私聊频道的聊天代码。 </param>
-    // /// <returns> 具有指定聊天代码的私聊频道；如果未找到，则返回 <c>null</c>。 </returns>
+    // /// <param name="chatCode"> 私聊子频道的聊天代码。 </param>
+    // /// <returns> 具有指定聊天代码的私聊子频道；如果未找到，则返回 <c>null</c>。 </returns>
     // public abstract SocketDMChannel? GetDMChannel(Guid chatCode);
     //
     // /// <summary>
-    // ///     获取一个私聊频道。
+    // ///     获取一个私聊子频道。
     // /// </summary>
-    // /// <param name="userId"> 私聊频道中另一位用户的 ID。 </param>
-    // /// <returns> 另一位用户具有指定用户 ID 的私聊频道；如果未找到，则返回 <c>null</c>。 </returns>
+    // /// <param name="userId"> 私聊子频道中另一位用户的 ID。 </param>
+    // /// <returns> 另一位用户具有指定用户 ID 的私聊子频道；如果未找到，则返回 <c>null</c>。 </returns>
     // public abstract SocketDMChannel? GetDMChannel(ulong userId);
 
     /// <summary>
-    ///     获取一个频道。
+    ///     获取一个子频道。
     /// </summary>
-    /// <param name="id"> 要获取的频道的 ID。 </param>
-    /// <returns> 与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
     public abstract SocketGuild? GetGuild(ulong id);
 
     /// <inheritdoc />
@@ -105,27 +105,27 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     public abstract Task StopAsync();
 
     // /// <summary>
-    // ///     下载全部或指定服务器的用户到缓存中。
+    // ///     下载全部或指定频道的用户到缓存中。
     // /// </summary>
-    // /// <param name="guilds"> 要下载用户的服务器。如果为 <c>null</c>，则下载所有可用的服务器。 </param>
+    // /// <param name="guilds"> 要下载用户的频道。如果为 <c>null</c>，则下载所有可用的频道。 </param>
     // /// <param name="options"> 发送请求时要使用的选项。 </param>
     // /// <returns> 一个表示异步下载操作的任务。 </returns>
     // public abstract Task DownloadUsersAsync(IEnumerable<IGuild>? guilds = null, RequestOptions? options = null);
     //
     // /// <summary>
-    // ///     下载全部或指定服务器的语音状态到缓存中。
+    // ///     下载全部或指定频道的语音状态到缓存中。
     // /// </summary>
-    // /// <param name="guilds"> 要下载语音状态的服务器。如果为 <c>null</c>，则下载所有可用的服务器。 </param>
+    // /// <param name="guilds"> 要下载语音状态的频道。如果为 <c>null</c>，则下载所有可用的频道。 </param>
     // /// <param name="options"> 发送请求时要使用的选项。 </param>
     // /// <returns> 一个表示异步下载操作的任务。 </returns>
     // public abstract Task DownloadVoiceStatesAsync(IEnumerable<IGuild>? guilds = null, RequestOptions? options = null);
     //
     // /// <summary>
-    // ///     下载全部或指定服务器的服务器助力信息到缓存中。
+    // ///     下载全部或指定频道的频道助力信息到缓存中。
     // /// </summary>
-    // /// <param name="guilds"> 要下载服务器助力信息的服务器。如果为 <c>null</c>，则下载所有可用的服务器。 </param>
+    // /// <param name="guilds"> 要下载频道助力信息的频道。如果为 <c>null</c>，则下载所有可用的频道。 </param>
     // /// <remarks>
-    // ///     对于要下载服务器助力信息的服务器，当前用户在该服务器中必须具有 <see cref="QQBot.GuildPermission.ManageGuild"/> 权限。
+    // ///     对于要下载频道助力信息的频道，当前用户在该频道中必须具有 <see cref="QQBot.GuildPermission.ManageGuild"/> 权限。
     // /// </remarks>
     // /// <param name="options"> 发送请求时要使用的选项。 </param>
     // public abstract Task DownloadBoostSubscriptionsAsync(IEnumerable<IGuild>? guilds = null,

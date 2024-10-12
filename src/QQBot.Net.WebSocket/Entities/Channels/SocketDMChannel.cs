@@ -5,7 +5,7 @@ using QQBot.Rest;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的子频道用户私聊频道。
+///     表示一个基于网关的子频道用户私聊子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel, ISocketMessageChannel
@@ -22,7 +22,7 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
     /// <inheritdoc />
     /// <remarks>
     ///     <note type="important">
-    ///         私聊消息频道不支持缓存消息，此属性将始终返回空集合。
+    ///         私聊消息子频道不支持缓存消息，此属性将始终返回空集合。
     ///     </note>
     /// </remarks>
     public IReadOnlyCollection<SocketMessage> CachedMessages => [];
@@ -69,7 +69,7 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
     #region Messages
 
     /// <summary>
-    ///     向此频道发送消息。
+    ///     向此子频道发送消息。
     /// </summary>
     /// <param name="content"> 要发送的消息内容。 </param>
     /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>

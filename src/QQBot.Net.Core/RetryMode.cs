@@ -33,7 +33,7 @@ public enum RetryMode
     Retry502 = 0x8,
 
     /// <summary>
-    ///     总是重试失败的请求，直到超时、取消令牌被触发或服务器响应非 502 错误。
+    ///     总是重试失败的请求，直到超时、取消令牌被触发或频道响应非 502 错误。
     /// </summary>
     AlwaysRetry = RetryTimeouts | /*RetryErrors |*/ RetryRatelimit | Retry502
 }

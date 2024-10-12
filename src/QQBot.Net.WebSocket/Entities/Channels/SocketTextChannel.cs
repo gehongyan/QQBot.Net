@@ -5,7 +5,7 @@ using Model = QQBot.API.Channel;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示服务器中一个基于网关的具有文字聊天能力的频道，可以发送和接收消息。
+///     表示频道中一个基于网关的具有文字聊天能力的子频道，可以发送和接收消息。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessageChannel
@@ -70,7 +70,7 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
     public SocketMessage? GetCachedMessage(string id) => _messages?.Get(id);
 
     /// <summary>
-    ///     向此频道发送消息。
+    ///     向此子频道发送消息。
     /// </summary>
     /// <param name="content"> 要发送的消息内容。 </param>
     /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>
@@ -87,7 +87,7 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
 
     /// <summary>
-    ///     从此消息频道获取一条消息。
+    ///     从此消息子频道获取一条消息。
     /// </summary>
     /// <param name="id"> 消息的 ID。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>

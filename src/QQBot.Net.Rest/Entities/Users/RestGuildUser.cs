@@ -3,7 +3,7 @@
 namespace QQBot.Rest;
 
 /// <summary>
-///     表示一个基于 REST 的频道用户。
+///     表示一个基于 REST 的子频道用户。
 /// </summary>
 public class RestGuildUser : RestUser, IGuildUser
 {

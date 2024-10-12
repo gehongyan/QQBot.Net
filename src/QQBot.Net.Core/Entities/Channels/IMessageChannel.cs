@@ -1,12 +1,12 @@
 ﻿namespace QQBot;
 
 /// <summary>
-///     表示一个消息频道，可以发送和接收消息。
+///     表示一个消息子频道，可以发送和接收消息。
 /// </summary>
 public interface IMessageChannel : IChannel
 {
     /// <summary>
-    ///     向此频道发送消息。
+    ///     向此子频道发送消息。
     /// </summary>
     /// <param name="content"> 要发送的消息内容。 </param>
     /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>
@@ -23,7 +23,7 @@ public interface IMessageChannel : IChannel
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null);
 
     /// <summary>
-    ///     从此消息频道获取一条消息。
+    ///     从此消息子频道获取一条消息。
     /// </summary>
     /// <param name="id"> 消息的 ID。 </param>
     /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>

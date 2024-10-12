@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace QQBot;
 
 /// <summary>
-///     表示一个频道的权限集。
+///     表示一个子频道的权限集。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public struct ChannelPermissions
@@ -14,31 +14,31 @@ public struct ChannelPermissions
     public static readonly ChannelPermissions None = new();
 
     /// <summary>
-    ///     获取一个包含所有可以为文字频道设置的权限的 <see cref="ChannelPermissions"/>。
+    ///     获取一个包含所有可以为文字子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
     public static readonly ChannelPermissions Text = new(0b0_0000_0000_0110_0111_1100_0010_1000);
 
     /// <summary>
-    ///     获取一个包含所有可以为语音频道设置的权限的 <see cref="ChannelPermissions"/>。
+    ///     获取一个包含所有可以为语音子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
     public static readonly ChannelPermissions Voice = new(0b1_1011_1101_0111_1111_1100_0010_1000);
 
     /// <summary>
-    ///     获取一个包含所有可以为分组频道设置的权限的 <see cref="ChannelPermissions"/>。
+    ///     获取一个包含所有可以为分组子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
     public static readonly ChannelPermissions Category = new(0b1_1011_1101_0111_1111_1100_0010_1000);
 
     /// <summary>
-    ///     获取一个包含所有可以为私聊频道设置的权限的 <see cref="ChannelPermissions"/>。
+    ///     获取一个包含所有可以为私聊子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
     public static readonly ChannelPermissions DM = new(0b0_0000_0000_0100_0101_1000_0000_0000);
 
     /// <summary>
-    ///     为指定的频道根据其类型获取一个包含所有权限的 <see cref="ChannelPermissions"/>。
+    ///     为指定的子频道根据其类型获取一个包含所有权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
-    /// <param name="channel"> 要获取其包含所有权限的频道。 </param>
-    /// <returns> 一个包含所有该频道可以拥有的权限的 <see cref="ChannelPermissions"/>。 </returns>
-    /// <exception cref="ArgumentException"> 未知的频道类型。 </exception>
+    /// <param name="channel"> 要获取其包含所有权限的子频道。 </param>
+    /// <returns> 一个包含所有该子频道可以拥有的权限的 <see cref="ChannelPermissions"/>。 </returns>
+    /// <exception cref="ArgumentException"> 未知的子频道类型。 </exception>
     public static ChannelPermissions All(IChannel channel) =>
         channel switch
         {
@@ -165,9 +165,9 @@ public struct ChannelPermissions
     ///     使用指定的权限位信息创建一个 <see cref="ChannelPermissions"/> 结构的新实例。
     /// </summary>
     /// <param name="createInvites"> 创建邀请。 </param>
-    /// <param name="manageChannels"> 频道管理。 </param>
+    /// <param name="manageChannels"> 子频道管理。 </param>
     /// <param name="manageRoles"> 管理角色权限。 </param>
-    /// <param name="viewChannel"> 查看文字与语音频道。 </param>
+    /// <param name="viewChannel"> 查看文字与语音子频道。 </param>
     /// <param name="sendMessages"> 发送文字消息。 </param>
     /// <param name="manageMessages"> 消息管理。 </param>
     /// <param name="attachFiles"> 上传文件。 </param>
@@ -175,11 +175,11 @@ public struct ChannelPermissions
     /// <param name="manageVoice"> 语音管理。 </param>
     /// <param name="mentionEveryone"> 提及全体成员、在线成员和所有角色。 </param>
     /// <param name="addReactions"> 添加回应。 </param>
-    /// <param name="passiveConnect"> 被动连接语音频道。 </param>
+    /// <param name="passiveConnect"> 被动连接语音子频道。 </param>
     /// <param name="useVoiceActivity"> 使用自由麦。 </param>
     /// <param name="speak"> 发言。 </param>
-    /// <param name="deafenMembers"> 服务器静音。 </param>
-    /// <param name="muteMembers"> 服务器闭麦。 </param>
+    /// <param name="deafenMembers"> 频道静音。 </param>
+    /// <param name="muteMembers"> 频道闭麦。 </param>
     /// <param name="playSoundtrack"> 共享计算机音频。 </param>
     /// <param name="shareScreen"> 屏幕分享。 </param>
     public ChannelPermissions(
@@ -211,9 +211,9 @@ public struct ChannelPermissions
     ///     以当前权限集为基础，更改指定的权限，返回一个 <see cref="ChannelPermissions"/> 结构的新实例。
     /// </summary>
     /// <param name="createInvites"> 创建邀请。 </param>
-    /// <param name="manageChannels"> 频道管理。 </param>
+    /// <param name="manageChannels"> 子频道管理。 </param>
     /// <param name="manageRoles"> 管理角色权限。 </param>
-    /// <param name="viewChannel"> 查看文字与语音频道。 </param>
+    /// <param name="viewChannel"> 查看文字与语音子频道。 </param>
     /// <param name="sendMessages"> 发送文字消息。 </param>
     /// <param name="manageMessages"> 消息管理。 </param>
     /// <param name="attachFiles"> 上传文件。 </param>
@@ -221,11 +221,11 @@ public struct ChannelPermissions
     /// <param name="manageVoice"> 语音管理。 </param>
     /// <param name="mentionEveryone"> 提及全体成员、在线成员和所有角色。 </param>
     /// <param name="addReactions"> 添加回应。 </param>
-    /// <param name="passiveConnect"> 被动连接语音频道。 </param>
+    /// <param name="passiveConnect"> 被动连接语音子频道。 </param>
     /// <param name="useVoiceActivity"> 使用自由麦。 </param>
     /// <param name="speak"> 发言。 </param>
-    /// <param name="deafenMembers"> 服务器静音。 </param>
-    /// <param name="muteMembers"> 服务器闭麦。 </param>
+    /// <param name="deafenMembers"> 频道静音。 </param>
+    /// <param name="muteMembers"> 频道闭麦。 </param>
     /// <param name="playSoundtrack"> 共享计算机音频。 </param>
     /// <param name="shareScreen"> 屏幕分享。 </param>
     /// <returns> 更改了指定权限的新的权限集。 </returns>

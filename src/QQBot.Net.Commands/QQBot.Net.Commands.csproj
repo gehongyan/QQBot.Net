@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../QQBot.Net.props"/>
+
+  <PropertyGroup>
+    <RootNamespace>QQBot.Commands</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>QQBot.Net.Commands</PackageId>
+    <Description>The text message based command framework extension for QQBot.Net.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj"/>
+  </ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@
 public enum ChannelPrivateType
 {
     /// <summary>
-    ///     公开频道。
+    ///     公开子频道。
     /// </summary>
     Public = 0,
 

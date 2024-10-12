@@ -4,7 +4,7 @@ using Model = QQBot.API.Channel;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的频道内的子频道。
+///     表示一个基于网关的子频道内的子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildChannel : SocketChannel, IGuildChannel

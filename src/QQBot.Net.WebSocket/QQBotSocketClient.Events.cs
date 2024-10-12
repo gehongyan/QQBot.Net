@@ -63,15 +63,15 @@ public partial class QQBotSocketClient
     #region Guilds
 
     /// <summary>
-    ///     当服务器状态变更为可用时引发。
+    ///     当频道状态变更为可用时引发。
     /// </summary>
     /// <remarks>
-    ///     服务器状态变更为可用，表示此服务器实体已完整缓存基础数据，并与网关同步。 <br />
-    ///     缓存基础数据包括服务器基本信息、频道、角色、频道权限重写、当前用户在服务器内的昵称。
+    ///     频道状态变更为可用，表示此频道实体已完整缓存基础数据，并与网关同步。 <br />
+    ///     缓存基础数据包括频道基本信息、子频道、角色、子频道权限重写、当前用户在频道内的昵称。
     ///     <br />
     ///     事件参数：
     ///     <list type="number">
-    ///     <item> <see cref="QQBot.WebSocket.SocketGuild"/> 参数是服务器状态变更为可用的服务器。 </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuild"/> 参数是频道状态变更为可用的频道。 </item>
     ///     </list>
     /// </remarks>
     public event Func<SocketGuild, Task> GuildAvailable
@@ -83,14 +83,14 @@ public partial class QQBotSocketClient
     internal readonly AsyncEvent<Func<SocketGuild, Task>> _guildAvailableEvent = new();
 
     /// <summary>
-    ///     当服务器状态变更为不可用时引发。
+    ///     当频道状态变更为不可用时引发。
     /// </summary>
     /// <remarks>
-    ///     服务器状态变更为不可用，表示此服务器实体丢失与网关的同步，所缓存的数据不可靠，这通常发生在服务器被删除、当前用户离开服务器、网关连接断开等情况。
+    ///     频道状态变更为不可用，表示此频道实体丢失与网关的同步，所缓存的数据不可靠，这通常发生在频道被删除、当前用户离开频道、网关连接断开等情况。
     ///     <br />
     ///     事件参数：
     ///     <list type="number">
-    ///     <item> <see cref="QQBot.WebSocket.SocketGuild"/> 参数是服务器状态变更为不可用的服务器。 </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuild"/> 参数是频道状态变更为不可用的频道。 </item>
     ///     </list>
     /// </remarks>
     public event Func<SocketGuild, Task> GuildUnavailable

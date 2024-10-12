@@ -4,7 +4,7 @@ using QQBot.API;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示服务器中的一个基于网关的具有语音聊天能力的频道。
+///     表示频道中的一个基于网关的具有语音聊天能力的子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketVoiceChannel : SocketGuildChannel, IVoiceChannel

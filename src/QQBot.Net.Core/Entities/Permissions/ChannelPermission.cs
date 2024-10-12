@@ -1,7 +1,7 @@
 namespace QQBot;
 
 /// <summary>
-///     表示可以为角色或用户设置的频道级别的权限。
+///     表示可以为角色或用户设置的子频道级别的权限。
 /// </summary>
 [Flags]
 public enum ChannelPermission : uint

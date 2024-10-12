@@ -4,7 +4,7 @@ using QQBot.Rest;
 namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的群组频道。
+///     表示一个基于网关的群组子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChannel, ISocketMessageChannel

@@ -1,64 +1,64 @@
 ﻿namespace QQBot;
 
 /// <summary>
-///     表示一个频道.
+///     表示一个子频道.
 /// </summary>
 public interface IGuild : IEntity<ulong>
 {
     /// <summary>
-    ///     获取此频道的名称。
+    ///     获取此子频道的名称。
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    ///     获取此频道创建者用户的 ID。
+    ///     获取此子频道创建者用户的 ID。
     /// </summary>
     ulong OwnerId { get; }
 
     /// <summary>
-    ///     获取当前用户是否是此频道的创建者。
+    ///     获取当前用户是否是此子频道的创建者。
     /// </summary>
     bool IsOwner { get; }
 
     /// <summary>
-    ///     获取此频道的成员数量。
+    ///     获取此子频道的成员数量。
     /// </summary>
     int MemberCount { get; }
 
     /// <summary>
-    ///     获取可以加入到此频道的最大成员数量。
+    ///     获取可以加入到此子频道的最大成员数量。
     /// </summary>
     int MaxMembers { get; }
 
     /// <summary>
-    ///     获取此频道的描述。
+    ///     获取此子频道的描述。
     /// </summary>
     string Description { get; }
 
     /// <summary>
-    ///     获取当前用户加入此频道的时间。
+    ///     获取当前用户加入此子频道的时间。
     /// </summary>
     DateTimeOffset JoinedAt { get; }
 
     /// <summary>
-    ///     确定此服务器实体是否已准备就绪以供用户代码访问。
+    ///     确定此频道实体是否已准备就绪以供用户代码访问。
     /// </summary>
     /// <remarks>
     ///     <note>
     ///         此属性仅对基于网关连接的客户端有意义。
     ///     </note>
-    ///     此属性为 <c>true</c> 表示，此服务器实体已完整缓存基础数据，并与网关同步。 <br />
-    ///     缓存基础数据包括服务器基本信息、频道、角色、频道权限重写、当前用户在服务器内的昵称。
+    ///     此属性为 <c>true</c> 表示，此频道实体已完整缓存基础数据，并与网关同步。 <br />
+    ///     缓存基础数据包括频道基本信息、子频道、角色、子频道权限重写、当前用户在频道内的昵称。
     /// </remarks>
     bool IsAvailable { get; }
 
     /// <summary>
-    ///     获取此服务器内的用户。
+    ///     获取此频道内的用户。
     /// </summary>
     /// <remarks>
-    ///     此方法获取加入到此服务器内的用户。
+    ///     此方法获取加入到此频道内的用户。
     ///     <note>
-    ///         此方法在网关的实现中可能返回 <c>null</c>，因为在大型服务器中，用户列表的缓存可能不完整。
+    ///         此方法在网关的实现中可能返回 <c>null</c>，因为在大型频道中，用户列表的缓存可能不完整。
     ///     </note>
     /// </remarks>
     /// <param name="id"> 要获取的用户的 ID。 </param>

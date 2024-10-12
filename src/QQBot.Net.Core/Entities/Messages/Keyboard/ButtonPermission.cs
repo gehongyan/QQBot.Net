@@ -21,7 +21,7 @@ public enum ButtonPermission
     Everyone = 2,
 
     /// <summary>
-    ///     指定身份组可操作（仅频道可用）
+    ///     指定身份组可操作（仅子频道可用）
     /// </summary>
     SpecificRole = 3
 }

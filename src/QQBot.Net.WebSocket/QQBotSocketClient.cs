@@ -264,10 +264,10 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     public override SocketGuild? GetGuild(ulong id) => State.GetGuild(id);
 
     /// <summary>
-    ///     获取一个用户单聊频道。
+    ///     获取一个用户单聊子频道。
     /// </summary>
-    /// <param name="id"> 参与到单聊频道中另一位用户的用户 ID。</param>
-    /// <returns> 如果找到了指定用户的单聊频道，则返回该单聊频道；否则返回 <c>null</c>。</returns>
+    /// <param name="id"> 参与到单聊子频道中另一位用户的用户 ID。</param>
+    /// <returns> 如果找到了指定用户的单聊子频道，则返回该单聊子频道；否则返回 <c>null</c>。</returns>
     public SocketUserChannel? GetUserChannel(Guid id) => State.GetUserChannel(id);
 
     internal SocketUserChannel AddUserChannel(ClientState state, Guid id, SocketUser recipient)
@@ -312,11 +312,11 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     // public override SocketDMChannel? GetDMChannel(ulong userId) => State.GetDMChannel(userId);
     //
     // /// <summary>
-    // ///     获取一个频道。
+    // ///     获取一个子频道。
     // /// </summary>
-    // /// <param name="id"> 频道的 ID。 </param>
+    // /// <param name="id"> 子频道的 ID。 </param>
     // /// <param name="options"> 发送请求时要使用的选项。 </param>
-    // /// <returns> 一个表示异步获取操作的任务。任务的结果是具有指定 ID 的频道；若指定 ID 的频道不存在，则为 <c>null</c>。 </returns>
+    // /// <returns> 一个表示异步获取操作的任务。任务的结果是具有指定 ID 的子频道；若指定 ID 的子频道不存在，则为 <c>null</c>。 </returns>
     // public async Task<IChannel> GetChannelAsync(ulong id, RequestOptions? options = null)
     // {
     //     if (GetChannel(id) is { } channel) return channel;
@@ -324,24 +324,24 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     // }
     //
     // /// <summary>
-    // ///     获取一个私聊频道。
+    // ///     获取一个私聊子频道。
     // /// </summary>
-    // /// <param name="chatCode"> 私聊频道的聊天代码。 </param>
+    // /// <param name="chatCode"> 私聊子频道的聊天代码。 </param>
     // /// <param name="options"> 发送请求时要使用的选项。 </param>
-    // /// <returns> 一个表示异步获取操作的任务。任务的结果是具有指定聊天代码的私聊频道；若指定聊天代码的私聊频道不存在，则为 <c>null</c>。 </returns>
+    // /// <returns> 一个表示异步获取操作的任务。任务的结果是具有指定聊天代码的私聊子频道；若指定聊天代码的私聊子频道不存在，则为 <c>null</c>。 </returns>
     // public async Task<IDMChannel> GetDMChannelAsync(Guid chatCode, RequestOptions? options = null) =>
     //     await ClientHelper.GetDMChannelAsync(this, chatCode, options).ConfigureAwait(false);
     //
     // /// <summary>
-    // ///     获取当前会话中已创建的所有私聊频道。
+    // ///     获取当前会话中已创建的所有私聊子频道。
     // /// </summary>
     // /// <remarks>
     // ///     <note type="warning">
-    // ///         此方法不会返回当前会话之外已创建的私聊频道。如果客户端刚刚启动，这可能会返回一个空集合。
+    // ///         此方法不会返回当前会话之外已创建的私聊子频道。如果客户端刚刚启动，这可能会返回一个空集合。
     // ///     </note>
     // /// </remarks>
     // /// <param name="options"> 发送请求时要使用的选项。 </param>
-    // /// <returns> 一个表示异步获取操作的任务。任务的结果是当前会话中已创建的所有私聊频道。 </returns>
+    // /// <returns> 一个表示异步获取操作的任务。任务的结果是当前会话中已创建的所有私聊子频道。 </returns>
     // public async Task<IReadOnlyCollection<IDMChannel>> GetDMChannelsAsync(RequestOptions? options = null) =>
     //     (await ClientHelper.GetDMChannelsAsync(this, options).ConfigureAwait(false)).ToImmutableArray();
     //

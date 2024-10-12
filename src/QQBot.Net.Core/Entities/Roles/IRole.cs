@@ -1,7 +1,7 @@
 ﻿namespace QQBot;
 
 /// <summary>
-///     表示一个频道身份组。
+///     表示一个子频道身份组。
 /// </summary>
 public interface IRole : IEntity<uint>
 {

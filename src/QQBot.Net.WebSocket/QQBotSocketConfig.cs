@@ -12,7 +12,7 @@ namespace QQBot.WebSocket;
 ///     此配置基于 <see cref="QQBot.Rest.QQBotRestConfig"/>，在与 REST 有关的配置的基础上，定义了有关网关的配置。
 /// </remarks>
 /// <example>
-///     以下代码启用了消息缓存，并配置客户端在服务器可用时始终下载用户。
+///     以下代码启用了消息缓存，并配置客户端在频道可用时始终下载用户。
 ///     <code language="cs">
 ///     var config = new QQBotSocketConfig
 ///     {
@@ -77,19 +77,19 @@ public class QQBotSocketConfig : QQBotRestConfig
     public int IdentifyMaxConcurrency { get; set; } = 1;
 
     /// <summary>
-    ///     获取或设置被视为加入少量服务器的阈值数量。
+    ///     获取或设置被视为加入少量频道的阈值数量。
     /// </summary>
     /// <seealso cref="QQBot.WebSocket.StartupCacheFetchMode.Auto"/>
     public uint SmallNumberOfGuildsThreshold { get; set; } = 5;
 
     /// <summary>
-    ///     获取或设置被视为加入大量服务器的阈值数量。
+    ///     获取或设置被视为加入大量频道的阈值数量。
     /// </summary>
     /// <seealso cref="QQBot.WebSocket.StartupCacheFetchMode.Auto"/>
     public uint LargeNumberOfGuildsThreshold { get; set; } = 50;
 
     /// <summary>
-    ///     获取或设置应在缓存中保留的每个频道的消息数量。将此属性设置为零将完全禁用消息缓存。
+    ///     获取或设置应在缓存中保留的每个子频道的消息数量。将此属性设置为零将完全禁用消息缓存。
     /// </summary>
     public int MessageCacheSize { get; set; } = 10;
 
@@ -103,18 +103,18 @@ public class QQBotSocketConfig : QQBotRestConfig
     /// </summary>
     /// <remarks>
     ///     此属性用于指定客户端在启动时如何缓存基础数据，并影响 <see cref="QQBot.WebSocket.QQBotSocketClient.Ready"/> 事件的引发时机。 <br />
-    ///     缓存基础数据包括服务器基本信息、频道、角色、频道权限重写、当前用户在服务器内的昵称。
+    ///     缓存基础数据包括频道基本信息、子频道、角色、子频道权限重写、当前用户在频道内的昵称。
     /// </remarks>
     public StartupCacheFetchMode StartupCacheFetchMode { get; set; } = StartupCacheFetchMode.Auto;
 
     /// <summary>
-    ///     获取或设置是否在服务器可用时始终下载所有用户。
+    ///     获取或设置是否在频道可用时始终下载所有用户。
     /// </summary>
     // /// <remarks>
     // ///     <note>
-    // ///         对于大型服务器，启用此选项可能会导致性能问题。调用
+    // ///         对于大型频道，启用此选项可能会导致性能问题。调用
     // ///         <see cref="QQBot.WebSocket.QQBotSocketClient.DownloadUsersAsync(System.Collections.Generic.IEnumerable{QQBot.IGuild},QQBot.RequestOptions)"/>
-    // ///         可以按需下载服务器用户列表。
+    // ///         可以按需下载频道用户列表。
     // ///     </note>
     // /// </remarks>
     public bool AlwaysDownloadUsers { get; set; } = false;
@@ -135,7 +135,7 @@ public class QQBotSocketConfig : QQBotRestConfig
     public GatewayIntents GatewayIntents { get; set; } = GatewayIntents.AllPublicDomain;
 
     /// <summary>
-    ///     获取或设置是否记录与服务器意图和事件相关的警告。
+    ///     获取或设置是否记录与频道意图和事件相关的警告。
     /// </summary>
     public bool LogGatewayIntentWarnings { get; set; } = true;
 

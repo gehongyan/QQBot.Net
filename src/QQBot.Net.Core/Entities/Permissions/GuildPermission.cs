@@ -1,7 +1,7 @@
 namespace QQBot;
 
 /// <summary>
-///     表示可以为角色或用户设置的频道级别的服务器权限。
+///     表示可以为角色或用户设置的子频道级别的频道权限。
 /// </summary>
 [Flags]
 public enum GuildPermission : uint
@@ -15,10 +15,10 @@ public enum GuildPermission : uint
     Administrator = 1 << 0,
 
     /// <summary>
-    ///     管理服务器。
+    ///     管理频道。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以修改服务器名称、头像和区域等设置项，以及未明确的概况设置项，并对服务器安全进行设置。
+    ///     拥有此权限的成员可以修改频道名称、头像和区域等设置项，以及未明确的概况设置项，并对频道安全进行设置。
     /// </remarks>
     ManageGuild = 1 << 1,
 
@@ -26,7 +26,7 @@ public enum GuildPermission : uint
     ///     查看管理日志。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以查看服务器的管理日志。
+    ///     拥有此权限的成员可以查看频道的管理日志。
     /// </remarks>
     ViewAuditLog = 1 << 2,
 
@@ -42,15 +42,15 @@ public enum GuildPermission : uint
     ///     管理邀请。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以管理服务器邀请。
+    ///     拥有此权限的成员可以管理频道邀请。
     /// </remarks>
     ManageInvites = 1 << 4,
 
     /// <summary>
-    ///     频道管理。
+    ///     子频道管理。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以创建新的频道以及编辑或删除已存在的频道。
+    ///     拥有此权限的成员可以创建新的子频道以及编辑或删除已存在的子频道。
     /// </remarks>
     ManageChannels = 1 << 5,
 
@@ -63,10 +63,10 @@ public enum GuildPermission : uint
     KickMembers = 1 << 6,
 
     /// <summary>
-    ///     加入服务器黑名单。
+    ///     加入频道黑名单。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以将其他成员加入服务器黑名单、查看服务器黑名单。
+    ///     拥有此权限的成员可以将其他成员加入频道黑名单、查看频道黑名单。
     /// </remarks>
     BanMembers = 1 << 7,
 
@@ -95,10 +95,10 @@ public enum GuildPermission : uint
     ManageRoles = 1 << 10,
 
     /// <summary>
-    ///     查看文字与语音频道。
+    ///     查看文字与语音子频道。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以查看文字、语音频道。
+    ///     拥有此权限的成员可以查看文字、语音子频道。
     /// </remarks>
     ViewChannel = 1 << 11,
 
@@ -106,7 +106,7 @@ public enum GuildPermission : uint
     ///     发送文字消息。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以在文字频道中发送消息。
+    ///     拥有此权限的成员可以在文字子频道中发送消息。
     /// </remarks>
     SendMessages = 1 << 12,
 
@@ -130,7 +130,7 @@ public enum GuildPermission : uint
     ///     语音连接。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以连接到语音频道。
+    ///     拥有此权限的成员可以连接到语音子频道。
     /// </remarks>
     Connect = 1 << 15,
 
@@ -138,7 +138,7 @@ public enum GuildPermission : uint
     ///     语音管理。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可修改频道发言模式，管理频道成员上麦，将频道成员转移至其他频道和踢出频道。
+    ///     拥有此权限的成员可修改子频道发言模式，管理子频道成员上麦，将子频道成员转移至其他子频道和踢出子频道。
     /// </remarks>
     ManageVoice = 1 << 16,
 
@@ -146,7 +146,7 @@ public enum GuildPermission : uint
     ///     提及全体成员、在线成员和所有角色。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以使用@全体成员，@在线成员提及该频道中的所有成员，该权限可以绕开"允许任何人@提及此角色"的限制。
+    ///     拥有此权限的成员可以使用@全体成员，@在线成员提及该子频道中的所有成员，该权限可以绕开"允许任何人@提及此角色"的限制。
     /// </remarks>
     MentionEveryone = 1 << 17,
 
@@ -167,10 +167,10 @@ public enum GuildPermission : uint
     FollowReactions = 1 << 19,
 
     /// <summary>
-    ///     被动连接语音频道。
+    ///     被动连接语音子频道。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员在没有语音连接权限时，可以被动邀请或被人移动进入语音频道。
+    ///     拥有此权限的成员在没有语音连接权限时，可以被动邀请或被人移动进入语音子频道。
     /// </remarks>
     PassiveConnect = 1 << 20,
 
@@ -178,7 +178,7 @@ public enum GuildPermission : uint
     ///     仅使用按键说话。
     /// </summary>
     /// <remarks>
-    ///     拥有此限制的成员加入语音频道后，只能使用按键说话。
+    ///     拥有此限制的成员加入语音子频道后，只能使用按键说话。
     /// </remarks>
     OnlyPushToTalk = 1 << 21,
 
@@ -186,7 +186,7 @@ public enum GuildPermission : uint
     ///     使用自由麦。
     /// </summary>
     /// <remarks>
-    ///     没有此权限的成员，必须在频道内使用按键说话。
+    ///     没有此权限的成员，必须在子频道内使用按键说话。
     /// </remarks>
     UseVoiceActivity = 1 << 22,
 
@@ -194,23 +194,23 @@ public enum GuildPermission : uint
     ///     发言。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以在语音频道中发言。
+    ///     拥有此权限的成员可以在语音子频道中发言。
     /// </remarks>
     Speak = 1 << 23,
 
     /// <summary>
-    ///     服务器静音。
+    ///     频道静音。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以限制其他成员在服务器中的语音接收。
+    ///     拥有此权限的成员可以限制其他成员在频道中的语音接收。
     /// </remarks>
     DeafenMembers = 1 << 24,
 
     /// <summary>
-    ///     服务器闭麦。
+    ///     频道闭麦。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可以限制其他成员在语音频道中发言和共享计算机音频。
+    ///     拥有此权限的成员可以限制其他成员在语音子频道中发言和共享计算机音频。
     /// </remarks>
     MuteMembers = 1 << 25,
 
@@ -226,7 +226,7 @@ public enum GuildPermission : uint
     ///     共享计算机音频。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可在语音频道中共享计算机音频。
+    ///     拥有此权限的成员可在语音子频道中共享计算机音频。
     /// </remarks>
     PlaySoundtrack = 1 << 27,
 
@@ -234,7 +234,7 @@ public enum GuildPermission : uint
     ///     屏幕分享。
     /// </summary>
     /// <remarks>
-    ///     拥有此权限的成员可在语音频道中共享计算机画面。
+    ///     拥有此权限的成员可在语音子频道中共享计算机画面。
     /// </remarks>
     ShareScreen = 1 << 28
 }

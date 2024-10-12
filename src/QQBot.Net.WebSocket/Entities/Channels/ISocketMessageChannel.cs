@@ -1,12 +1,12 @@
 ﻿namespace QQBot.WebSocket;
 
 /// <summary>
-///     表示一个基于网关的消息频道，可以发送和接收消息。
+///     表示一个基于网关的消息子频道，可以发送和接收消息。
 /// </summary>
 public interface ISocketMessageChannel : IMessageChannel
 {
     /// <summary>
-    ///     获取此频道缓存的所有消息。
+    ///     获取此子频道缓存的所有消息。
     /// </summary>
     /// <remarks>
     ///     <note type="warning">
@@ -19,7 +19,7 @@ public interface ISocketMessageChannel : IMessageChannel
     IReadOnlyCollection<SocketMessage> CachedMessages { get; }
 
     /// <summary>
-    ///     获取此频道缓存的消息。
+    ///     获取此子频道缓存的消息。
     /// </summary>
     /// <remarks>
     ///     <note type="warning">

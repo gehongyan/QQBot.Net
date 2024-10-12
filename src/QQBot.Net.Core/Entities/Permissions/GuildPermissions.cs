@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace QQBot;
 
 /// <summary>
-///     表示一个服务器的权限集。
+///     表示一个频道的权限集。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public struct GuildPermissions
@@ -14,7 +14,7 @@ public struct GuildPermissions
     public static readonly GuildPermissions None = new();
 
     /// <summary>
-    ///     获取一个包含所有可以为服务器设置的权限的 <see cref="GuildPermissions"/>。
+    ///     获取一个包含所有可以为频道设置的权限的 <see cref="GuildPermissions"/>。
     /// </summary>
     public static readonly GuildPermissions All = new(0b1_1111_1111_1111_1111_1111_1111_1111);
 
@@ -24,12 +24,12 @@ public struct GuildPermissions
     public ulong RawValue { get; }
 
     /// <summary>
-    ///     获取此权限集的相关用户是否为服务器管理员。
+    ///     获取此权限集的相关用户是否为频道管理员。
     /// </summary>
     public bool Administrator => Permissions.GetValue(RawValue, GuildPermission.Administrator);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户管理服务器。
+    ///     获取此权限集是否允许相关用户管理频道。
     /// </summary>
     public bool ManageGuild => Permissions.GetValue(RawValue, GuildPermission.ManageGuild);
 
@@ -49,7 +49,7 @@ public struct GuildPermissions
     public bool ManageInvites => Permissions.GetValue(RawValue, GuildPermission.ManageInvites);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户管理频道。
+    ///     获取此权限集是否允许相关用户管理子频道。
     /// </summary>
     public bool ManageChannels => Permissions.GetValue(RawValue, GuildPermission.ManageChannels);
 
@@ -79,7 +79,7 @@ public struct GuildPermissions
     public bool ManageRoles => Permissions.GetValue(RawValue, GuildPermission.ManageRoles);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户查看文字与语音频道。
+    ///     获取此权限集是否允许相关用户查看文字与语音子频道。
     /// </summary>
     public bool ViewChannel => Permissions.GetValue(RawValue, GuildPermission.ViewChannel);
 
@@ -104,7 +104,7 @@ public struct GuildPermissions
     public bool Connect => Permissions.GetValue(RawValue, GuildPermission.Connect);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户管理语音频道。
+    ///     获取此权限集是否允许相关用户管理语音子频道。
     /// </summary>
     public bool ManageVoice => Permissions.GetValue(RawValue, GuildPermission.ManageVoice);
 
@@ -124,7 +124,7 @@ public struct GuildPermissions
     public bool FollowReactions => Permissions.GetValue(RawValue, GuildPermission.FollowReactions);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户被动连接到语音频道。
+    ///     获取此权限集是否允许相关用户被动连接到语音子频道。
     /// </summary>
     public bool PassiveConnect => Permissions.GetValue(RawValue, GuildPermission.PassiveConnect);
 
@@ -139,17 +139,17 @@ public struct GuildPermissions
     public bool UseVoiceActivity => Permissions.GetValue(RawValue, GuildPermission.UseVoiceActivity);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户在语音频道中发言。
+    ///     获取此权限集是否允许相关用户在语音子频道中发言。
     /// </summary>
     public bool Speak => Permissions.GetValue(RawValue, GuildPermission.Speak);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户使其他用户被服务器静音。
+    ///     获取此权限集是否允许相关用户使其他用户被频道静音。
     /// </summary>
     public bool DeafenMembers => Permissions.GetValue(RawValue, GuildPermission.DeafenMembers);
 
     /// <summary>
-    ///     获取此权限集是否允许相关用户使其他用户被服务器闭麦。
+    ///     获取此权限集是否允许相关用户使其他用户被频道闭麦。
     /// </summary>
     public bool MuteMembers => Permissions.GetValue(RawValue, GuildPermission.MuteMembers);
 
@@ -248,17 +248,17 @@ public struct GuildPermissions
     ///     使用指定的权限位信息创建一个 <see cref="GuildPermissions"/> 结构的新实例。
     /// </summary>
     /// <param name="administrator"> 管理员。 </param>
-    /// <param name="manageGuild"> 管理服务器。 </param>
+    /// <param name="manageGuild"> 管理频道。 </param>
     /// <param name="viewAuditLog"> 查看管理日志。 </param>
     /// <param name="createInvites"> 创建邀请。 </param>
     /// <param name="manageInvites"> 管理邀请。 </param>
-    /// <param name="manageChannels"> 频道管理。 </param>
+    /// <param name="manageChannels"> 子频道管理。 </param>
     /// <param name="kickMembers"> 踢出成员。 </param>
-    /// <param name="banMembers"> 加入服务器黑名单。 </param>
+    /// <param name="banMembers"> 加入频道黑名单。 </param>
     /// <param name="manageEmojis"> 管理自定义表情。 </param>
     /// <param name="changeNickname"> 修改昵称。 </param>
     /// <param name="manageRoles"> 管理角色权限。 </param>
-    /// <param name="viewChannel"> 查看文字与语音频道。 </param>
+    /// <param name="viewChannel"> 查看文字与语音子频道。 </param>
     /// <param name="sendMessages"> 发送文字消息。 </param>
     /// <param name="manageMessages"> 消息管理。 </param>
     /// <param name="attachFiles"> 上传文件。 </param>
@@ -267,12 +267,12 @@ public struct GuildPermissions
     /// <param name="mentionEveryone"> 提及全体成员、在线成员和所有角色。 </param>
     /// <param name="addReactions"> 添加回应。 </param>
     /// <param name="followReactions"> 跟随添加回应。 </param>
-    /// <param name="passiveConnect"> 被动连接语音频道。 </param>
+    /// <param name="passiveConnect"> 被动连接语音子频道。 </param>
     /// <param name="onlyPushToTalk"> 仅使用按键说话。 </param>
     /// <param name="useVoiceActivity"> 使用自由麦。 </param>
     /// <param name="speak"> 发言。 </param>
-    /// <param name="deafenMembers"> 服务器静音。 </param>
-    /// <param name="muteMembers"> 服务器闭麦。 </param>
+    /// <param name="deafenMembers"> 频道静音。 </param>
+    /// <param name="muteMembers"> 频道闭麦。 </param>
     /// <param name="manageNicknames"> 修改他人昵称。 </param>
     /// <param name="playSoundtrack"> 共享计算机音频。 </param>
     /// <param name="shareScreen"> 屏幕分享。 </param>
@@ -317,17 +317,17 @@ public struct GuildPermissions
     ///     以当前权限集为基础，更改指定的权限，返回一个 <see cref="GuildPermissions"/> 结构的新实例。
     /// </summary>
     /// <param name="administrator"> 管理员。 </param>
-    /// <param name="manageGuild"> 管理服务器。 </param>
+    /// <param name="manageGuild"> 管理频道。 </param>
     /// <param name="viewAuditLog"> 查看管理日志。 </param>
     /// <param name="createInvites"> 创建邀请。 </param>
     /// <param name="manageInvites"> 管理邀请。 </param>
-    /// <param name="manageChannels"> 频道管理。 </param>
+    /// <param name="manageChannels"> 子频道管理。 </param>
     /// <param name="kickMembers"> 踢出成员。 </param>
-    /// <param name="banMembers"> 加入服务器黑名单。 </param>
+    /// <param name="banMembers"> 加入频道黑名单。 </param>
     /// <param name="manageEmojis"> 管理自定义表情。 </param>
     /// <param name="changeNickname"> 修改昵称。 </param>
     /// <param name="manageRoles"> 管理角色权限。 </param>
-    /// <param name="viewChannel"> 查看文字与语音频道。 </param>
+    /// <param name="viewChannel"> 查看文字与语音子频道。 </param>
     /// <param name="sendMessages"> 发送文字消息。 </param>
     /// <param name="manageMessages"> 消息管理。 </param>
     /// <param name="attachFiles"> 上传文件。 </param>
@@ -336,12 +336,12 @@ public struct GuildPermissions
     /// <param name="mentionEveryone"> 提及全体成员、在线成员和所有角色。 </param>
     /// <param name="addReactions"> 添加回应。 </param>
     /// <param name="followReactions"> 跟随添加回应。 </param>
-    /// <param name="passiveConnect"> 被动连接语音频道。 </param>
+    /// <param name="passiveConnect"> 被动连接语音子频道。 </param>
     /// <param name="onlyPushToTalk"> 仅使用按键说话。 </param>
     /// <param name="useVoiceActivity"> 使用自由麦。 </param>
     /// <param name="speak"> 发言。 </param>
-    /// <param name="deafenMembers"> 服务器静音。 </param>
-    /// <param name="muteMembers"> 服务器闭麦。 </param>
+    /// <param name="deafenMembers"> 频道静音。 </param>
+    /// <param name="muteMembers"> 频道闭麦。 </param>
     /// <param name="manageNicknames"> 修改他人昵称。 </param>
     /// <param name="playSoundtrack"> 共享计算机音频。 </param>
     /// <param name="shareScreen"> 屏幕分享。 </param>
