@@ -95,7 +95,7 @@ public readonly struct AlphaColor
     /// <example>
     ///     创建 #607D8B（http://www.color-hex.com/color/607d8b）所表示的颜色，且其完全不透明：
     ///     <code language="cs">
-    ///         AlphaColor darkGrey = new AlphaColor((byte)0xFF, (byte)0x60, (byte)0x7D, (byte)0x8B);
+    ///     AlphaColor darkGrey = new AlphaColor((byte)0xFF, (byte)0x60, (byte)0x7D, (byte)0x8B);
     ///     </code>
     /// </example>
     /// <param name="a"> 不透明度通道的强度。 </param>

@@ -42,7 +42,6 @@ internal class RequestBucket
             WindowCount = GatewayBucket.Get(request.Options.BucketId ?? throw new InvalidOperationException("Gateway bucket is not set.")).WindowCount;
         else
             WindowCount = 117; // TODO: Preemptive rate limit
-        Debug.WriteLine($"WindowCount: {WindowCount}");
 
         _semaphore = WindowCount;
         _resetTick = null;

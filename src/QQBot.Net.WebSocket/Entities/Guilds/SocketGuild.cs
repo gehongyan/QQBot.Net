@@ -47,7 +47,7 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     public int DownloadedMemberCount => _members.Count;
 
     /// <inheritdoc />
-    public bool IsAvailable { get; private set; }
+    public bool IsAvailable { get; internal set; }
 
     /// <summary>
     ///     获取此频道是否已连接至网关。
@@ -121,7 +121,7 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
         Description = model.Description;
         JoinedAt = model.JoinedAt;
 
-        IsAvailable = true;
+        IsAvailable = false;
     }
 
     internal void Update(ClientState state, IReadOnlyCollection<ChannelModel> models)

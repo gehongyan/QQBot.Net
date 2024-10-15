@@ -13,15 +13,19 @@ QQBotSocketClient client = new(new QQBotSocketConfig
 client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.Ready += async () =>
 {
+    await Task.Yield();
     Console.WriteLine("Ready!");
-    await client.DownloadUsersAsync();
 };
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    IUserMessage msg = await message.ReplyAsync(message.Content);
-    await Task.Delay(TimeSpan.FromSeconds(1));
-    await msg.DeleteAsync();
+    IUserMessage msg = await message.ReplyAsync($"""
+    [Content] {message.Content}
+    [Content] {Format.Escape(message.Content)}
+    [Content] {Format.Sanitize(message.Content)}
+    [Attachments] {message.Attachments.Count}
+    """
+    );
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

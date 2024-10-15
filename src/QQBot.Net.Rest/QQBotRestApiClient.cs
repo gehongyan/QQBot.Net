@@ -555,8 +555,9 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new();
+        string id = openId.ToIdString();
         await SendAsync(HttpMethod.Delete,
-                () => $"v2/users/{openId.ToIdString()}/messages/{messageId}", ids, ClientBucketType.SendEdit, options)
+                () => $"v2/users/{id}/messages/{messageId}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 

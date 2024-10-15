@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>DEBUG_REST;DEBUG_LIMITS</DefineConstants>
+    <DefineConstants>DEBUG_REST</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

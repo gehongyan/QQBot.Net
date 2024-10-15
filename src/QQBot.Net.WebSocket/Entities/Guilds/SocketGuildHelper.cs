@@ -19,5 +19,7 @@ internal static class SocketGuildHelper
             GetGuildRolesResponse rolesModel = await client.ApiClient.GetGuildRolesAsync(guild.Id, options).ConfigureAwait(false);
             guild.Update(client.State, rolesModel);
         }
+
+        guild.IsAvailable = true;
     }
 }

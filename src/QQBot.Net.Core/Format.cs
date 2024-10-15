@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Frozen;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Text;
 
@@ -14,6 +15,13 @@ public static class Format
     [
         "\\", "*", "_", "~", "`", ".", ":", "/", ">", "|", "#"
     ];
+
+    private static readonly FrozenDictionary<string, string> EscapingMap = new Dictionary<string, string>
+    {
+        { "&", "&amp;" },
+        { "<", "&lt;" },
+        { ">", "&gt;" },
+    }.ToFrozenDictionary();
 
     /// <summary>
     ///     返回一个使用粗体格式的 Markdown 格式化字符串。
@@ -221,13 +229,61 @@ public static class Format
     /// <remarks>
     ///     如果未指定要转移的字符，则将使用默认的转义字符列表。默认的待转义字符包括：<br />
     ///     <c>\</c>、<c>*</c>、<c>~</c>、<c>`</c>、<c>:</c>、<c>-</c>、<c>]</c>、<c>)</c>、<c>&gt;</c>、<c>#</c>。
+    ///     此方法会在每个待转义字符前添加一个零宽空格字符（U+200B）。此操作会使内嵌格式提及失效。 <br />
+    ///     例如，用户发送用户提及 <c>@someone</c>，网关下传 <c>&lt;@!4937680016579989979&gt;</c>，经过此方法转义的结果为
+    ///     <c>&lt;@!4937680016579989979\u200B&gt;</c>，发送给用户后，用户将看到 <c>&lt;@!4937680016579989979&gt;</c>。 <br />
+    ///     例如，用户发送 <c>&lt;@!4937680016579989979&gt;</c>，网关下传
+    ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>，经过此方法转义的结果为
+    ///     <c>&amp;lt;@!4937680016579989979&amp;\u200Bgt;</c>，发送给用户后，用户将看到
+    ///     <c>&lt;@!4937680016579989979&gt;</c>。
     /// </remarks>
+    /// <seealso cref="QQBot.Format.Escape(System.String)"/>
     [return: NotNullIfNotNull(nameof(text))]
     public static string? Sanitize(this string? text, params string[] sensitiveCharacters)
     {
         if (text is null) return null;
         string[] sensitiveChars = sensitiveCharacters.Length > 0 ? sensitiveCharacters : SensitiveCharacters;
         return sensitiveChars.Aggregate(text,
-            (current, unsafeChar) => current.Replace(unsafeChar, $"\\{unsafeChar}"));
+            (current, unsafeChar) => current.Replace(unsafeChar, $"\u200B{unsafeChar}"));
+    }
+
+    /// <summary>
+    ///     转义字符串，将原始文本中的内嵌格式转义为转义字符。
+    /// </summary>
+    /// <param name="text"> 要转义的文本。 </param>
+    /// <returns> 转义后的文本。 </returns>
+    /// <remarks>
+    ///     此方法会将文本中的 <c>&amp;</c>、<c>&lt;</c> 和 <c>&gt;</c> 字符分别转义为 <c>&amp;amp;</c>、<c>&amp;lt;</c> 和 <c>&amp;gt;</c>。
+    ///     此操作会保留网关或 API 返回的文本内容在用户侧的显示形式。 <br />
+    ///     例如，用户发送用户提及 <c>@someone</c>，网关下传 <c>&lt;@!4937680016579989979&gt;</c>，经过此方法转义的结果为
+    ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>，发送给用户后，用户将看到 <c>&lt;@!4937680016579989979&gt;</c>。 <br />
+    ///     例如，用户发送 <c>&lt;@!4937680016579989979&gt;</c>，网关下传
+    ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>，经过此方法转义的结果为
+    ///     <c>&amp;amp;lt;@!4937680016579989979&amp;amp;gt;</c>，发送给用户后，用户将看到
+    ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>。
+    /// </remarks>
+    /// <seealso cref="QQBot.Format.Sanitize(System.String,System.String[])"/>
+    public static string? Escape(this string? text)
+    {
+        if (text is null) return null;
+        return EscapingMap.Aggregate(text, (current, pair) => current.Replace(pair.Key, pair.Value));
+    }
+
+    /// <summary>
+    ///     反转义字符串，将转义的内嵌格式还原为原始文本。
+    /// </summary>
+    /// <param name="text"> 要反转义的文本。 </param>
+    /// <returns> 反转义后的文本。 </returns>
+    /// <remarks>
+    ///     此方法会将文本中的 <c>&amp;amp;</c>、<c>&amp;lt;</c> 和 <c>&amp;gt;</c> 字符分别反转义为
+    ///     <c>&amp;</c>、<c>&lt;</c> 和 <c>&gt;</c>。此操作可以使用户发送的内嵌格式生效为实际的提及。 <br />
+    ///     例如，用户发送 <c>&lt;@!4937680016579989979&gt;</c>，网关下传
+    ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>，经过此方法反转义的结果为
+    ///     <c>&lt;@!4937680016579989979&gt;</c>，发送给用户后，用户将看到 <c>@someone</c>。
+    /// </remarks>
+    public static string? Unescape(this string? text)
+    {
+        if (text is null) return null;
+        return EscapingMap.Aggregate(text, (current, pair) => current.Replace(pair.Value, pair.Key));
     }
 }
