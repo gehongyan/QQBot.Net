@@ -36,10 +36,10 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
         protected set => base.CurrentUser = value;
     }
 
-    // /// <summary>
-    // ///     获取当前用户所在的所有频道。
-    // /// </summary>
-    // public abstract IReadOnlyCollection<SocketGuild> Guilds { get; }
+    /// <summary>
+    ///     获取当前用户所在的所有频道。
+    /// </summary>
+    public abstract IReadOnlyCollection<SocketGuild> Guilds { get; }
 
     internal BaseSocketClient(QQBotSocketConfig config, QQBotRestApiClient client)
         : base(config, client)
@@ -47,17 +47,24 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
         BaseConfig = config;
     }
 
-    // /// <summary>
-    // ///     获取用户。
-    // /// </summary>
-    // /// <remarks>
-    // ///     此方法可能返回 <c>null</c>，因为此方法仅会返回网关缓存中存在的用户，如果在当前 Bot
-    // ///     登录会话中，要获取的用户未引发过任何事件，那么该用户实体则不会存在于缓存中。
-    // /// </remarks>
-    // /// <param name="id"> 要获取的用户的 ID。 </param>
-    // /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
-    // public abstract SocketUser? GetUser(ulong id);
-    //
+    /// <summary>
+    ///     获取用户。
+    /// </summary>
+    /// <remarks>
+    ///     此方法可能返回 <c>null</c>，因为此方法仅会返回网关缓存中存在的用户，如果在当前 Bot
+    ///     登录会话中，要获取的用户未引发过任何事件，那么该用户实体则不会存在于缓存中。
+    /// </remarks>
+    /// <param name="id"> 要获取的用户的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
+    public abstract SocketUser? GetUser(string id);
+
+    /// <summary>
+    ///     获取频道上下文中的用户。
+    /// </summary>
+    /// <param name="id"> 要获取的用户的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
+    public abstract SocketGuildUser? GetGuildUser(string id);
+
     // /// <summary>
     // ///     获取用户。
     // /// </summary>
@@ -69,7 +76,7 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     // /// <param name="identifyNumber"> 用户的识别号。 </param>
     // /// <returns> 与指定的名称和识别号关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
     // public abstract SocketUser? GetUser(string username, string identifyNumber);
-    //
+
     // /// <summary>
     // ///     获取一个频道子频道。
     // /// </summary>
@@ -92,10 +99,10 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     // public abstract SocketDMChannel? GetDMChannel(ulong userId);
 
     /// <summary>
-    ///     获取一个子频道。
+    ///     获取一个频道。
     /// </summary>
-    /// <param name="id"> 要获取的子频道的 ID。 </param>
-    /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    /// <param name="id"> 要获取的频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
     public abstract SocketGuild? GetGuild(ulong id);
 
     /// <inheritdoc />
@@ -104,14 +111,14 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     /// <inheritdoc />
     public abstract Task StopAsync();
 
-    // /// <summary>
-    // ///     下载全部或指定频道的用户到缓存中。
-    // /// </summary>
-    // /// <param name="guilds"> 要下载用户的频道。如果为 <c>null</c>，则下载所有可用的频道。 </param>
-    // /// <param name="options"> 发送请求时要使用的选项。 </param>
-    // /// <returns> 一个表示异步下载操作的任务。 </returns>
-    // public abstract Task DownloadUsersAsync(IEnumerable<IGuild>? guilds = null, RequestOptions? options = null);
-    //
+    /// <summary>
+    ///     下载全部或指定频道的用户到缓存中。
+    /// </summary>
+    /// <param name="guilds"> 要下载用户的频道。如果为 <c>null</c>，则下载所有可用的频道。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步下载操作的任务。 </returns>
+    public abstract Task DownloadUsersAsync(IEnumerable<SocketGuild>? guilds = null, RequestOptions? options = null);
+
     // /// <summary>
     // ///     下载全部或指定频道的语音状态到缓存中。
     // /// </summary>

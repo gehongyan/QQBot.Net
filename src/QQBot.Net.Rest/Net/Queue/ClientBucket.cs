@@ -8,7 +8,7 @@ internal enum ClientBucketType
     SendEdit = 1
 }
 
-internal struct ClientBucket
+internal record struct ClientBucket
 {
     private static readonly ImmutableDictionary<ClientBucketType, ClientBucket> DefsByType;
     private static readonly ImmutableDictionary<BucketId, ClientBucket> DefsById;
@@ -29,7 +29,8 @@ internal struct ClientBucket
 
         ImmutableDictionary<BucketId, ClientBucket>.Builder idBuilder =
             ImmutableDictionary.CreateBuilder<BucketId, ClientBucket>();
-        foreach (ClientBucket bucket in buckets) idBuilder.Add(bucket.Id, bucket);
+        foreach (ClientBucket bucket in buckets)
+            idBuilder.Add(bucket.Id, bucket);
         DefsById = idBuilder.ToImmutable();
     }
 

@@ -36,12 +36,13 @@ internal class RequestBucket
 
         _lock = new object();
 
-        if (request.Options.IsClientBucket && request.Options.BucketId != null)
-            WindowCount = ClientBucket.Get(request.Options.BucketId).WindowCount;
-        else if (request.Options.IsGatewayBucket && request.Options.BucketId != null)
-            WindowCount = GatewayBucket.Get(request.Options.BucketId).WindowCount;
+        if (request.Options.IsClientBucket)
+            WindowCount = ClientBucket.Get(request.Options.BucketId ?? throw new InvalidOperationException("Client bucket is not set.")).WindowCount;
+        else if (request.Options.IsGatewayBucket)
+            WindowCount = GatewayBucket.Get(request.Options.BucketId ?? throw new InvalidOperationException("Gateway bucket is not set.")).WindowCount;
         else
-            WindowCount = 1; //Only allow one request until we get a header back
+            WindowCount = 117; // TODO: Preemptive rate limit
+        Debug.WriteLine($"WindowCount: {WindowCount}");
 
         _semaphore = WindowCount;
         _resetTick = null;
@@ -221,7 +222,7 @@ internal class RequestBucket
     internal async Task TriggerAsync(int id, IRequest request)
     {
 #if DEBUG_LIMITS
-            Debug.WriteLine($"[{id}] Trigger Bucket");
+        Debug.WriteLine($"[{id}] Trigger Bucket");
 #endif
         await EnterAsync(id, request).ConfigureAwait(false);
         UpdateRateLimit(id, request, default, false);
@@ -311,8 +312,7 @@ internal class RequestBucket
                 continue;
             }
 #if DEBUG_LIMITS
-                else
-                    Debug.WriteLine($"[{id}] Entered Semaphore ({semaphore}/{WindowCount} remaining)");
+            Debug.WriteLine($"[{id}] Entered Semaphore ({semaphore}/{WindowCount} remaining)");
 #endif
             break;
         }
@@ -397,7 +397,7 @@ internal class RequestBucket
                 // Read the Reset-After header
                 resetTick = DateTimeOffset.UtcNow.Add(TimeSpan.FromSeconds(info.ResetAfter?.TotalSeconds ?? 0));
 #if DEBUG_LIMITS
-                    Debug.WriteLine($"[{id}] Reset-After: {info.ResetAfter.Value} ({info.ResetAfter?.TotalMilliseconds} ms)");
+                Debug.WriteLine($"[{id}] Reset-After: {info.ResetAfter} ({info.ResetAfter?.TotalMilliseconds} ms)");
 #endif
             }
             //                 if (info.RetryAfter.HasValue)
@@ -412,7 +412,7 @@ internal class RequestBucket
             {
                 resetTick = DateTimeOffset.UtcNow.Add(info.ResetAfter.Value);
 #if DEBUG_LIMITS
-                    Debug.WriteLine($"[{id}] Reset-After: {info.ResetAfter.Value} ({info.ResetAfter?.TotalMilliseconds} ms)");
+                Debug.WriteLine($"[{id}] Reset-After: {info.ResetAfter.Value} ({info.ResetAfter?.TotalMilliseconds} ms)");
 #endif
             }
             //                 else if (info.Reset.HasValue)
@@ -433,7 +433,7 @@ internal class RequestBucket
             {
                 resetTick = DateTimeOffset.UtcNow.AddSeconds(ClientBucket.Get(Id).WindowSeconds);
 #if DEBUG_LIMITS
-                    Debug.WriteLine($"[{id}] Client Bucket ({ClientBucket.Get(Id).WindowSeconds * 1000} ms)");
+                Debug.WriteLine($"[{id}] Client Bucket ({ClientBucket.Get(Id).WindowSeconds * 1000} ms)");
 #endif
             }
             else if (request.Options.IsGatewayBucket && request.Options.BucketId != null)

@@ -108,16 +108,14 @@ public class QQBotSocketConfig : QQBotRestConfig
     public StartupCacheFetchMode StartupCacheFetchMode { get; set; } = StartupCacheFetchMode.Auto;
 
     /// <summary>
-    ///     获取或设置是否在频道可用时始终下载所有用户。
+    ///     获取或设置在启动时缓存获取的数据。
     /// </summary>
-    // /// <remarks>
-    // ///     <note>
-    // ///         对于大型频道，启用此选项可能会导致性能问题。调用
-    // ///         <see cref="QQBot.WebSocket.QQBotSocketClient.DownloadUsersAsync(System.Collections.Generic.IEnumerable{QQBot.IGuild},QQBot.RequestOptions)"/>
-    // ///         可以按需下载频道用户列表。
-    // ///     </note>
-    // /// </remarks>
-    public bool AlwaysDownloadUsers { get; set; } = false;
+    /// <remarks>
+    ///     此属性用于指定客户端在启动时应该获取的数据。默认情况下，客户端将获取公域机器人可以获取的所有数据，即
+    ///     <see cref="QQBot.WebSocket.StartupCacheFetchData.AllPublicDomain"/>，如私域机器人需在启动时获取所有可用数据，请将此属性设置为
+    ///     <see cref="QQBot.WebSocket.StartupCacheFetchData.All"/>。
+    /// </remarks>
+    public StartupCacheFetchData StartupCacheFetchData { get; set; } = StartupCacheFetchData.AllPublicDomain;
 
     /// <summary>
     ///     获取或设置用于创建消息队列的委托。

@@ -26,7 +26,7 @@ public interface IGuild : IEntity<ulong>
     int MemberCount { get; }
 
     /// <summary>
-    ///     获取可以加入到此子频道的最大成员数量。
+    ///     获取可以加入到此频道的最大成员数量。
     /// </summary>
     int MaxMembers { get; }
 
@@ -41,6 +41,11 @@ public interface IGuild : IEntity<ulong>
     DateTimeOffset JoinedAt { get; }
 
     /// <summary>
+    ///     获取此频道内可以同时拥有的角色的最大数量。
+    /// </summary>
+    int MaxRoles { get; }
+
+    /// <summary>
     ///     确定此频道实体是否已准备就绪以供用户代码访问。
     /// </summary>
     /// <remarks>
@@ -51,6 +56,24 @@ public interface IGuild : IEntity<ulong>
     ///     缓存基础数据包括频道基本信息、子频道、角色、子频道权限重写、当前用户在频道内的昵称。
     /// </remarks>
     bool IsAvailable { get; }
+
+    /// <summary>
+    ///     获取此服务器的所有角色。
+    /// </summary>
+    IReadOnlyCollection<IRole> Roles { get; }
+
+    #region Roles
+
+    /// <summary>
+    ///     获取此频道内的角色。
+    /// </summary>
+    /// <param name="id"> 要获取的角色的 ID。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的角色；如果未找到，则返回 <c>null</c>。 </returns>
+    IRole? GetRole(uint id);
+
+    #endregion
+
+    #region Users
 
     /// <summary>
     ///     获取此频道内的用户。
@@ -66,4 +89,16 @@ public interface IGuild : IEntity<ulong>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
     Task<IGuildMember?> GetUserAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
+    ///     下载此频道内的所有用户。
+    /// </summary>
+    /// <remarks>
+    ///     此方法会下载所有加入到此频道内的用户，并缓存它们。
+    /// </remarks>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步下载操作的任务。 </returns>
+    Task DownloadUsersAsync(RequestOptions? options = null);
+
+    #endregion
 }

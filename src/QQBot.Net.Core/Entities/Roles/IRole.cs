@@ -6,6 +6,11 @@
 public interface IRole : IEntity<uint>
 {
     /// <summary>
+    ///     获取拥有此角色的频道。
+    /// </summary>
+    IGuild Guild { get; }
+
+    /// <summary>
     ///     获取此身份组的名称。
     /// </summary>
     string Name { get; }

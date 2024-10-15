@@ -77,6 +77,8 @@ internal class ClientState
 
     #region Global Users
 
+    internal SocketGlobalUser? GetGlobalUser(string id) => _globalUsers.GetValueOrDefault(id);
+
     internal SocketGlobalUser GetOrAddGlobalUser(ulong id, Func<ulong, SocketGlobalUser> userFactory) =>
         _globalUsers.GetOrAdd(id.ToIdString(), _ => userFactory(id));
 
@@ -89,6 +91,8 @@ internal class ClientState
     #endregion
 
     #region Guild Users
+
+    internal SocketGuildUser? GetGuildUser(string id) => _guildUsers.GetValueOrDefault(id);
 
     internal SocketGuildUser GetOrAddGuildUser(ulong id, Func<ulong, SocketGuildUser> userFactory) =>
         _guildUsers.GetOrAdd(id.ToString(), _ => userFactory(id));

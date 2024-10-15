@@ -70,14 +70,14 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     internal uint SmallNumberOfGuildsThreshold { get; private set; }
     internal uint LargeNumberOfGuildsThreshold { get; private set; }
     internal StartupCacheFetchMode StartupCacheFetchMode { get; private set; }
-    internal bool AlwaysDownloadUsers { get; private set; }
+    internal StartupCacheFetchData StartupCacheFetchData { get; private set; }
     internal int? HandlerTimeout { get; private set; }
     internal bool LogGatewayIntentWarnings { get; private set; }
     internal bool SuppressUnknownDispatchWarnings { get; private set; }
     internal new QQBotSocketApiClient ApiClient => base.ApiClient;
 
-    // /// <inheritdoc />
-    // public override IReadOnlyCollection<SocketGuild> Guilds => State.Guilds;
+    /// <inheritdoc />
+    public override IReadOnlyCollection<SocketGuild> Guilds => State.Guilds;
 
     /// <summary>
     ///     初始化一个 <see cref="QQBotSocketClient" /> 类的新实例。
@@ -112,7 +112,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         LargeNumberOfGuildsThreshold = config.LargeNumberOfGuildsThreshold;
         // StartupCacheFetchMode will be set to the current config value whenever the socket client starts up
         StartupCacheFetchMode = config.StartupCacheFetchMode;
-        AlwaysDownloadUsers = config.AlwaysDownloadUsers;
+        StartupCacheFetchData = config.StartupCacheFetchData;
         HandlerTimeout = config.HandlerTimeout;
         State = new ClientState(0);
         Rest = new QQBotSocketRestClient(config, ApiClient);
@@ -299,6 +299,27 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
     internal void RemoveUser(string id) => State.RemoveGlobalUser(id);
 
+    /// <inheritdoc />
+    public override async Task DownloadUsersAsync(IEnumerable<SocketGuild>? guilds = null, RequestOptions? options = null)
+    {
+        if (ConnectionState != ConnectionState.Connected) return;
+        EnsureGatewayIntent(GatewayIntents.GuildMembers);
+        IEnumerable<SocketGuild> socketGuilds = (guilds ?? Guilds.Where(x => x.IsAvailable))
+            .Select(x => GetGuild(x.Id))
+            .OfType<SocketGuild>();
+        foreach (SocketGuild socketGuild in socketGuilds)
+        {
+            await foreach (IReadOnlyCollection<Member> models in GuildHelper.GetMembersAsync(socketGuild, this, null, options))
+            {
+                foreach (Member model in models)
+                {
+                    if (model.User is null) continue;
+                    socketGuild.AddOrUpdateUser(model.User, model);
+                }
+            }
+        }
+    }
+
     // /// <inheritdoc />
     // public override SocketGuild? GetGuild(ulong id) => State.GetGuild(id);
     //
@@ -356,10 +377,13 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     //     if (GetUser(id) is { } user) return user;
     //     return await Rest.GetUserAsync(id, options).ConfigureAwait(false);
     // }
-    //
-    // /// <inheritdoc />
-    // public override SocketUser? GetUser(ulong id) => State.GetUser(id);
-    //
+
+    /// <inheritdoc />
+    public override SocketUser? GetUser(string id) => State.GetGlobalUser(id);
+
+    /// <inheritdoc />
+    public override SocketGuildUser? GetGuildUser(string id) => State.GetGuildUser(id);
+
     // /// <inheritdoc />
     // public override SocketUser? GetUser(string username, string identifyNumber) =>
     //     State.Users.FirstOrDefault(x => x.IdentifyNumber == identifyNumber && x.Username == username);
@@ -641,6 +665,16 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         state.AddGuild(guild);
         return guild;
     }
+
+    internal void EnsureGatewayIntent(GatewayIntents intents)
+    {
+        if (_gatewayIntents.HasFlag(intents)) return;
+        IEnumerable<GatewayIntents> vals = Enum.GetValues<GatewayIntents>();
+        GatewayIntents[] missingValues = vals.Where(x => intents.HasFlag(x) && !_gatewayIntents.HasFlag(x)).ToArray();
+        string message = $"Missing required gateway intent{(missingValues.Length > 1 ? "s" : "")} {string.Join(", ", missingValues.Select(x => x.ToString()))} in order to execute this operation.";
+        throw new InvalidOperationException(message);
+    }
+
     //
     // internal SocketGuild AddGuild(RichGuild model, ClientState state)
     // {

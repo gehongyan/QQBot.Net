@@ -7,9 +7,15 @@ QQBotSocketClient client = new(new QQBotSocketConfig
 {
     LogLevel = LogSeverity.Debug,
     AccessEnvironment = AccessEnvironment.Sandbox,
-    GatewayIntents = GatewayIntents.All
+    GatewayIntents = GatewayIntents.All,
+    StartupCacheFetchData = StartupCacheFetchData.All
 });
 client.Log += x => Task.Run(() => Console.WriteLine(x));
+client.Ready += async () =>
+{
+    Console.WriteLine("Ready!");
+    await client.DownloadUsersAsync();
+};
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
@@ -19,4 +25,5 @@ client.MessageReceived += async message =>
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();
+await Task.Delay(TimeSpan.FromSeconds(10));
 await Task.Delay(Timeout.Infinite);

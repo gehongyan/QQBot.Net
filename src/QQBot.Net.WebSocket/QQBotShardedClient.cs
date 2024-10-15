@@ -65,6 +65,9 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         protected set => throw new InvalidOperationException();
     }
 
+    /// <inheritdoc />
+    public override IReadOnlyCollection<SocketGuild> Guilds => GetGuilds().ToReadOnlyCollection(GetGuildCount);
+
     /// <summary> Creates a new REST/WebSocket QQBot client. </summary>
     public QQBotShardedClient() : this(null, new QQBotSocketConfig()) { }
 
@@ -266,33 +269,18 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
     //     return null;
     // }
 
-    // private IEnumerable<SocketGuild> GetGuilds()
-    // {
-    //     for (int i = 0; i < _shards.Length; i++)
-    //     {
-    //         foreach (var guild in _shards[i].Guilds)
-    //             yield return guild;
-    //     }
-    // }
-    //
-    // private int GetGuildCount()
-    // {
-    //     return _shards?.Sum(x => x.Guilds.Count) ?? 0;
-    // }
+    private IEnumerable<SocketGuild> GetGuilds() => _shards?.SelectMany(x => x.Guilds) ?? [];
 
-    // /// <inheritdoc />
-    // public override SocketUser GetUser(ulong id)
-    // {
-    //     for (int i = 0; i < _shards.Length; i++)
-    //     {
-    //         var user = _shards[i].GetUser(id);
-    //         if (user != null)
-    //             return user;
-    //     }
-    //
-    //     return null;
-    // }
-    //
+    private int GetGuildCount() => _shards?.Sum(x => x.Guilds.Count) ?? 0;
+
+    /// <inheritdoc />
+    public override SocketUser? GetUser(string id) =>
+        _shards?.Select(t => t.GetUser(id)).OfType<SocketUser>().FirstOrDefault();
+
+    /// <inheritdoc />
+    public override SocketGuildUser? GetGuildUser(string id) =>
+        _shards?.Select(t => t.GetGuildUser(id)).OfType<SocketGuildUser>().FirstOrDefault();
+
     // /// <inheritdoc />
     // public override SocketUser GetUser(string username, string discriminator = null)
     // {
@@ -313,21 +301,22 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
     // /// <inheritdoc />
     // public override ValueTask<RestVoiceRegion> GetVoiceRegionAsync(string id, RequestOptions options = null)
     //     => _shards[0].GetVoiceRegionAsync(id, options);
-    //
-    // /// <inheritdoc />
-    // /// <exception cref="ArgumentNullException"><paramref name="guilds"/> is <see langword="null"/></exception>
-    // public override async Task DownloadUsersAsync(IEnumerable<IGuild> guilds)
-    // {
-    //     if (guilds == null)
-    //         throw new ArgumentNullException(nameof(guilds));
-    //     for (int i = 0; i < _shards.Length; i++)
-    //     {
-    //         int id = _shardIds[i];
-    //         var arr = guilds.Where(x => GetShardIdFor(x) == id).ToArray();
-    //         if (arr.Length > 0)
-    //             await _shards[i].DownloadUsersAsync(arr).ConfigureAwait(false);
-    //     }
-    // }
+
+    /// <inheritdoc />
+    public override async Task DownloadUsersAsync(IEnumerable<SocketGuild>? guilds = null,
+        RequestOptions? options = null)
+    {
+        if (_shards is null || _shardIds is null)
+            throw new InvalidOperationException("Shards are not initialized.");
+        SocketGuild[] socketGuilds = [..guilds ?? GetGuilds()];
+        for (int i = 0; i < _shards.Length; i++)
+        {
+            int id = _shardIds[i];
+            SocketGuild[] shardGuilds = [..socketGuilds.Where(x => GetShardIdFor(x) == id)];
+            if (shardGuilds.Length > 0)
+                await _shards[i].DownloadUsersAsync(shardGuilds).ConfigureAwait(false);
+        }
+    }
 
     private int GetLatency()
     {

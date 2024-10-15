@@ -178,8 +178,6 @@ public partial class QQBotSocketClient
     {
         try
         {
-            // _unavailableGuildCount = 0;
-
             await _gatewayLogger.DebugAsync("GuildDownloader Started").ConfigureAwait(false);
 
             foreach (SocketGuild socketGuild in socketGuilds)
@@ -198,27 +196,26 @@ public partial class QQBotSocketClient
 
             await _gatewayLogger.DebugAsync("GuildDownloader Stopped").ConfigureAwait(false);
 
-            // TODO: Use a flags enum for fundamental data downloading
-            // // Download user list if enabled
-            // if (BaseConfig.AlwaysDownloadUsers)
-            // {
-            //     _ = Task.Run(async () =>
-            //     {
-            //         try
-            //         {
-            //             IEnumerable<SocketGuild> availableGuilds = Guilds
-            //                 .Where(x => x.IsAvailable && x.HasAllMembers is not true);
-            //             await DownloadUsersAsync(availableGuilds, new RequestOptions
-            //             {
-            //                 CancellationToken = cancellationToken
-            //             });
-            //         }
-            //         catch (Exception ex)
-            //         {
-            //             await _gatewayLogger.WarningAsync("Downloading users failed", ex).ConfigureAwait(false);
-            //         }
-            //     }, cancellationToken);
-            // }
+            // Download user list if enabled
+            if (BaseConfig.StartupCacheFetchData.HasFlag(StartupCacheFetchData.GuildUsers))
+            {
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        IEnumerable<SocketGuild> availableGuilds = Guilds
+                            .Where(x => x.IsAvailable && x.HasAllMembers is not true);
+                        await DownloadUsersAsync(availableGuilds, new RequestOptions
+                        {
+                            CancellationToken = cancellationToken
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        await _gatewayLogger.WarningAsync("Downloading users failed", ex).ConfigureAwait(false);
+                    }
+                }, cancellationToken);
+            }
         }
         catch (OperationCanceledException)
         {

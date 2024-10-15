@@ -1,7 +1,7 @@
 ﻿namespace QQBot;
 
 /// <summary>
-///     表示一个通用的子频道内用户。
+///     表示一个通用的频道上下文中的用户。
 /// </summary>
 public interface IGuildUser : IUser, IEntity<ulong>
 {
