@@ -12,11 +12,11 @@ namespace QQBot.WebSocket;
 ///     此配置基于 <see cref="QQBot.Rest.QQBotRestConfig"/>，在与 REST 有关的配置的基础上，定义了有关网关的配置。
 /// </remarks>
 /// <example>
-///     以下代码启用了消息缓存，并配置客户端在频道可用时始终下载用户。
+///     以下代码启用了消息缓存，并配置客户端在频道可用时始终下载所有可用数据，这包括了频道列表、角色列表、频道用户列表。
 ///     <code language="cs">
 ///     var config = new QQBotSocketConfig
 ///     {
-///         AlwaysDownloadUsers = true,
+///         StartupCacheFetchData = StartupCacheFetchData.All,
 ///         MessageCacheSize = 100
 ///     };
 ///     var client = new QQBotSocketClient(config);

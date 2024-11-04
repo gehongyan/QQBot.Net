@@ -34,6 +34,29 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
 
     internal void AddMessage(SocketMessage message) { }
 
+    private string DebuggerDisplay => $"Unknown ({Id}, User)";
+
+    #region Messages
+
+    /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,IMarkdown,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.Ark,QQBot.IKeyboard,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
+    public Task<IUserMessage> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
+        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
+        MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
+        ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, keyboard, messageReference, passiveSource, options);
+
+    #endregion
+
+    #region Users
+
+    /// <inheritdoc />
+    protected override SocketUser? GetUserInternal(string id)
+    {
+        if (id == Recipient.Id) return Recipient;
+        return id == Client.CurrentUser?.Id.ToIdString() ? Client.CurrentUser : null;
+    }
+
+    #endregion
+
     #region ISocketPrivateChannel
 
     /// <inheritdoc />
@@ -45,18 +68,6 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
 
     /// <inheritdoc />
     IReadOnlyCollection<IUser> IPrivateChannel.Recipients => [Recipient];
-
-    #endregion
-
-    private string DebuggerDisplay => $"Unknown ({Id}, User)";
-
-    #region Messages
-
-    /// <inheritdoc cref="QQBot.IMessageChannel.SendMessageAsync(System.String,IMarkdown,System.Nullable{QQBot.FileAttachment},QQBot.Embed,QQBot.Ark,QQBot.IKeyboard,QQBot.MessageReference,QQBot.IUserMessage,QQBot.RequestOptions)" />
-    public Task<IUserMessage> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
-        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
-        MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
-        ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, keyboard, messageReference, passiveSource, options);
 
     #endregion
 

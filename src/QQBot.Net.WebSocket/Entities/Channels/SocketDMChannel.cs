@@ -14,7 +14,7 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
     public new ulong Id { get; }
 
     /// <inheritdoc cref="QQBot.IDMChannel.Recipient" />
-    public SocketUser Recipient { get; }
+    public SocketGuildUser Recipient { get; }
 
     // /// <inheritdoc cref="QQBot.WebSocket.SocketChannel.Users" />
     // public new IReadOnlyCollection<SocketUser> Users => ImmutableArray.Create(Client.CurrentUser, Recipient);
@@ -28,41 +28,20 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
     public IReadOnlyCollection<SocketMessage> CachedMessages => [];
 
     /// <inheritdoc />
-    internal SocketDMChannel(QQBotSocketClient client, ulong id, SocketUser recipient)
+    internal SocketDMChannel(QQBotSocketClient client, ulong id, SocketGuildUser recipient)
         : base(client, id.ToIdString())
     {
         Id = id;
         Recipient = recipient;
     }
 
-    internal static SocketDMChannel Create(QQBotSocketClient client, ClientState state, ulong id, SocketUser recipient)
+    internal static SocketDMChannel Create(QQBotSocketClient client, ClientState state, ulong id, SocketGuildUser recipient)
     {
         SocketDMChannel channel = new(client, id, recipient);
         return channel;
     }
 
     internal void AddMessage(SocketMessage message) { }
-
-    #region IDMChannel
-
-    /// <inheritdoc />
-    IUser IDMChannel.Recipient => Recipient;
-
-    #endregion
-
-    #region ISocketPrivateChannel
-
-    /// <inheritdoc />
-    IReadOnlyCollection<SocketUser> ISocketPrivateChannel.Recipients => [Recipient];
-
-    #endregion
-
-    #region IPrivateChannel
-
-    /// <inheritdoc />
-    IReadOnlyCollection<IUser> IPrivateChannel.Recipients => [Recipient];
-
-    #endregion
 
     private string DebuggerDisplay => $"@{Recipient} ({Id}, DM)";
 
@@ -84,6 +63,49 @@ public class SocketDMChannel : SocketChannel, IDMChannel, ISocketPrivateChannel,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
+
+    #endregion
+
+    #region Users
+
+    /// <inheritdoc cref="QQBot.WebSocket.SocketChannel.GetUser(System.String)" />
+    public SocketUser? GetUser(ulong id)
+    {
+        if (id == Recipient.Id) return Recipient;
+        return id == Client.CurrentUser?.Id ? Client.CurrentUser : null;
+    }
+
+    /// <inheritdoc />
+    protected override SocketUser? GetUserInternal(string id)
+    {
+        if (!ulong.TryParse(id, out ulong userId)) return null;
+        return GetUser(userId);
+    }
+
+    #endregion
+
+    #region IDMChannel
+
+    /// <inheritdoc />
+    IUser IDMChannel.Recipient => Recipient;
+
+    /// <inheritdoc />
+    Task<IUser?> IDMChannel.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IUser?>(GetUser(id));
+
+    #endregion
+
+    #region ISocketPrivateChannel
+
+    /// <inheritdoc />
+    IReadOnlyCollection<SocketUser> ISocketPrivateChannel.Recipients => [Recipient];
+
+    #endregion
+
+    #region IPrivateChannel
+
+    /// <inheritdoc />
+    IReadOnlyCollection<IUser> IPrivateChannel.Recipients => [Recipient];
 
     #endregion
 

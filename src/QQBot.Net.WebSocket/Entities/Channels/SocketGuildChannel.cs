@@ -64,6 +64,28 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
 
     private string DebuggerDisplay => $"{Name} ({Id}, Guild)";
 
+    #region Users
+
+    /// <inheritdoc cref="QQBot.WebSocket.SocketChannel.GetUser(System.String)" />
+    public SocketGuildMember? GetUser(ulong id) => null; // Override in derived classes
+
+    /// <inheritdoc />
+    protected override SocketUser? GetUserInternal(string id)
+    {
+        if (!ulong.TryParse(id, out ulong userId)) return null;
+        return GetUser(userId);
+    }
+
+    #endregion
+
+    #region IChannel
+
+    /// <inheritdoc />
+    Task<IUser?> IChannel.GetUserAsync(string id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IUser?>(ulong.TryParse(id, out ulong userId) ? GetUserInternal(userId.ToIdString()) : null);
+
+    #endregion
+
     #region IGuildChannel
 
     /// <inheritdoc />
@@ -71,6 +93,10 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
 
     /// <inheritdoc />
     ulong IGuildChannel.GuildId => Guild.Id;
+
+    /// <inheritdoc />
+    Task<IGuildUser?> IGuildChannel.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IGuildUser?>(GetUser(id));
 
     #endregion
 }

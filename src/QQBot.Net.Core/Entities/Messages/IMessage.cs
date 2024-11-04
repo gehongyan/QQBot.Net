@@ -44,4 +44,9 @@ public interface IMessage : IEntity<string>
     ///     获取此消息内包含的所有嵌入式内容。
     /// </summary>
     IReadOnlyCollection<IEmbed> Embeds { get; }
+
+    /// <summary>
+    ///     获取此消息中解析出的所有标签。
+    /// </summary>
+    IReadOnlyCollection<ITag> Tags { get; }
 }

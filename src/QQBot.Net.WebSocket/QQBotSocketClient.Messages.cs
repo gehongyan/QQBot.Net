@@ -227,7 +227,6 @@ public partial class QQBotSocketClient
         }
     }
 
-
     private async Task HandleReadyAsync(object? payload)
     {
         if (DeserializePayload<ReadyEvent>(payload) is not { } data) return;

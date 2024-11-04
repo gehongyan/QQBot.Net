@@ -11,6 +11,7 @@ namespace QQBot.WebSocket;
 public abstract class SocketMessage : SocketEntity<string>, IMessage
 {
     private ImmutableArray<Embed> _embeds = [];
+    private ImmutableArray<ITag> _tags = [];
 
     /// <inheritdoc cref="QQBot.IMessage.Channel" />
     public ISocketMessageChannel Channel { get; }
@@ -35,6 +36,9 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
 
     /// <inheritdoc cref="QQBot.IMessage.Embeds" />
     public IReadOnlyCollection<Embed> Embeds => _embeds;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<ITag> Tags => _tags;
 
     /// <inheritdoc />
     protected SocketMessage(QQBotSocketClient client, string id,

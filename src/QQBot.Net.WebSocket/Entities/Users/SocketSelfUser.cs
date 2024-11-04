@@ -5,31 +5,19 @@ namespace QQBot.WebSocket;
 /// <summary>
 ///     表示一个基于网关的当前用户。
 /// </summary>
-public class SocketSelfUser : SocketUser, ISelfUser
+public class SocketSelfUser : SocketGuildUser, ISelfUser
 {
-    /// <inheritdoc cref="QQBot.ISelfUser.Id" />
+    /// <inheritdoc cref="QQBot.WebSocket.SocketGuildUser.Id" />
     public new ulong Id { get; }
 
     internal override SocketGlobalUser GlobalUser { get; }
 
     /// <inheritdoc />
-    public string Username { get; internal set; } = string.Empty;
-
-    /// <inheritdoc />
     public override string? Avatar { get; internal set; }
 
     /// <inheritdoc />
-    public bool? IsBot { get; internal set; }
-
-    /// <inheritdoc />
-    public string? UnionOpenId { get; internal set; }
-
-    /// <inheritdoc />
-    public string? UnionUserAccount { get; internal set; }
-
-    /// <inheritdoc />
     internal SocketSelfUser(QQBotSocketClient client, SocketGlobalUser globalUser)
-        : base(client, globalUser.Id)
+        : base(client, globalUser)
     {
         Id = ulong.Parse(globalUser.Id);
         GlobalUser = globalUser;

@@ -14,4 +14,7 @@ public interface IDMChannel : IMessageChannel, IPrivateChannel, IEntity<ulong>
     ///     获取参与到此私聊子频道的另外一位用户。
     /// </summary>
     IUser Recipient { get; }
+
+    /// <inheritdoc cref="QQBot.IChannel.GetUserAsync(System.String,QQBot.CacheMode,QQBot.RequestOptions)" />
+    Task<IUser?> GetUserAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 }

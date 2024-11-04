@@ -45,7 +45,7 @@ public static class Format
     ///     设置 <paramref name="sanitize"/> 为 <c>true</c> 将会对文本中出现的所有 <c>*</c> 字符转义为 <c>\*</c>。
     /// </remarks>
     public static string Italics(string? text, bool sanitize = true) =>
-        $"*{(sanitize ? text.Sanitize("*") : text)}*";
+        $"*{(sanitize ? Sanitize(text, "*") : text)}*";
 
     /// <summary>
     ///     返回一个使用粗斜体格式的 Markdown 格式化字符串。
@@ -57,7 +57,7 @@ public static class Format
     ///     设置 <paramref name="sanitize"/> 为 <c>true</c> 将会对文本中出现的所有 <c>*</c> 字符转义为 <c>\*</c>。
     /// </remarks>
     public static string BoldItalics(string? text, bool sanitize = true) =>
-        $"***{(sanitize ? text.Sanitize("*") : text)}***";
+        $"***{(sanitize ? Sanitize(text, "*") : text)}***";
 
     /// <summary>
     ///     返回一个使用删除线格式的 Markdown 格式化字符串。
@@ -69,7 +69,7 @@ public static class Format
     ///     设置 <paramref name="sanitize"/> 为 <c>true</c> 将会对文本中出现的所有 <c>~</c> 字符转义为 <c>\~</c>。
     /// </remarks>
     public static string Strikethrough(string? text, bool sanitize = true) =>
-        $"~~{(sanitize ? text.Sanitize("~") : text)}~~";
+        $"~~{(sanitize ? Sanitize(text, "~") : text)}~~";
 
     /// <summary>
     ///     返回格式化为 Markdown 链接的字符串。
@@ -81,7 +81,7 @@ public static class Format
     ///     设置 <paramref name="sanitize"/> 为 <c>true</c>，将会对 URL 中出现的所有 <c>&lt;</c> 和 <c>&gt;</c> 字符分别转义为
     ///     <c>\&lt;</c> 和 <c>\&gt;</c>。
     /// </remarks>
-    public static string Url(string url, bool sanitize = true) => $"<{url.Sanitize("<", ">")}>";
+    public static string Url(string url, bool sanitize = true) => $"<{Sanitize(url, "<", ">")}>";
 
     /// <inheritdoc cref="QQBot.Format.Url(System.String,System.Boolean)" />
     public static string Url(Uri url, bool sanitize = true) => Url(url.OriginalString, sanitize);
@@ -98,7 +98,7 @@ public static class Format
     ///     <c>\[</c> 和 <c>\]</c>，并对 URL 中出现的所有 <c>(</c> 和 <c>)</c> 字符分别转义为 <c>\(</c> 和 <c>\)</c>。
     /// </remarks>
     public static string Url(string url, string text, bool sanitize = true) =>
-        $"[{(sanitize ? text.Sanitize("[", "]") : text)}]({(sanitize ? url.Sanitize("(", ")") : url)})";
+        $"[{(sanitize ? Sanitize(text, "[", "]") : text)}]({(sanitize ? Sanitize(url, "(", ")") : url)})";
 
     /// <inheritdoc cref="QQBot.Format.Url(System.String,System.String,System.Boolean)" />
     public static string Url(Uri url, string text, bool sanitize = true) => Url(url.OriginalString, text, sanitize);
@@ -239,7 +239,7 @@ public static class Format
     /// </remarks>
     /// <seealso cref="QQBot.Format.Escape(System.String)"/>
     [return: NotNullIfNotNull(nameof(text))]
-    public static string? Sanitize(this string? text, params string[] sensitiveCharacters)
+    public static string? Sanitize(string? text, params string[] sensitiveCharacters)
     {
         if (text is null) return null;
         string[] sensitiveChars = sensitiveCharacters.Length > 0 ? sensitiveCharacters : SensitiveCharacters;
@@ -263,7 +263,7 @@ public static class Format
     ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>。
     /// </remarks>
     /// <seealso cref="QQBot.Format.Sanitize(System.String,System.String[])"/>
-    public static string? Escape(this string? text)
+    public static string? Escape(string? text)
     {
         if (text is null) return null;
         return EscapingMap.Aggregate(text, (current, pair) => current.Replace(pair.Key, pair.Value));
@@ -281,7 +281,7 @@ public static class Format
     ///     <c>&amp;lt;@!4937680016579989979&amp;gt;</c>，经过此方法反转义的结果为
     ///     <c>&lt;@!4937680016579989979&gt;</c>，发送给用户后，用户将看到 <c>@someone</c>。
     /// </remarks>
-    public static string? Unescape(this string? text)
+    public static string? Unescape(string? text)
     {
         if (text is null) return null;
         return EscapingMap.Aggregate(text, (current, pair) => current.Replace(pair.Value, pair.Key));

@@ -159,6 +159,9 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     #region Roles
 
+    /// <inheritdoc cref="QQBot.IGuild.EveryoneRole" />
+    public SocketRole EveryoneRole => GetRole(0) ?? new SocketRole(this, 0);
+
     /// <inheritdoc cref="QQBot.IGuild.GetRole(System.UInt32)" />
     public SocketRole? GetRole(uint id) => _roles.GetValueOrDefault(id);
 
@@ -220,7 +223,18 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     IReadOnlyCollection<IRole> IGuild.Roles => Roles;
 
     /// <inheritdoc />
+    IRole IGuild.EveryoneRole => EveryoneRole;
+
+    /// <inheritdoc />
     IRole? IGuild.GetRole(uint id) => GetRole(id);
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IGuildChannel>> IGuild.GetChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<IGuildChannel>>(Channels);
+
+    /// <inheritdoc />
+    Task<IGuildChannel?> IGuild.GetChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IGuildChannel?>(GetChannel(id));
 
     /// <inheritdoc />
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)

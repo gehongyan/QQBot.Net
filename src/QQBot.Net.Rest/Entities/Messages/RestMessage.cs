@@ -10,6 +10,7 @@ namespace QQBot.Rest;
 public abstract class RestMessage : RestEntity<string>, IMessage
 {
     private ImmutableArray<Embed> _embeds = [];
+    private ImmutableArray<ITag> _tags = [];
 
     /// <inheritdoc />
     public IMessageChannel Channel { get; }
@@ -34,6 +35,9 @@ public abstract class RestMessage : RestEntity<string>, IMessage
 
     /// <inheritdoc cref="QQBot.IMessage.Embeds" />
     public IReadOnlyCollection<Embed> Embeds => _embeds;
+
+    /// <inheritdoc />
+    public IReadOnlyCollection<ITag> Tags => _tags;
 
     /// <inheritdoc />
     protected RestMessage(BaseQQBotClient client, string id,
@@ -68,12 +72,18 @@ public abstract class RestMessage : RestEntity<string>, IMessage
         MentionedEveryone = model.MentionEveryone;
         if (model.Embeds is { Length: > 0 } embedModels)
             _embeds = [..embedModels.Select(x => x.ToEntity())];
+
+        IGuild? guild = (Channel as IGuildChannel)?.Guild;
+        _tags = MessageHelper.ParseTags(model.Content, Channel, guild, []);
     }
 
     internal virtual void Update(API.Rest.SendUserGroupMessageParams args, API.Rest.SendUserGroupMessageResponse model)
     {
         Content = args.Content ?? string.Empty;
         Timestamp = model.Timestamp;
+
+        IGuild? guild = (Channel as IGuildChannel)?.Guild;
+        _tags = MessageHelper.ParseTags(Content, Channel, guild, []);
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{

@@ -280,7 +280,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id, SocketUser recipient) =>
         state.GetOrAddUserChannel(id, _ => SocketUserChannel.Create(this, state, id, recipient));
 
-    internal SocketDMChannel GetOrCreateDMChannel(ClientState state, ulong id, SocketUser recipient) =>
+    internal SocketDMChannel GetOrCreateDMChannel(ClientState state, ulong id, SocketGuildUser recipient) =>
         state.GetOrAddDMChannel(id, _ => SocketDMChannel.Create(this, state, id, recipient));
 
     internal SocketGroupChannel GetOrCreateGroupChannel(ClientState state, Guid id) =>

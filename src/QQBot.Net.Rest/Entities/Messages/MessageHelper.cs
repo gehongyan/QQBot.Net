@@ -1,4 +1,6 @@
-﻿using QQBot.API.Rest;
+﻿using System.Collections.Immutable;
+using System.Text.RegularExpressions;
+using QQBot.API.Rest;
 
 namespace QQBot.Rest;
 
@@ -41,4 +43,91 @@ internal static class MessageHelper
                 throw new NotSupportedException("Unsupported channel type.");
         }
     }
+
+    public static ImmutableArray<ITag> ParseTags(string text, IMessageChannel channel, IGuild? guild,
+        IReadOnlyCollection<IGuildUser> userMentions)
+    {
+        ImmutableArray<ITag>.Builder tags = ImmutableArray.CreateBuilder<ITag>();
+        int index = 0;
+
+        while (true)
+        {
+            index = text.IndexOf('<', index);
+            if (index == -1)
+                break;
+            int endIndex = text.IndexOf('>', index + 1);
+            if (endIndex == -1)
+                break;
+            string content = text.Substring(index, endIndex - index + 1);
+
+            if (MentionUtils.TryParseUser(content, out ulong userId))
+            {
+                IUser? mentionedUser = channel?.GetUserAsync(userId.ToString(), CacheMode.CacheOnly).GetAwaiter().GetResult() as IUser
+                    ?? userMentions.FirstOrDefault(x => x.Id == userId);
+                tags.Add(new Tag<string, IUser>(TagType.UserMention, index, content.Length, userId.ToIdString(), mentionedUser));
+            }
+            else if (MentionUtils.TryParseChannel(content, out ulong channelId))
+            {
+                IGuildChannel? mentionedChannel = guild?.GetChannelAsync(channelId, CacheMode.CacheOnly).GetAwaiter().GetResult();
+                tags.Add(new Tag<ulong, IGuildChannel>(TagType.ChannelMention, index, content.Length, channelId, mentionedChannel));
+            }
+            // else if (MentionUtils.TryParseRole(content, out id))
+            // {
+            //     IRole mentionedRole = null;
+            //     if (guild != null)
+            //         mentionedRole = guild.GetRole(id);
+            //     tags.Add(new Tag<IRole>(TagType.RoleMention, index, content.Length, id, mentionedRole));
+            // }
+            else if (Emote.TryParse(content, out Emote? emoji))
+                tags.Add(new Tag<string, Emote>(TagType.Emoji, index, content.Length, emoji.Id, emoji));
+            else //Bad Tag
+            {
+                index++;
+                continue;
+            }
+            index = endIndex + 1;
+        }
+
+        index = 0;
+        while (true)
+        {
+            index = text.IndexOf(MentionUtils.MentionEveryone, index, StringComparison.Ordinal);
+            if (index == -1)
+                break;
+            int? tagIndex = FindIndex(tags, index);
+            if (tagIndex.HasValue)
+                tags.Insert(tagIndex.Value, new Tag<uint, IRole>(TagType.EveryoneMention, index, MentionUtils.MentionEveryone.Length, 0U, guild?.EveryoneRole));
+            index++;
+        }
+
+        index = 0;
+        while (true)
+        {
+            index = text.IndexOf("@everyone", index, StringComparison.Ordinal);
+            if (index == -1)
+                break;
+            int? tagIndex = FindIndex(tags, index);
+            if (tagIndex.HasValue)
+                tags.Insert(tagIndex.Value, new Tag<uint, IRole>(TagType.EveryoneMention, index, "@everyone".Length, 0U, guild?.EveryoneRole));
+            index++;
+        }
+
+        return tags.ToImmutable();
+    }
+
+    private static int? FindIndex(IReadOnlyList<ITag> tags, int index)
+    {
+        int i = 0;
+        for (; i < tags.Count; i++)
+        {
+            var tag = tags[i];
+            if (index < tag.Index)
+                break; //Position before this tag
+        }
+        if (i > 0 && index < tags[i - 1].Index + tags[i - 1].Length)
+            return null; //Overlaps tag before this
+        return i;
+    }
+
+
 }

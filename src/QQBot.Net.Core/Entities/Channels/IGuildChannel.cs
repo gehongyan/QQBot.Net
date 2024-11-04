@@ -42,4 +42,7 @@ public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
     ///     获取创建此子频道的用户的 ID。
     /// </summary>
     ulong? CreatorId { get; }
+
+    /// <inheritdoc cref="QQBot.IChannel.GetUserAsync(System.String,QQBot.CacheMode,QQBot.RequestOptions)" />
+    Task<IGuildUser?> GetUserAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 }
