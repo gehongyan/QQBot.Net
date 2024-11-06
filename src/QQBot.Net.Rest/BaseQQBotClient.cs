@@ -224,13 +224,18 @@ public abstract class BaseQQBotClient : IQQBotClient
     ISelfUser? IQQBotClient.CurrentUser => CurrentUser;
 
     /// <inheritdoc />
-    Task IQQBotClient.StartAsync() =>
-        Task.CompletedTask;
+    Task IQQBotClient.StartAsync() => Task.CompletedTask;
 
     /// <inheritdoc />
-    Task IQQBotClient.StopAsync() =>
-        Task.CompletedTask;
+    Task IQQBotClient.StopAsync() => Task.CompletedTask;
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IGuild>> IQQBotClient.GetGuildsAsync(CacheMode mode, RequestOptions? options)
+        => Task.FromResult<IReadOnlyCollection<IGuild>>([]);
+
+    /// <inheritdoc />
+    Task<IGuild?> IQQBotClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions? options)
+        => Task.FromResult<IGuild?>(null);
 
     #endregion
-
 }

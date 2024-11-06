@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using QQBot.API;
 
-namespace QQBot.WebSocket;
+namespace QQBot.Rest;
 
 /// <summary>
-///     表示频道中的一个基于网关的应用子频道。
+///     表示频道中的一个基于 REST 的应用子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class SocketApplicationChannel : SocketGuildChannel, IApplicationChannel
+public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
 {
     /// <inheritdoc />
     public ulong? CategoryId { get; private set; }
@@ -24,22 +24,22 @@ public class SocketApplicationChannel : SocketGuildChannel, IApplicationChannel
     /// <inheritdoc />
     public ChannelApplication? ApplicationType { get; private set; }
 
-    internal SocketApplicationChannel(QQBotSocketClient client, ulong id, SocketGuild guild)
+    internal RestApplicationChannel(BaseQQBotClient client, ulong id, IGuild guild)
         : base(client, id, guild)
     {
         Type = ChannelType.Application;
     }
 
-    internal static new SocketApplicationChannel Create(SocketGuild guild, ClientState state, Channel model)
+    internal static new RestApplicationChannel Create(BaseQQBotClient client, IGuild guild, Channel model)
     {
-        SocketApplicationChannel entity = new(guild.Client, model.Id, guild);
-        entity.Update(state, model);
+        RestApplicationChannel entity = new(client, model.Id, guild);
+        entity.Update(model);
         return entity;
     }
 
-    internal override void Update(ClientState state, Channel model)
+    internal override void Update(Channel model)
     {
-        base.Update(state, model);
+        base.Update(model);
         CategoryId = model.ParentId;
         PrivateType = model.PrivateType;
         SpeakPermission = model.SpeakPermission;

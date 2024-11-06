@@ -38,7 +38,9 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <inheritdoc />
     public int MaxRoles { get; private set; }
 
-    /// <inheritdoc cref="QQBot.IGuild.Roles" />
+    /// <summary>
+    ///     获取此频道的所有角色。
+    /// </summary>
     public IReadOnlyCollection<SocketRole> Roles => _roles.ToReadOnlyCollection();
 
     /// <summary>
@@ -76,6 +78,21 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     ///     获取此频道中所有具有语音聊天能力的子频道。
     /// </summary>
     public IReadOnlyCollection<SocketVoiceChannel> VoiceChannels => [..Channels.OfType<SocketVoiceChannel>()];
+
+    /// <summary>
+    ///     获取此频道中所有应用程序子频道。
+    /// </summary>
+    public IReadOnlyCollection<SocketApplicationChannel> ApplicationChannels => [..Channels.OfType<SocketApplicationChannel>()];
+
+    /// <summary>
+    ///     获取此频道中所有论坛子频道。
+    /// </summary>
+    public IReadOnlyCollection<SocketForumChannel> ForumChannels => [..Channels.OfType<SocketForumChannel>()];
+
+    /// <summary>
+    ///     获取此频道中所有直播子频道。
+    /// </summary>
+    public IReadOnlyCollection<SocketLiveStreamChannel> LiveStreamChannels => [..Channels.OfType<SocketLiveStreamChannel>()];
 
     /// <summary>
     ///     获取此频道中的所有分组子频道。
@@ -159,10 +176,16 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     #region Roles
 
-    /// <inheritdoc cref="QQBot.IGuild.EveryoneRole" />
+    /// <summary>
+    ///     获取此频道中的 <c>@全体成员</c> 全体成员角色。
+    /// </summary>
     public SocketRole EveryoneRole => GetRole(0) ?? new SocketRole(this, 0);
 
-    /// <inheritdoc cref="QQBot.IGuild.GetRole(System.UInt32)" />
+    /// <summary>
+    ///     获取此频道内的角色。
+    /// </summary>
+    /// <param name="id"> 要获取的角色的 ID。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的角色；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketRole? GetRole(uint id) => _roles.GetValueOrDefault(id);
 
     #endregion
@@ -209,24 +232,50 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     public SocketGuildChannel? GetChannel(ulong id) => Client.State.GetGuildChannel(id);
 
     /// <summary>
-    ///     获取此子频道中所有具有文字聊天能力的子频道。
+    ///     获取此子频道中具有文字聊天能力的子频道。
     /// </summary>
     /// <param name="id"> 要获取的子频道的 ID。 </param>
-    /// <returns> 与指定的 <paramref name="id"/> 关联的子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的具有文字聊天能力的子频道；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketTextChannel? GetTextChannel(ulong id) => GetChannel(id) as SocketTextChannel;
+
+    /// <summary>
+    ///     获取此子频道中具有语音聊天能力的子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的具有语音聊天能力的子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketVoiceChannel? GetVoiceChannel(ulong id) => GetChannel(id) as SocketVoiceChannel;
+
+    /// <summary>
+    ///     获取此子频道中的应用程序子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的应用程序子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketApplicationChannel? GetApplicationChannel(ulong id) => GetChannel(id) as SocketApplicationChannel;
+
+    /// <summary>
+    ///     获取此子频道中的论坛子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的论坛子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketForumChannel? GetForumChannel(ulong id) => GetChannel(id) as SocketForumChannel;
+
+    /// <summary>
+    ///     获取此子频道中的直播子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的直播子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketLiveStreamChannel? GetLiveStreamChannel(ulong id) => GetChannel(id) as SocketLiveStreamChannel;
+
+    /// <summary>
+    ///     获取此子频道中的分组子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的子频道的 ID。 </param>
+    /// <returns> 与指定的 <paramref name="id"/> 关联的分组子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public SocketCategoryChannel? GetCategoryChannel(ulong id) => GetChannel(id) as SocketCategoryChannel;
 
     #endregion
 
     #region IGuild
-
-    /// <inheritdoc />
-    IReadOnlyCollection<IRole> IGuild.Roles => Roles;
-
-    /// <inheritdoc />
-    IRole IGuild.EveryoneRole => EveryoneRole;
-
-    /// <inheritdoc />
-    IRole? IGuild.GetRole(uint id) => GetRole(id);
 
     /// <inheritdoc />
     Task<IReadOnlyCollection<IGuildChannel>> IGuild.GetChannelsAsync(CacheMode mode, RequestOptions? options) =>
@@ -235,6 +284,54 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <inheritdoc />
     Task<IGuildChannel?> IGuild.GetChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
         Task.FromResult<IGuildChannel?>(GetChannel(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<ITextChannel>> IGuild.GetTextChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<ITextChannel>>(TextChannels);
+
+    /// <inheritdoc />
+    Task<ITextChannel?> IGuild.GetTextChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<ITextChannel?>(GetTextChannel(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IVoiceChannel>> IGuild.GetVoiceChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<IVoiceChannel>>(VoiceChannels);
+
+    /// <inheritdoc />
+    Task<IVoiceChannel?> IGuild.GetVoiceChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IVoiceChannel?>(GetVoiceChannel(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IApplicationChannel>> IGuild.GetApplicationChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<IApplicationChannel>>(ApplicationChannels);
+
+    /// <inheritdoc />
+    Task<IApplicationChannel?> IGuild.GetApplicationChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IApplicationChannel?>(GetApplicationChannel(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IForumChannel>> IGuild.GetForumChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<IForumChannel>>(ForumChannels);
+
+    /// <inheritdoc />
+    Task<IForumChannel?> IGuild.GetForumChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IForumChannel?>(GetForumChannel(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<ILiveStreamChannel>> IGuild.GetLiveStreamChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<ILiveStreamChannel>>(LiveStreamChannels);
+
+    /// <inheritdoc />
+    Task<ILiveStreamChannel?> IGuild.GetLiveStreamChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<ILiveStreamChannel?>(GetLiveStreamChannel(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<ICategoryChannel>> IGuild.GetCategoryChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<ICategoryChannel>>(CategoryChannels);
+
+    /// <inheritdoc />
+    Task<ICategoryChannel?> IGuild.GetCategoryChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<ICategoryChannel?>(GetCategoryChannel(id));
 
     /// <inheritdoc />
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)

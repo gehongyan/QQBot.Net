@@ -5,6 +5,20 @@ namespace QQBot.Rest;
 
 internal static class GuildHelper
 {
+    public static async Task<IReadOnlyCollection<RestGuildChannel>> GetChannelsAsync(IGuild guild, BaseQQBotClient client,
+        RequestOptions? options)
+    {
+        IReadOnlyCollection<Channel> models = await client.ApiClient.GetChannelsAsync(guild.Id, options).ConfigureAwait(false);
+        return [..models.Select(x => RestGuildChannel.Create(client, guild, x))];
+    }
+
+    public static async Task<RestGuildChannel> GetChannelAsync(IGuild guild, BaseQQBotClient client,
+        ulong id, RequestOptions? options)
+    {
+        Channel model = await client.ApiClient.GetChannelAsync(id, options).ConfigureAwait(false);
+        return RestGuildChannel.Create(client, guild, model);
+    }
+
     public static async Task<RestGuildMember> GetUserAsync(IGuild guild, BaseQQBotClient client,
         ulong id, RequestOptions? options)
     {

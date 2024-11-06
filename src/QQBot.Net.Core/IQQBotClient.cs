@@ -66,12 +66,30 @@ public interface IQQBotClient : IDisposable
     #endregion
 
     /// <summary>
-    ///     Gets the gateway information related to the bot.
+    ///     获取与机器人相关的网关信息。
     /// </summary>
-    /// <param name="options">The options to be used when sending the request.</param>
-    /// <returns>
-    ///     A task that represents the asynchronous get operation. The task result contains a <see cref="BotGateway"/>
-    ///     that represents the gateway information related to the bot.
-    /// </returns>
+    /// <param name="options"> 请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务，其结果包含与机器人相关的网关信息。 </returns>
     Task<BotGateway> GetBotGatewayAsync(RequestOptions? options = null);
+
+    #region Guilds
+
+    /// <summary>
+    ///     获取当前用户所在的所有频道。
+    /// </summary>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务，其结果包含当前用户所在的所有频道。 </returns>
+    Task<IReadOnlyCollection<IGuild>> GetGuildsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取具有指定 ID 的频道。
+    /// </summary>
+    /// <param name="id"> 要获取的频道的 ID。 </param>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务，其结果包含与指定的 <paramref name="id"/> 关联的频道；如果未找到，则返回 <c>null</c>。 </returns>
+    Task<IGuild?> GetGuildAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    #endregion
 }

@@ -74,7 +74,7 @@ public abstract class RestMessage : RestEntity<string>, IMessage
             _embeds = [..embedModels.Select(x => x.ToEntity())];
 
         IGuild? guild = (Channel as IGuildChannel)?.Guild;
-        _tags = MessageHelper.ParseTags(model.Content, Channel, guild, []);
+        _tags = MessageHelper.ParseTags(model.Content, Channel, guild, null, []);
     }
 
     internal virtual void Update(API.Rest.SendUserGroupMessageParams args, API.Rest.SendUserGroupMessageResponse model)
@@ -83,7 +83,7 @@ public abstract class RestMessage : RestEntity<string>, IMessage
         Timestamp = model.Timestamp;
 
         IGuild? guild = (Channel as IGuildChannel)?.Guild;
-        _tags = MessageHelper.ParseTags(Content, Channel, guild, []);
+        _tags = MessageHelper.ParseTags(Content, Channel, guild, null, []);
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{

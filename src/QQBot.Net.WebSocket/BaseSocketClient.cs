@@ -145,15 +145,15 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     // /// <inheritdoc />
     // Task<IDMChannel?> IQQBotClient.GetDMChannelAsync(Guid chatCode, CacheMode mode, RequestOptions? options) =>
     //     Task.FromResult<IDMChannel?>(GetDMChannel(chatCode));
-    //
-    // /// <inheritdoc />
-    // Task<IGuild?> IQQBotClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions? options) =>
-    //     Task.FromResult<IGuild?>(GetGuild(id));
-    //
-    // /// <inheritdoc />
-    // Task<IReadOnlyCollection<IGuild>> IQQBotClient.GetGuildsAsync(CacheMode mode, RequestOptions? options) =>
-    //     Task.FromResult<IReadOnlyCollection<IGuild>>(Guilds);
-    //
+
+    /// <inheritdoc />
+    Task<IGuild?> IQQBotClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IGuild?>(GetGuild(id));
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IGuild>> IQQBotClient.GetGuildsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<IGuild>>(Guilds);
+
     // /// <inheritdoc />
     // async Task<IUser?> IQQBotClient.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)
     // {

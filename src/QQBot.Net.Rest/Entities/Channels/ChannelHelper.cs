@@ -6,6 +6,16 @@ namespace QQBot.Rest;
 
 internal static class ChannelHelper
 {
+    #region Channels
+
+    public static async Task UpdateAsync(RestGuildChannel channel, RequestOptions? options)
+    {
+        Channel model = await channel.Client.ApiClient.GetChannelAsync(channel.Id, options).ConfigureAwait(false);
+        channel.Update(model);
+    }
+
+    #endregion
+
     #region Send Message
 
     public static async Task<IUserMessage> SendMessageAsync(

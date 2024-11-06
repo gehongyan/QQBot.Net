@@ -45,7 +45,7 @@ internal static class MessageHelper
     }
 
     public static ImmutableArray<ITag> ParseTags(string text, IMessageChannel channel, IGuild? guild,
-        IReadOnlyCollection<IGuildUser> userMentions)
+        IRole? everyoneRole, IReadOnlyCollection<IGuildUser> userMentions)
     {
         ImmutableArray<ITag>.Builder tags = ImmutableArray.CreateBuilder<ITag>();
         int index = 0;
@@ -96,7 +96,7 @@ internal static class MessageHelper
                 break;
             int? tagIndex = FindIndex(tags, index);
             if (tagIndex.HasValue)
-                tags.Insert(tagIndex.Value, new Tag<uint, IRole>(TagType.EveryoneMention, index, MentionUtils.MentionEveryone.Length, 0U, guild?.EveryoneRole));
+                tags.Insert(tagIndex.Value, new Tag<uint, IRole>(TagType.EveryoneMention, index, MentionUtils.MentionEveryone.Length, 0U, everyoneRole));
             index++;
         }
 
@@ -108,7 +108,7 @@ internal static class MessageHelper
                 break;
             int? tagIndex = FindIndex(tags, index);
             if (tagIndex.HasValue)
-                tags.Insert(tagIndex.Value, new Tag<uint, IRole>(TagType.EveryoneMention, index, "@everyone".Length, 0U, guild?.EveryoneRole));
+                tags.Insert(tagIndex.Value, new Tag<uint, IRole>(TagType.EveryoneMention, index, "@everyone".Length, 0U, everyoneRole));
             index++;
         }
 

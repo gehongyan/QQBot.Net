@@ -804,16 +804,16 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         }
     }
 
-    // #region IQQBotClient
-    //
-    // /// <inheritdoc />
-    // Task<IReadOnlyCollection<IGuild>> IQQBotClient.GetGuildsAsync(CacheMode mode, RequestOptions? options) =>
-    //     Task.FromResult<IReadOnlyCollection<IGuild>>(Guilds);
-    //
-    // /// <inheritdoc />
-    // Task<IGuild?> IQQBotClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions? options) =>
-    //     Task.FromResult<IGuild?>(GetGuild(id));
-    //
+    #region IQQBotClient
+
+    /// <inheritdoc />
+    Task<IReadOnlyCollection<IGuild>> IQQBotClient.GetGuildsAsync(CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IReadOnlyCollection<IGuild>>(Guilds);
+
+    /// <inheritdoc />
+    Task<IGuild?> IQQBotClient.GetGuildAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        Task.FromResult<IGuild?>(GetGuild(id));
+
     // /// <inheritdoc />
     // async Task<IUser?> IQQBotClient.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)
     // {
@@ -839,6 +839,6 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     //     mode == CacheMode.AllowDownload
     //         ? await GetDMChannelsAsync(options).ConfigureAwait(false)
     //         : DMChannels;
-    //
-    // #endregion
+
+    #endregion
 }
