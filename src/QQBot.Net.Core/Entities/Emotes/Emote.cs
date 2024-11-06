@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace QQBot;
 
@@ -9,8 +10,16 @@ namespace QQBot;
 /// </summary>
 public class Emote : IEmote
 {
+    // <faceType=3,faceId="338",ext="eyJ0ZXh0Ijoi5oiR5oOz5byA5LqGIn0="​>
+    private static readonly Regex EmoteRegex = new("""^<faceType=(?<type>\d+),faceId="(?<id>\d+)",ext="(?<ext>[a-zA-Z0-9+/=]+)"\u200b?>$""", RegexOptions.Compiled);
+
     /// <inheritdoc />
     public string Id { get; }
+
+    /// <summary>
+    ///     获取表情符号的类型。
+    /// </summary>
+    public int Type { get; }
 
     /// <inheritdoc />
     public string Name { get; }
@@ -18,11 +27,13 @@ public class Emote : IEmote
     /// <summary>
     ///     初始化一个 <see cref="Emote"/> 类的新实例。
     /// </summary>
+    /// <param name="type"> 表情符号的类型。 </param>
     /// <param name="id"> 表情符号的 ID。 </param>
     /// <param name="name"> 表情符号的显示名称。 </param>
-    public Emote(string id, string name)
+    public Emote(int type, string id, string name)
     {
         Id = id;
+        Type = type;
         Name = name;
     }
 
@@ -40,19 +51,15 @@ public class Emote : IEmote
     /// </example>
     public static Emote Parse(string text)
     {
-        // <faceType=1,faceId=\"12\",ext=\"eyJ0ZXh0Ijoi6LCD55quIn0=\">
-        ReadOnlySpan<char> textSpan = text.AsSpan();
-        if (!textSpan.StartsWith("<faceType=1,faceId=\"") || !textSpan.EndsWith("\">"))
+        if (EmoteRegex.Match(text) is not { Success: true } match)
             throw new FormatException("The input text is not a valid emote format.");
-        int splitIndex = textSpan[21..].IndexOf("\",ext=\"");
-        if (splitIndex == -1)
-            throw new FormatException("The input text is not a valid emote format.");
-        string id = textSpan[21..(21 + splitIndex)].ToString();
-        string ext = textSpan[(21 + splitIndex + 7)..^2].ToString();
+        int type = int.Parse(match.Groups["type"].Value);
+        string id = match.Groups["id"].Value;
+        string ext = match.Groups["ext"].Value;
         string json = Encoding.UTF8.GetString(Convert.FromBase64String(ext));
         JsonElement element = JsonSerializer.Deserialize<JsonElement>(json);
         string name = element.GetProperty("text").GetString() ?? string.Empty;
-        return new Emote(id, name);
+        return new Emote(type, id, name);
     }
 
     /// <summary>
