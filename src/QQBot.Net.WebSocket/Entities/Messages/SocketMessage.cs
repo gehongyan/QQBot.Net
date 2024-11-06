@@ -68,6 +68,9 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         MentionedEveryone = model.MentionEveryone;
         if (model.Embeds is { Length: > 0 } embedModels)
             _embeds = [..embedModels.Select(x => x.ToEntity())];
+
+        IGuild? guild = (Channel as IGuildChannel)?.Guild;
+        _tags = MessageHelper.ParseTags(model.Content, Channel, guild, []);
     }
 
     internal virtual void Update(ClientState state, API.Gateway.MessageCreatedEvent model)
@@ -76,6 +79,9 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(SocketMessageHelper.CreateAttachment)];
+
+        IGuild? guild = (Channel as IGuildChannel)?.Guild;
+        _tags = MessageHelper.ParseTags(model.Content, Channel, guild, []);
     }
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{
