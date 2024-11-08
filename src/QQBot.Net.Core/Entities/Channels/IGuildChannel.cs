@@ -3,7 +3,7 @@ namespace QQBot;
 /// <summary>
 ///     表示一个子频道内的子频道。
 /// </summary>
-public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
+public interface IGuildChannel : IChannel, IUpdateable, IDeletable, IEntity<ulong>
 {
     /// <summary>
     ///     获取此子频道的唯一标识符。

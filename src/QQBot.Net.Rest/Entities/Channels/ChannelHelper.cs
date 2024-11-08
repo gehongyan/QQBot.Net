@@ -140,6 +140,9 @@ internal static class ChannelHelper
         return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
     }
 
+    public static async Task DeleteAsync(IGuildChannel channel, BaseQQBotClient client, RequestOptions? options) =>
+        await client.ApiClient.DeleteChannelAsync(channel.Id, options).ConfigureAwait(false);
+
     #endregion
 
     #region Send Message

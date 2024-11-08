@@ -67,6 +67,9 @@ public class RestGuildChannel : RestChannel, IGuildChannel
         Update(model);
     }
 
+    /// <inheritdoc />
+    public Task DeleteAsync(RequestOptions? options = null) => ChannelHelper.DeleteAsync(this, Client, options);
+
     /// <inheritdoc cref="QQBot.Rest.RestGuildChannel.Name" />
     public override string ToString() => Name;
 

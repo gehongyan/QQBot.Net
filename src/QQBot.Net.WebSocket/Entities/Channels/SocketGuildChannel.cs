@@ -68,6 +68,9 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
         Update(Client.State, model);
     }
 
+    /// <inheritdoc />
+    public Task DeleteAsync(RequestOptions? options = null) => ChannelHelper.DeleteAsync(this, Client, options);
+
     /// <inheritdoc cref="QQBot.WebSocket.SocketGuildChannel.Name" />
     public override string ToString() => Name;
 
