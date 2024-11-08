@@ -45,6 +45,7 @@ public class RestGuildChannel : RestChannel, IGuildChannel
             ChannelType.LiveStream => RestLiveStreamChannel.Create(client, guild, model),
             ChannelType.Application => RestApplicationChannel.Create(client, guild, model),
             ChannelType.Forum => RestForumChannel.Create(client, guild, model),
+            ChannelType.Schedule => RestScheduleChannel.Create(client, guild, model),
             _ => new RestGuildChannel(client, model.Id, guild)
         };
 

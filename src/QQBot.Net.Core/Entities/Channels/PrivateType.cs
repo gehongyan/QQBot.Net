@@ -3,7 +3,7 @@
 /// <summary>
 ///     表示一个子频道的私密类型。
 /// </summary>
-public enum ChannelPrivateType
+public enum PrivateType
 {
     /// <summary>
     ///     公开子频道。

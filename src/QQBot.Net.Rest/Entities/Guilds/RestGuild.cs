@@ -127,6 +127,29 @@ public class RestGuild : RestEntity<ulong>, IGuild
     }
 
     /// <summary>
+    ///     获取此频道的所有直播子频道。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有直播子频道。 </returns>
+    public async Task<IReadOnlyCollection<ILiveStreamChannel>> GetLiveStreamChannelsAsync(RequestOptions? options = null)
+    {
+        IReadOnlyCollection<RestGuildChannel> channels = await GuildHelper.GetChannelsAsync(this, Client, options).ConfigureAwait(false);
+        return channels.OfType<ILiveStreamChannel>().ToArray();
+    }
+
+    /// <summary>
+    ///     获取此频道内的直播子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的直播子频道的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的直播子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public async Task<ILiveStreamChannel?> GetLiveStreamChannelAsync(ulong id, RequestOptions? options = null)
+    {
+        RestGuildChannel channel = await GuildHelper.GetChannelAsync(this, Client, id, options).ConfigureAwait(false);
+        return channel as ILiveStreamChannel;
+    }
+
+    /// <summary>
     ///     获取此频道的所有应用子频道。
     /// </summary>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
@@ -173,26 +196,26 @@ public class RestGuild : RestEntity<ulong>, IGuild
     }
 
     /// <summary>
-    ///     获取此频道的所有直播子频道。
+    ///     获取此频道的所有日程子频道。
     /// </summary>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
-    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有直播子频道。 </returns>
-    public async Task<IReadOnlyCollection<ILiveStreamChannel>> GetLiveStreamChannelsAsync(RequestOptions? options = null)
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有日程子频道。 </returns>
+    public async Task<IReadOnlyCollection<IScheduleChannel>> GetScheduleChannelsAsync(RequestOptions? options = null)
     {
         IReadOnlyCollection<RestGuildChannel> channels = await GuildHelper.GetChannelsAsync(this, Client, options).ConfigureAwait(false);
-        return channels.OfType<ILiveStreamChannel>().ToArray();
+        return channels.OfType<IScheduleChannel>().ToArray();
     }
 
     /// <summary>
-    ///     获取此频道内的直播子频道。
+    ///     获取此频道内的日程子频道。
     /// </summary>
-    /// <param name="id"> 要获取的直播子频道的 ID。 </param>
+    /// <param name="id"> 要获取的论坛子频道的 ID。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
-    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的直播子频道；如果未找到，则返回 <c>null</c>。 </returns>
-    public async Task<ILiveStreamChannel?> GetLiveStreamChannelAsync(ulong id, RequestOptions? options = null)
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的日程子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    public async Task<IScheduleChannel?> GetScheduleChannelAsync(ulong id, RequestOptions? options = null)
     {
         RestGuildChannel channel = await GuildHelper.GetChannelAsync(this, Client, id, options).ConfigureAwait(false);
-        return channel as ILiveStreamChannel;
+        return channel as IScheduleChannel;
     }
 
     /// <summary>
@@ -217,6 +240,41 @@ public class RestGuild : RestEntity<ulong>, IGuild
         RestGuildChannel channel = await GuildHelper.GetChannelAsync(this, Client, id, options).ConfigureAwait(false);
         return channel as ICategoryChannel;
     }
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateTextChannelAsync(System.String,System.Action{QQBot.CreateTextChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestTextChannel> CreateTextChannelAsync(string name,
+        Action<CreateTextChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateTextChannelAsync(this, Client, name, func, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateVoiceChannelAsync(System.String,System.Action{QQBot.CreateVoiceChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestVoiceChannel> CreateVoiceChannelAsync(string name,
+        Action<CreateVoiceChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateVoiceChannelAsync(this, Client, name, func, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateLiveStreamChannelAsync(System.String,System.Action{QQBot.CreateLiveStreamChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestLiveStreamChannel> CreateLiveStreamChannelAsync(string name,
+        Action<CreateLiveStreamChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateLiveStreamChannelAsync(this, Client, name, func, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateApplicationChannelAsync(System.String,System.Action{QQBot.CreateApplicationChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestApplicationChannel> CreateApplicationChannelAsync(string name,
+        Action<CreateApplicationChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateApplicationChannelAsync(this, Client, name, func, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateForumChannelAsync(System.String,System.Action{QQBot.CreateForumChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestForumChannel> CreateForumChannelAsync(string name,
+        Action<CreateForumChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateForumChannelAsync(this, Client, name, func, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateScheduleChannelAsync(System.String,System.Action{QQBot.CreateScheduleChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestScheduleChannel> CreateScheduleChannelAsync(string name,
+        Action<CreateScheduleChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateScheduleChannelAsync(this, Client, name, func, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateCategoryChannelAsync(System.String,System.Action{QQBot.CreateCategoryChannelProperties},QQBot.RequestOptions)" />
+    public Task<RestCategoryChannel> CreateCategoryChannelAsync(string name,
+        Action<CreateCategoryChannelProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateCategoryChannelAsync(this, Client, name, func, options);
 
     #endregion
 
@@ -272,6 +330,14 @@ public class RestGuild : RestEntity<ulong>, IGuild
         mode == CacheMode.AllowDownload ? await GetVoiceChannelAsync(id, options).ConfigureAwait(false) : null;
 
     /// <inheritdoc />
+    async Task<IReadOnlyCollection<ILiveStreamChannel>> IGuild.GetLiveStreamChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        mode == CacheMode.AllowDownload ? await GetLiveStreamChannelsAsync(options).ConfigureAwait(false) : [];
+
+    /// <inheritdoc />
+    async Task<ILiveStreamChannel?> IGuild.GetLiveStreamChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        mode == CacheMode.AllowDownload ? await GetLiveStreamChannelAsync(id, options).ConfigureAwait(false) : null;
+
+    /// <inheritdoc />
     async Task<IReadOnlyCollection<IApplicationChannel>> IGuild.GetApplicationChannelsAsync(CacheMode mode, RequestOptions? options) =>
         mode == CacheMode.AllowDownload ? await GetApplicationChannelsAsync(options).ConfigureAwait(false) : [];
 
@@ -288,12 +354,12 @@ public class RestGuild : RestEntity<ulong>, IGuild
         mode == CacheMode.AllowDownload ? await GetForumChannelAsync(id, options).ConfigureAwait(false) : null;
 
     /// <inheritdoc />
-    async Task<IReadOnlyCollection<ILiveStreamChannel>> IGuild.GetLiveStreamChannelsAsync(CacheMode mode, RequestOptions? options) =>
-        mode == CacheMode.AllowDownload ? await GetLiveStreamChannelsAsync(options).ConfigureAwait(false) : [];
+    async Task<IReadOnlyCollection<IScheduleChannel>> IGuild.GetScheduleChannelsAsync(CacheMode mode, RequestOptions? options) =>
+        mode == CacheMode.AllowDownload ? await GetScheduleChannelsAsync(options).ConfigureAwait(false) : [];
 
     /// <inheritdoc />
-    async Task<ILiveStreamChannel?> IGuild.GetLiveStreamChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
-        mode == CacheMode.AllowDownload ? await GetLiveStreamChannelAsync(id, options).ConfigureAwait(false) : null;
+    async Task<IScheduleChannel?> IGuild.GetScheduleChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        mode == CacheMode.AllowDownload ? await GetScheduleChannelAsync(id, options).ConfigureAwait(false) : null;
 
     /// <inheritdoc />
     async Task<IReadOnlyCollection<ICategoryChannel>> IGuild.GetCategoryChannelsAsync(CacheMode mode, RequestOptions? options) =>
@@ -306,6 +372,27 @@ public class RestGuild : RestEntity<ulong>, IGuild
     /// <inheritdoc />
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>
         mode == CacheMode.AllowDownload ? await GetUserAsync(id, options).ConfigureAwait(false) : null;
+
+    async Task<ITextChannel> IGuild.CreateTextChannelAsync(string name, Action<CreateTextChannelProperties>? action, RequestOptions? options) =>
+        await CreateTextChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<IVoiceChannel> IGuild.CreateVoiceChannelAsync(string name, Action<CreateVoiceChannelProperties>? action, RequestOptions? options) =>
+        await CreateVoiceChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<ILiveStreamChannel> IGuild.CreateLiveStreamChannelAsync(string name, Action<CreateLiveStreamChannelProperties>? action, RequestOptions? options) =>
+        await CreateLiveStreamChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<IApplicationChannel> IGuild.CreateApplicationChannelAsync(string name, Action<CreateApplicationChannelProperties>? action, RequestOptions? options) =>
+        await CreateApplicationChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<IForumChannel> IGuild.CreateForumChannelAsync(string name, Action<CreateForumChannelProperties>? action, RequestOptions? options) =>
+        await CreateForumChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<IScheduleChannel> IGuild.CreateScheduleChannelAsync(string name, Action<CreateScheduleChannelProperties>? action, RequestOptions? options) =>
+        await CreateScheduleChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<ICategoryChannel> IGuild.CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? action, RequestOptions? options) =>
+        await CreateCategoryChannelAsync(name, action, options).ConfigureAwait(false);
 
     #endregion
 }

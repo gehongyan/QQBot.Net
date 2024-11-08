@@ -161,6 +161,23 @@ public interface IGuild : IEntity<ulong>
     Task<IVoiceChannel?> GetVoiceChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     /// <summary>
+    ///     获取此频道的所有直播子频道。
+    /// </summary>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有直播子频道。 </returns>
+    Task<IReadOnlyCollection<ILiveStreamChannel>> GetLiveStreamChannelsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取此频道内的直播子频道。
+    /// </summary>
+    /// <param name="id"> 要获取的直播子频道的 ID。 </param>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的直播子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    Task<ILiveStreamChannel?> GetLiveStreamChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
     ///     获取此频道的所有应用子频道。
     /// </summary>
     /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
@@ -195,21 +212,21 @@ public interface IGuild : IEntity<ulong>
     Task<IForumChannel?> GetForumChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     /// <summary>
-    ///     获取此频道的所有直播子频道。
+    ///     获取此频道的所有日程子频道。
     /// </summary>
     /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
-    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有直播子频道。 </returns>
-    Task<IReadOnlyCollection<ILiveStreamChannel>> GetLiveStreamChannelsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有日程子频道。 </returns>
+    Task<IReadOnlyCollection<IScheduleChannel>> GetScheduleChannelsAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     /// <summary>
-    ///     获取此频道内的直播子频道。
+    ///     获取此频道内的日程子频道。
     /// </summary>
-    /// <param name="id"> 要获取的直播子频道的 ID。 </param>
+    /// <param name="id"> 要获取的日程子频道的 ID。 </param>
     /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
-    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的直播子频道；如果未找到，则返回 <c>null</c>。 </returns>
-    Task<ILiveStreamChannel?> GetLiveStreamChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的日程子频道；如果未找到，则返回 <c>null</c>。 </returns>
+    Task<IScheduleChannel?> GetScheduleChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     /// <summary>
     ///     获取此频道的所有分组子频道。
@@ -227,6 +244,69 @@ public interface IGuild : IEntity<ulong>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的分组子频道；如果未找到，则返回 <c>null</c>。 </returns>
     Task<ICategoryChannel?> GetCategoryChannelAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的文字子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的文字频道。 </returns>
+    Task<ITextChannel> CreateTextChannelAsync(string name, Action<CreateTextChannelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的语音子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的语音频道。 </returns>
+    Task<IVoiceChannel> CreateVoiceChannelAsync(string name, Action<CreateVoiceChannelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的直播子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的直播频道。 </returns>
+    Task<ILiveStreamChannel> CreateLiveStreamChannelAsync(string name, Action<CreateLiveStreamChannelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的应用子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的应用频道。 </returns>
+    Task<IApplicationChannel> CreateApplicationChannelAsync(string name, Action<CreateApplicationChannelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的论坛子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的论坛频道。 </returns>
+    Task<IForumChannel> CreateForumChannelAsync(string name, Action<CreateForumChannelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的日程子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的日程频道。 </returns>
+    Task<IScheduleChannel> CreateScheduleChannelAsync(string name, Action<CreateScheduleChannelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的分组子频道。
+    /// </summary>
+    /// <param name="name"> 频道的名称。 </param>
+    /// <param name="func"> 一个包含要应用到新创建频道的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的分组频道。 </returns>
+    Task<ICategoryChannel> CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? func = null, RequestOptions? options = null);
 
     #endregion
 }

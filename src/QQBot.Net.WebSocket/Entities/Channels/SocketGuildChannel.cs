@@ -45,6 +45,7 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
             ChannelType.LiveStream => SocketLiveStreamChannel.Create(guild, state, model),
             ChannelType.Application => SocketApplicationChannel.Create(guild, state, model),
             ChannelType.Forum => SocketForumChannel.Create(guild, state, model),
+            ChannelType.Schedule => SocketScheduleChannel.Create(guild, state, model),
             _ => new SocketGuildChannel(guild.Client, model.Id, guild)
         };
 

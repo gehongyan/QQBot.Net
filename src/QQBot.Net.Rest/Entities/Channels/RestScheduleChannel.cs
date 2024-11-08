@@ -4,10 +4,10 @@ using QQBot.API;
 namespace QQBot.Rest;
 
 /// <summary>
-///     表示频道中的一个基于 REST 的应用子频道。
+///     表示频道中的一个基于 REST 的日程子频道。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
+public class RestScheduleChannel : RestGuildChannel, IScheduleChannel
 {
     /// <inheritdoc />
     public ulong? CategoryId { get; private set; }
@@ -21,18 +21,15 @@ public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
     /// <inheritdoc />
     public ChannelPermission? Permission { get; private set; }
 
-    /// <inheritdoc />
-    public ChannelApplication? ApplicationType { get; private set; }
-
-    internal RestApplicationChannel(BaseQQBotClient client, ulong id, IGuild guild)
+    internal RestScheduleChannel(BaseQQBotClient client, ulong id, IGuild guild)
         : base(client, id, guild)
     {
-        Type = ChannelType.Application;
+        Type = ChannelType.Schedule;
     }
 
-    internal static new RestApplicationChannel Create(BaseQQBotClient client, IGuild guild, Channel model)
+    internal static new RestScheduleChannel Create(BaseQQBotClient client, IGuild guild, Channel model)
     {
-        RestApplicationChannel entity = new(client, model.Id, guild);
+        RestScheduleChannel entity = new(client, model.Id, guild);
         entity.Update(model);
         return entity;
     }
@@ -44,8 +41,7 @@ public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
         PrivateType = model.PrivateType;
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
-        ApplicationType = model.ApplicationId;
     }
 
-    private string DebuggerDisplay => $"{Name} ({Id}, Application)";
+    private string DebuggerDisplay => $"{Name} ({Id}, Schedule)";
 }

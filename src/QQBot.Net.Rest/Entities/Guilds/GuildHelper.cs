@@ -5,10 +5,14 @@ namespace QQBot.Rest;
 
 internal static class GuildHelper
 {
-    public static async Task<IReadOnlyCollection<RestGuildChannel>> GetChannelsAsync(IGuild guild, BaseQQBotClient client,
+    #region Channels
+
+    public static async Task<IReadOnlyCollection<RestGuildChannel>> GetChannelsAsync(IGuild guild,
+        BaseQQBotClient client,
         RequestOptions? options)
     {
-        IReadOnlyCollection<Channel> models = await client.ApiClient.GetChannelsAsync(guild.Id, options).ConfigureAwait(false);
+        IReadOnlyCollection<Channel> models =
+            await client.ApiClient.GetChannelsAsync(guild.Id, options).ConfigureAwait(false);
         return [..models.Select(x => RestGuildChannel.Create(client, guild, x))];
     }
 
@@ -18,6 +22,129 @@ internal static class GuildHelper
         Channel model = await client.ApiClient.GetChannelAsync(id, options).ConfigureAwait(false);
         return RestGuildChannel.Create(client, guild, model);
     }
+
+    public static async Task<RestTextChannel> CreateTextChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateTextChannelProperties>? func, RequestOptions? options)
+    {
+        CreateTextChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.Text,
+            // Position = props.Position,
+            SubType = props.SubType,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission,
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestTextChannel.Create(client, guild, model);
+    }
+
+    public static async Task<RestVoiceChannel> CreateVoiceChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateVoiceChannelProperties>? func, RequestOptions? options)
+    {
+        CreateVoiceChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.Voice,
+            // Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission,
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestVoiceChannel.Create(client, guild, model);
+    }
+
+    public static async Task<RestLiveStreamChannel> CreateLiveStreamChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateLiveStreamChannelProperties>? func, RequestOptions? options)
+    {
+        CreateLiveStreamChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.LiveStream,
+            // Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission,
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestLiveStreamChannel.Create(client, guild, model);
+    }
+
+    public static async Task<RestApplicationChannel> CreateApplicationChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateApplicationChannelProperties>? func, RequestOptions? options)
+    {
+        CreateApplicationChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.Application,
+            // Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission,
+            ApplicationId = props.ApplicationType,
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestApplicationChannel.Create(client, guild, model);
+    }
+
+    public static async Task<RestForumChannel> CreateForumChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateForumChannelProperties>? func, RequestOptions? options)
+    {
+        CreateForumChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.Forum,
+            // Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission,
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestForumChannel.Create(client, guild, model);
+    }
+
+    public static async Task<RestScheduleChannel> CreateScheduleChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateScheduleChannelProperties>? func, RequestOptions? options)
+    {
+        CreateScheduleChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.Schedule,
+            // Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission,
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestScheduleChannel.Create(client, guild, model);
+    }
+
+    public static async Task<RestCategoryChannel> CreateCategoryChannelAsync(IGuild guild, BaseQQBotClient client,
+        string name, Action<CreateCategoryChannelProperties>? func, RequestOptions? options)
+    {
+        CreateCategoryChannelProperties props = new();
+        func?.Invoke(props);
+        CreateChannelParams args = new()
+        {
+            Name = name,
+            Type = ChannelType.Category,
+            Position = props.Position
+        };
+        Channel model = await client.ApiClient.CreateChannelAsync(guild.Id, args, options).ConfigureAwait(false);
+        return RestCategoryChannel.Create(client, guild, model);
+    }
+
+    #endregion
+
+    #region Users
 
     public static async Task<RestGuildMember> GetUserAsync(IGuild guild, BaseQQBotClient client,
         ulong id, RequestOptions? options)
@@ -54,4 +181,6 @@ internal static class GuildHelper
             count: limit
         );
     }
+
+    #endregion
 }

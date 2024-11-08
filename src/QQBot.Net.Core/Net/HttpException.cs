@@ -68,6 +68,6 @@ public class HttpException : Exception
         string closeInfo = qqBotCode.HasValue && qqBotCode != 0
             ? qqBotCode.Value.ToString()
             : httpCode.ToString();
-        return $"The server responded with error {closeInfo}: {reason ?? httpCode.ToString()} ({closeCode}, {traceId})";
+        return $"The server responded with error {closeInfo}: {reason ?? httpCode.ToString()} ({closeCode}{(traceId is not null ? $", trace ID: {traceId}" : string.Empty)})";
     }
 }

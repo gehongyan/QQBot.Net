@@ -38,5 +38,10 @@ public enum ChannelType
     /// <summary>
     ///     论坛子频道。
     /// </summary>
-    Forum = 10007
+    Forum = 10007,
+
+    /// <summary>
+    ///     日程子频道。
+    /// </summary>
+    Schedule = 10011,
 }

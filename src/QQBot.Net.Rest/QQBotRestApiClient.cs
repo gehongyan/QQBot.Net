@@ -428,6 +428,13 @@ internal class QQBotRestApiClient : IDisposable
     public async Task<Channel> CreateChannelAsync(ulong guildId, CreateChannelParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(guildId, 0, nameof(guildId));
+        Preconditions.NotNullOrEmpty(args.Name, nameof(args.Name));
+        if (args.Type is ChannelType.Category)
+        {
+            Preconditions.NotNull(args.Position, nameof(args.Position));
+            Preconditions.AtLeast(args.Position.Value, 2, nameof(args.Position));
+        }
+
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(guildId);

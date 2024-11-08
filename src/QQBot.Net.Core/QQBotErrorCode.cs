@@ -87,6 +87,16 @@ public enum QQBotErrorCode
 
     #endregion
 
+    #region SubChannel (200XXX)
+
+    CreateChannelSecurityHit = 200011,
+    CreateChannelSuccessButGetInfoError = 200013,
+    NameEmpty = 200016,
+    PositionError = 200017,
+    CreateChannelCategoryError = 200019,
+
+    #endregion
+
     #region SubChannel Permission Errors (301XXX)
 
     SubChannelInvalidParameter = 301000,

@@ -13,7 +13,7 @@ public class SocketForumChannel : SocketGuildChannel, IForumChannel
     public ulong? CategoryId { get; private set; }
 
     /// <inheritdoc />
-    public ChannelPrivateType? PrivateType { get; private set; }
+    public PrivateType? PrivateType { get; private set; }
 
     /// <inheritdoc />
     public SpeakPermission? SpeakPermission { get; private set; }

@@ -15,19 +15,19 @@ internal class CreateChannelParams
     public ChannelSubType? SubType { get; set; }
 
     [JsonPropertyName("position")]
-    public int Position { get; set; }
+    public int? Position { get; set; }
 
     [JsonPropertyName("parent_id")]
     public ulong? CategoryId { get; set; }
 
     [JsonPropertyName("private_type")]
-    public ChannelPrivateType? PrivateType { get; set; }
+    public PrivateType? PrivateType { get; set; }
 
     [JsonPropertyName("private_user_ids")]
     public ulong[]? PrivateUserIds { get; set; }
 
     [JsonPropertyName("speak_permission")]
-    public SpeakPermission SpeakPermission { get; set; }
+    public SpeakPermission? SpeakPermission { get; set; }
 
     [JsonPropertyName("application_id")]
     [JsonConverter(typeof(ChannelApplicationJsonConverter))]

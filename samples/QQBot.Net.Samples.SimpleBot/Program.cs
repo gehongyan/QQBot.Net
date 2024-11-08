@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using QQBot;
+using QQBot.Rest;
 using QQBot.WebSocket;
 
 QQBotSocketClient client = new(new QQBotSocketConfig
@@ -19,13 +20,21 @@ client.Ready += async () =>
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    IUserMessage msg = await message.ReplyAsync($"""
-    [Content] {message.Content}
-    [Content] {Format.Escape(message.Content)}
-    [Content] {Format.Sanitize(message.Content)}
-    [Attachments] {message.Attachments.Count}
-    """
-    );
+    if (message.Channel is SocketTextChannel textChannel)
+    {
+        var channel = await textChannel.Guild.CreateApplicationChannelAsync(message.Content, x =>
+        {
+            x.ApplicationType = ChannelApplication.GameForPeace;
+        });
+    }
+
+//     IUserMessage msg = await message.ReplyAsync(
+//         $"""
+//         [Content] {message.Content}
+//         [Content] {Format.Escape(message.Content)}
+//         [Content] {Format.Sanitize(message.Content)}
+//         [Attachments] {message.Attachments.Count}
+//         """);
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

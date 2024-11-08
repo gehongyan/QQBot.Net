@@ -14,7 +14,7 @@ public interface INestedChannel : IGuildChannel
     /// <summary>
     ///     获取此子频道的私密类型。
     /// </summary>
-    ChannelPrivateType? PrivateType { get; }
+    PrivateType? PrivateType { get; }
 
     /// <summary>
     ///     获取此子频道的发言权限。

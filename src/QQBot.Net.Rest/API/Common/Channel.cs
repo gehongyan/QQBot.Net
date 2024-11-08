@@ -30,7 +30,7 @@ internal class Channel
     public required ulong OwnerId { get; set; }
 
     [JsonPropertyName("private_type")]
-    public ChannelPrivateType? PrivateType { get; set; }
+    public PrivateType? PrivateType { get; set; }
 
     [JsonPropertyName("speak_permission")]
     public SpeakPermission? SpeakPermission { get; set; }
