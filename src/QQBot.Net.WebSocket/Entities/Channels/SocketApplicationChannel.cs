@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using QQBot.API;
+using QQBot.Rest;
+using Model = QQBot.API.Channel;
 
 namespace QQBot.WebSocket;
 
@@ -30,14 +31,14 @@ public class SocketApplicationChannel : SocketGuildChannel, IApplicationChannel
         Type = ChannelType.Application;
     }
 
-    internal static new SocketApplicationChannel Create(SocketGuild guild, ClientState state, Channel model)
+    internal static new SocketApplicationChannel Create(SocketGuild guild, ClientState state, Model model)
     {
         SocketApplicationChannel entity = new(guild.Client, model.Id, guild);
         entity.Update(state, model);
         return entity;
     }
 
-    internal override void Update(ClientState state, Channel model)
+    internal override void Update(ClientState state, Model model)
     {
         base.Update(state, model);
         CategoryId = model.ParentId;
@@ -45,6 +46,13 @@ public class SocketApplicationChannel : SocketGuildChannel, IApplicationChannel
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
         ApplicationType = model.ApplicationId;
+    }
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyApplicationChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(Client.State, model);
     }
 
     private string DebuggerDisplay => $"{Name} ({Id}, Application)";

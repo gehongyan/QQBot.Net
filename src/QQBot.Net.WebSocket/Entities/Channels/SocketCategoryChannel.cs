@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using QQBot.Rest;
 using Model = QQBot.API.Channel;
 
 namespace QQBot.WebSocket;
@@ -20,6 +21,13 @@ public class SocketCategoryChannel : SocketGuildChannel, ICategoryChannel
         SocketCategoryChannel entity = new(guild.Client, model.Id, guild);
         entity.Update(state, model);
         return entity;
+    }
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyCategoryChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(Client.State, model);
     }
 
     private string DebuggerDisplay => $"{Name} ({Id}, Category)";

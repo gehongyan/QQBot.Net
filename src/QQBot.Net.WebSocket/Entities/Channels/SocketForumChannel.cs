@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using QQBot.API;
+using QQBot.Rest;
+using Model = QQBot.API.Channel;
 
 namespace QQBot.WebSocket;
 
@@ -27,20 +28,27 @@ public class SocketForumChannel : SocketGuildChannel, IForumChannel
         Type = ChannelType.Forum;
     }
 
-    internal static new SocketForumChannel Create(SocketGuild guild, ClientState state, Channel model)
+    internal static new SocketForumChannel Create(SocketGuild guild, ClientState state, Model model)
     {
         SocketForumChannel entity = new(guild.Client, model.Id, guild);
         entity.Update(state, model);
         return entity;
     }
 
-    internal override void Update(ClientState state, Channel model)
+    internal override void Update(ClientState state, Model model)
     {
         base.Update(state, model);
         CategoryId = model.ParentId;
         PrivateType = model.PrivateType;
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
+    }
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyForumChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(Client.State, model);
     }
 
     private string DebuggerDisplay => $"{Name} ({Id}, Forum)";

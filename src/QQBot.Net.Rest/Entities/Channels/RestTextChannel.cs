@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using QQBot.Rest;
 using Model = QQBot.API.Channel;
 
 namespace QQBot.Rest;
@@ -49,6 +48,13 @@ public class RestTextChannel : RestGuildChannel, ITextChannel
         PrivateType = model.PrivateType;
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
+    }
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyTextChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(model);
     }
 
     private string DebuggerDisplay => $"{Name} ({Id}, Text)";

@@ -58,6 +58,13 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
     }
 
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyTextChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(Client.State, model);
+    }
+
     internal void AddMessage(SocketMessage msg) => _messages?.Add(msg);
 
     internal SocketMessage? RemoveMessage(string id) => _messages?.Remove(id);

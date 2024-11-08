@@ -22,9 +22,9 @@ client.MessageReceived += async message =>
     if (message.Source is not MessageSource.User) return;
     if (message.Channel is SocketTextChannel textChannel)
     {
-        var channel = await textChannel.Guild.CreateApplicationChannelAsync(message.Content, x =>
+        await textChannel.ModifyAsync(x =>
         {
-            x.ApplicationType = ChannelApplication.GameForPeace;
+            x.Name = message.Content;
         });
     }
 

@@ -8,7 +8,7 @@ internal class ModifyChannelParams
     public string? Name { get; set; }
 
     [JsonPropertyName("position")]
-    public int Position { get; set; }
+    public int? Position { get; set; }
 
     [JsonPropertyName("parent_id")]
     public ulong? CategoryId { get; set; }
@@ -17,5 +17,5 @@ internal class ModifyChannelParams
     public PrivateType? PrivateType { get; set; }
 
     [JsonPropertyName("speak_permission")]
-    public SpeakPermission SpeakPermission { get; set; }
+    public SpeakPermission? SpeakPermission { get; set; }
 }

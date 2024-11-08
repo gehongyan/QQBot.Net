@@ -87,7 +87,13 @@ public enum QQBotErrorCode
 
     #endregion
 
-    #region SubChannel (200XXX)
+    #region SubChannel Modification Errors (100XXX)
+
+    ModifyCategoryError = 130008,
+
+    #endregion
+
+    #region SubChannel Creation Errors (200XXX)
 
     CreateChannelSecurityHit = 200011,
     CreateChannelSuccessButGetInfoError = 200013,

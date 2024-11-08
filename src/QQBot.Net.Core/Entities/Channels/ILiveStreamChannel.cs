@@ -3,4 +3,14 @@ namespace QQBot;
 /// <summary>
 ///     表示一个直播子频道。
 /// </summary>
-public interface ILiveStreamChannel : INestedChannel;
+public interface ILiveStreamChannel : INestedChannel
+{
+    /// <summary>
+    ///     修改此直播子频道。
+    /// </summary>
+    /// <param name="func"> 一个包含修改直播子频道属性的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示直播子频道属性修改操作的异步任务。 </returns>
+    Task ModifyAsync(Action<ModifyLiveStreamChannelProperties> func, RequestOptions? options = null);
+}
+

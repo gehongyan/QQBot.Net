@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using QQBot.Rest;
 using Model = QQBot.API.Channel;
 
 namespace QQBot.WebSocket;
@@ -59,6 +60,13 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
     /// <inheritdoc />
     public virtual Task UpdateAsync(RequestOptions? options = null) =>
         SocketChannelHelper.UpdateAsync(this, options);
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyGuildChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(Client.State, model);
+    }
 
     /// <inheritdoc cref="QQBot.WebSocket.SocketGuildChannel.Name" />
     public override string ToString() => Name;

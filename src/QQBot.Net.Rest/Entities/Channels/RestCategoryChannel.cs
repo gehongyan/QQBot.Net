@@ -22,5 +22,12 @@ public class RestCategoryChannel : RestGuildChannel, ICategoryChannel
         return entity;
     }
 
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyCategoryChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(model);
+    }
+
     private string DebuggerDisplay => $"{Name} ({Id}, Category)";
 }

@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using QQBot.API;
+using Model = QQBot.API.Channel;
 
 namespace QQBot.Rest;
 
@@ -27,20 +27,27 @@ public class RestLiveStreamChannel : RestGuildChannel, ILiveStreamChannel
         Type = ChannelType.LiveStream;
     }
 
-    internal static new RestLiveStreamChannel Create(BaseQQBotClient client, IGuild guild, Channel model)
+    internal static new RestLiveStreamChannel Create(BaseQQBotClient client, IGuild guild, Model model)
     {
         RestLiveStreamChannel entity = new(client, model.Id, guild);
         entity.Update(model);
         return entity;
     }
 
-    internal override void Update(Channel model)
+    internal override void Update(Model model)
     {
         base.Update(model);
         CategoryId = model.ParentId;
         PrivateType = model.PrivateType;
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
+    }
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyLiveStreamChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(model);
     }
 
     private string DebuggerDisplay => $"{Name} ({Id}, LiveStream)";

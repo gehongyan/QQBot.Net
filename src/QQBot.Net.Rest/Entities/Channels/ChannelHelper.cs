@@ -14,6 +14,132 @@ internal static class ChannelHelper
         channel.Update(model);
     }
 
+    public static async Task<Channel> ModifyAsync(IGuildChannel channel, BaseQQBotClient client,
+        Action<ModifyGuildChannelProperties> func, RequestOptions? options)
+    {
+        ModifyGuildChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(ITextChannel channel, BaseQQBotClient client,
+        Action<ModifyTextChannelProperties> func, RequestOptions? options)
+    {
+        ModifyTextChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            CategoryId = props.CategoryId,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(IVoiceChannel channel, BaseQQBotClient client,
+        Action<ModifyVoiceChannelProperties> func, RequestOptions? options)
+    {
+        ModifyVoiceChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            CategoryId = props.CategoryId,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(ILiveStreamChannel channel, BaseQQBotClient client,
+        Action<ModifyLiveStreamChannelProperties> func, RequestOptions? options)
+    {
+        ModifyLiveStreamChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            CategoryId = props.CategoryId,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(IApplicationChannel channel, BaseQQBotClient client,
+        Action<ModifyApplicationChannelProperties> func, RequestOptions? options)
+    {
+        ModifyApplicationChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            CategoryId = props.CategoryId,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(IForumChannel channel, BaseQQBotClient client,
+        Action<ModifyForumChannelProperties> func, RequestOptions? options)
+    {
+        ModifyForumChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            CategoryId = props.CategoryId,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(IScheduleChannel channel, BaseQQBotClient client,
+        Action<ModifyScheduleChannelProperties> func, RequestOptions? options)
+    {
+        ModifyScheduleChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            CategoryId = props.CategoryId,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<Channel> ModifyAsync(ICategoryChannel channel, BaseQQBotClient client,
+        Action<ModifyCategoryChannelProperties> func, RequestOptions? options)
+    {
+        ModifyCategoryChannelProperties props = new();
+        func(props);
+        ModifyChannelParams args = new()
+        {
+            Name = props.Name,
+            Position = props.Position,
+            PrivateType = props.PrivateType,
+            SpeakPermission = props.SpeakPermission
+        };
+        return await client.ApiClient.ModifyChannelAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
     #endregion
 
     #region Send Message

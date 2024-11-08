@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using QQBot.API;
+using Model = QQBot.API.Channel;
 
 namespace QQBot.Rest;
 
@@ -30,14 +30,14 @@ public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
         Type = ChannelType.Application;
     }
 
-    internal static new RestApplicationChannel Create(BaseQQBotClient client, IGuild guild, Channel model)
+    internal static new RestApplicationChannel Create(BaseQQBotClient client, IGuild guild, Model model)
     {
         RestApplicationChannel entity = new(client, model.Id, guild);
         entity.Update(model);
         return entity;
     }
 
-    internal override void Update(Channel model)
+    internal override void Update(Model model)
     {
         base.Update(model);
         CategoryId = model.ParentId;
@@ -45,6 +45,13 @@ public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
         SpeakPermission = model.SpeakPermission;
         Permission = model.Permissions is not null ? Enum.Parse<ChannelPermission>(model.Permissions) : null; // TODO
         ApplicationType = model.ApplicationId;
+    }
+
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyApplicationChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(model);
     }
 
     private string DebuggerDisplay => $"{Name} ({Id}, Application)";

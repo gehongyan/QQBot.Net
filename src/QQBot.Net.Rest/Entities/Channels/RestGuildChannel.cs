@@ -60,6 +60,13 @@ public class RestGuildChannel : RestChannel, IGuildChannel
     public virtual Task UpdateAsync(RequestOptions? options = null) =>
         ChannelHelper.UpdateAsync(this, options);
 
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<ModifyGuildChannelProperties> func, RequestOptions? options = null)
+    {
+        Model model = await ChannelHelper.ModifyAsync(this, Client, func, options).ConfigureAwait(false);
+        Update(model);
+    }
+
     /// <inheritdoc cref="QQBot.Rest.RestGuildChannel.Name" />
     public override string ToString() => Name;
 

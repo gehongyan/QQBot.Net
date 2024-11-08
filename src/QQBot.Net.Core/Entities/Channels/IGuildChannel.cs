@@ -43,6 +43,14 @@ public interface IGuildChannel : IChannel, IUpdateable, IEntity<ulong>
     /// </summary>
     ulong? CreatorId { get; }
 
+    /// <summary>
+    ///     修改此子频道。
+    /// </summary>
+    /// <param name="func"> 一个包含修改子频道属性的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示子频道属性修改操作的异步任务。 </returns>
+    Task ModifyAsync(Action<ModifyGuildChannelProperties> func, RequestOptions? options = null);
+
     /// <inheritdoc cref="QQBot.IChannel.GetUserAsync(System.String,QQBot.CacheMode,QQBot.RequestOptions)" />
     Task<IGuildUser?> GetUserAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 }
