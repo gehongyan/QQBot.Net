@@ -291,8 +291,16 @@ public class RestGuild : RestEntity<ulong>, IGuild
     /// <param name="id"> 要获取的用户的 ID。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
-    public Task<RestGuildMember> GetUserAsync(ulong id, RequestOptions? options = null)
-        => GuildHelper.GetUserAsync(this, Client, id, options);
+    public Task<RestGuildMember> GetUserAsync(ulong id, RequestOptions? options = null) =>
+        GuildHelper.GetUserAsync(this, Client, id, options);
+
+    /// <summary>
+    ///     获取此频道内的所有用户。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道内的所有用户。 </returns>
+    public IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(RequestOptions? options = null) =>
+        GuildHelper.GetUsersAsync(this, Client, null, options);
 
     #endregion
 
@@ -300,6 +308,17 @@ public class RestGuild : RestEntity<ulong>, IGuild
 
     /// <inheritdoc />
     bool IGuild.IsAvailable => IsAvailable;
+
+    /// <inheritdoc />
+    async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>
+        mode == CacheMode.AllowDownload ? await GetUserAsync(id, options).ConfigureAwait(false) : null;
+
+    async Task<IReadOnlyCollection<IGuildMember>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions? options)
+    {
+        if (mode is CacheMode.AllowDownload)
+            return [..await GetUsersAsync(options).FlattenAsync().ConfigureAwait(false)];
+        return [];
+    }
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">Downloading users is not supported for a REST-based guild.</exception>
@@ -368,10 +387,6 @@ public class RestGuild : RestEntity<ulong>, IGuild
     /// <inheritdoc />
     async Task<ICategoryChannel?> IGuild.GetCategoryChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
         mode == CacheMode.AllowDownload ? await GetCategoryChannelAsync(id, options).ConfigureAwait(false) : null;
-
-    /// <inheritdoc />
-    async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>
-        mode == CacheMode.AllowDownload ? await GetUserAsync(id, options).ConfigureAwait(false) : null;
 
     async Task<ITextChannel> IGuild.CreateTextChannelAsync(string name, Action<CreateTextChannelProperties>? action, RequestOptions? options) =>
         await CreateTextChannelAsync(name, action, options).ConfigureAwait(false);

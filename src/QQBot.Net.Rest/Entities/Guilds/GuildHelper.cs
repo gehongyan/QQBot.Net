@@ -182,5 +182,38 @@ internal static class GuildHelper
         );
     }
 
+    public static IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(
+        IGuild guild, BaseQQBotClient client, int? limit, RequestOptions? options)
+    {
+        return new PagedAsyncEnumerable<IGuildMember>(
+            QQBotConfig.MaxMembersPerBatch,
+            async (info, ct) =>
+            {
+                GetGuildMembersParams args = new()
+                {
+                    Limit = info.PageSize
+                };
+                if (info.Position != null)
+                    args.AfterId = info.Position.Value;
+                IReadOnlyCollection<Member> models = await client.ApiClient
+                    .GetGuildMembersAsync(guild.Id, args, options).ConfigureAwait(false);
+                return
+                [
+                    ..models.Select(x => RestGuildMember.Create(
+                        client, guild, x.User ?? throw new InvalidOperationException("User not found in guild."), x))
+                ];
+            },
+            nextPage: (info, lastPage) =>
+            {
+                if (lastPage.LastOrDefault()?.Id is not { } lastId)
+                    return false;
+                info.Position = lastId;
+                return true;
+            },
+            start: null,
+            count: limit
+        );
+    }
+
     #endregion
 }

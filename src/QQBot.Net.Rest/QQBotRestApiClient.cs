@@ -708,14 +708,14 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Guild Members
 
-    public async Task<CountGuildOnlineMemberResponse> CountGuildOnlineMembersAsync(ulong guildId, RequestOptions? options = null)
+    public async Task<CountMediaChannelOnlineMembersResponse> CountMediaChannelOnlineMembersAsync(ulong channelId, RequestOptions? options = null)
     {
-        Preconditions.NotEqual(guildId, 0, nameof(guildId));
+        Preconditions.NotEqual(channelId, 0, nameof(channelId));
         options = RequestOptions.CreateOrClone(options);
 
-        BucketIds ids = new(guildId);
-        return await SendAsync<CountGuildOnlineMemberResponse>(HttpMethod.Get,
-                () => $"guilds/{guildId}/members/search?limit=1", ids, ClientBucketType.SendEdit, false, options)
+        BucketIds ids = new(channelId: channelId);
+        return await SendAsync<CountMediaChannelOnlineMembersResponse>(HttpMethod.Get,
+                () => $"channels/{channelId}/online_nums", ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }
 

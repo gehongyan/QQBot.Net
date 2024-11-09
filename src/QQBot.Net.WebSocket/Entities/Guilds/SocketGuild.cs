@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Immutable;
 using QQBot.Rest;
 using Model = QQBot.API.Guild;
 using ChannelModel = QQBot.API.Channel;
@@ -37,6 +38,11 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     /// <inheritdoc />
     public int MaxRoles { get; private set; }
+
+    /// <summary>
+    ///     获取此频道的所有成员。
+    /// </summary>
+    public IReadOnlyCollection<SocketGuildMember> Users => _members.ToReadOnlyCollection();
 
     /// <summary>
     ///     获取此频道的所有角色。
@@ -221,9 +227,33 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
         return member;
     }
 
+    /// <summary>
+    ///     获取此频道内的用户。
+    /// </summary>
+    /// <param name="id"> 要获取的用户的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
+    public async Task<RestGuildMember> GetUserAsync(ulong id, RequestOptions? options = null) =>
+        await GuildHelper.GetUserAsync(this, Client, id, options).ConfigureAwait(false);
+
+    /// <summary>
+    ///     获取此频道内的所有用户。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道内的所有用户。 </returns>
+    public IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(RequestOptions? options = null)
+    {
+        if (HasAllMembers)
+            return ImmutableArray.Create(Users).ToAsyncEnumerable<IReadOnlyCollection<IGuildMember>>();
+        return GuildHelper.GetUsersAsync(this, Client, null, options);
+    }
+
     /// <inheritdoc />
-    public async Task DownloadUsersAsync(RequestOptions? options = null) =>
+    public async Task DownloadUsersAsync(RequestOptions? options = null)
+    {
         await Client.DownloadUsersAsync([this], options).ConfigureAwait(false);
+        HasAllMembers = true;
+    }
 
     #endregion
 
@@ -409,13 +439,20 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     async Task<ICategoryChannel> IGuild.CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? action, RequestOptions? options) =>
         await CreateCategoryChannelAsync(name, action, options).ConfigureAwait(false);
 
+    async Task<IReadOnlyCollection<IGuildMember>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions? options)
+    {
+        if (mode is CacheMode.AllowDownload && !HasAllMembers)
+            return [..await GetUsersAsync(options).FlattenAsync().ConfigureAwait(false)];
+        return [.._members.Values];
+    }
+
     /// <inheritdoc />
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)
     {
         IGuildMember? user = GetUser(id);
         if (user is not null || mode == CacheMode.CacheOnly)
             return user;
-        return await GuildHelper.GetUserAsync(this, Client, id, options).ConfigureAwait(false);
+        return await GetUserAsync(id, options).ConfigureAwait(false);
     }
 
     #endregion

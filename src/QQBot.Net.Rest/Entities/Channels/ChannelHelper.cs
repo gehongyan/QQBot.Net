@@ -145,7 +145,7 @@ internal static class ChannelHelper
 
     #endregion
 
-    #region Send Message
+    #region Send Messages
 
     public static async Task<IUserMessage> SendMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
@@ -398,7 +398,7 @@ internal static class ChannelHelper
 
     #endregion
 
-    #region GetMessage
+    #region Get Messages
 
     public static async Task<RestUserMessage> GetMessageAsync<T>(T channel, BaseQQBotClient client,
         string id, RequestOptions? options)
@@ -409,6 +409,24 @@ internal static class ChannelHelper
         ChannelMessage model = await client.ApiClient.GetMessageAsync(channelId, id, options).ConfigureAwait(false);
         IUser author = await MessageHelper.GetAuthorAsync(client, guild, model.Author);
         return RestUserMessage.Create(client, channel, author, model);
+    }
+
+    #endregion
+
+    #region Users
+
+    public static async Task<int> CountOnlineUsersAsync(IVoiceChannel channel, BaseQQBotClient client, RequestOptions? options)
+    {
+        CountMediaChannelOnlineMembersResponse response = await client.ApiClient
+            .CountMediaChannelOnlineMembersAsync(channel.Id, options).ConfigureAwait(false);
+        return response.OnlineMembers;
+    }
+
+    public static async Task<int> CountOnlineUsersAsync(ILiveStreamChannel channel, BaseQQBotClient client, RequestOptions? options)
+    {
+        CountMediaChannelOnlineMembersResponse response = await client.ApiClient
+            .CountMediaChannelOnlineMembersAsync(channel.Id, options).ConfigureAwait(false);
+        return response.OnlineMembers;
     }
 
     #endregion

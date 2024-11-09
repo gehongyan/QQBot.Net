@@ -14,6 +14,7 @@ public enum QQBotErrorCode
     UnknownAccount = 10001,
     UnknownChannel = 10003,
     UnknownGuild = 10004,
+    MissingUserId = 10013,
 
     #endregion
 

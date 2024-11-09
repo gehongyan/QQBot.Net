@@ -51,5 +51,9 @@ public class SocketVoiceChannel : SocketGuildChannel, IVoiceChannel
         Update(Client.State, model);
     }
 
+    /// <inheritdoc />
+    public async Task<int> CountOnlineUsersAsync(RequestOptions? options = null) =>
+        await ChannelHelper.CountOnlineUsersAsync(this, Client, options).ConfigureAwait(false);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Voice)";
 }

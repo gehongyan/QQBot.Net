@@ -12,4 +12,11 @@ public interface IVoiceChannel : INestedChannel
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步修改操作的任务。 </returns>
     Task ModifyAsync(Action<ModifyVoiceChannelProperties> func, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取此子频道内在线用户的数量。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此子频道内在线用户的数量；如果无法获取，则返回 <c>null</c>。 </returns>
+    Task<int> CountOnlineUsersAsync(RequestOptions? options = null);
 }
