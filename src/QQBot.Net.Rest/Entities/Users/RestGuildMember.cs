@@ -45,4 +45,8 @@ public class RestGuildMember : RestGuildUser, IGuildMember
         RoleIds = memberModel?.Roles;
         JoinedAt = memberModel?.JoinedAt;
     }
+
+    /// <inheritdoc />
+    public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
+        UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
 }

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using QQBot.Rest;
 
 namespace QQBot.WebSocket;
 
@@ -45,6 +46,10 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember
         RoleIds = model?.Roles;
         JoinedAt = model?.JoinedAt;
     }
+
+    /// <inheritdoc />
+    public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
+        UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
 
     private string DebuggerDisplay =>
         $"{Nickname ?? Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild Member)";
