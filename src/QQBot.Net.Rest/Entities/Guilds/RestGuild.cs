@@ -1,10 +1,12 @@
-﻿using Model = QQBot.API.Guild;
+﻿using System.Diagnostics;
+using Model = QQBot.API.Guild;
 
 namespace QQBot.Rest;
 
 /// <summary>
 ///     表示一个基于 REST 的频道。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class RestGuild : RestEntity<ulong>, IGuild
 {
     /// <inheritdoc />
@@ -60,6 +62,11 @@ public class RestGuild : RestEntity<ulong>, IGuild
 
         IsAvailable = true;
     }
+
+    /// <inheritdoc cref="QQBot.Rest.RestGuild.Name" />
+    public override string ToString() => Name;
+
+    private string DebuggerDisplay => $"{Name} ({Id})";
 
     #region Channels
 
@@ -280,6 +287,13 @@ public class RestGuild : RestEntity<ulong>, IGuild
 
     #region Roles
 
+    /// <summary>
+    ///     获取此频道的所有角色。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有角色。 </returns>
+    public Task<IReadOnlyCollection<RestRole>> GetRolesAsync(RequestOptions? options = null) =>
+        GuildHelper.GetRolesAsync(this, Client, options);
 
     #endregion
 
@@ -404,6 +418,9 @@ public class RestGuild : RestEntity<ulong>, IGuild
 
     async Task<ICategoryChannel> IGuild.CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? action, RequestOptions? options) =>
         await CreateCategoryChannelAsync(name, action, options).ConfigureAwait(false);
+
+    async Task<IReadOnlyCollection<IRole>> IGuild.GetRolesAsync(CacheMode mode, RequestOptions? options) =>
+        mode is CacheMode.CacheOnly ? ([]) : await GetRolesAsync(options).ConfigureAwait(false);
 
     #endregion
 }

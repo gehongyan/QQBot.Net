@@ -216,4 +216,18 @@ internal static class GuildHelper
     }
 
     #endregion
+
+    #region Roles
+
+
+
+    #endregion
+
+    public static async Task<IReadOnlyCollection<RestRole>> GetRolesAsync(IGuild guild,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        GetGuildRolesResponse model =
+            await client.ApiClient.GetGuildRolesAsync(guild.Id, options).ConfigureAwait(false);
+        return [..model.Roles.Select(x => RestRole.Create(guild, client, x))];
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using QQBot.Rest;
 using Model = QQBot.API.Guild;
 using ChannelModel = QQBot.API.Channel;
@@ -9,6 +10,7 @@ namespace QQBot.WebSocket;
 /// <summary>
 ///     表示一个基于网关的子频道。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 {
     private readonly ConcurrentDictionary<ulong, SocketGuildChannel> _channels;
@@ -185,6 +187,12 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <inheritdoc />
     public Task UpdateAsync(RequestOptions? options = null) => SocketGuildHelper.UpdateAsync(this, Client, options);
 
+    /// <inheritdoc cref="QQBot.WebSocket.SocketGuild.Name" />
+    public override string ToString() => Name;
+
+    private string DebuggerDisplay => $"{Name} ({Id})";
+    internal SocketGuild Clone() => (SocketGuild)MemberwiseClone();
+
     #region Roles
 
     /// <summary>
@@ -198,6 +206,14 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <param name="id"> 要获取的角色的 ID。 </param>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的角色；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketRole? GetRole(uint id) => _roles.GetValueOrDefault(id);
+
+    /// <summary>
+    ///     获取此频道的所有角色。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有角色。 </returns>
+    public Task<IReadOnlyCollection<RestRole>> GetRolesAsync(RequestOptions? options = null) =>
+        GuildHelper.GetRolesAsync(this, Client, options);
 
     #endregion
 
@@ -452,6 +468,9 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
             return user;
         return await GetUserAsync(id, options).ConfigureAwait(false);
     }
+
+    async Task<IReadOnlyCollection<IRole>> IGuild.GetRolesAsync(CacheMode mode, RequestOptions? options) =>
+        mode is CacheMode.CacheOnly ? Roles : await GetRolesAsync(options).ConfigureAwait(false);
 
     #endregion
 }

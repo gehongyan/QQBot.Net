@@ -64,6 +64,8 @@ public class SocketGuildUser : SocketUser, IGuildUser
         UnionUserAccount = model.UnionUserAccount;
     }
 
-    private string DebuggerDisplay =>
-        $"{Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
+    /// <inheritdoc cref="QQBot.WebSocket.SocketGuildUser.Username" />
+    public override string ToString() => Username;
+
+    private string DebuggerDisplay => $"{Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
 }

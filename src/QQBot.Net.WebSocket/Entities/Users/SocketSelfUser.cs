@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Model = QQBot.API.SelfUser;
 
 namespace QQBot.WebSocket;
@@ -5,6 +6,7 @@ namespace QQBot.WebSocket;
 /// <summary>
 ///     表示一个基于网关的当前用户。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketSelfUser : SocketGuildUser, ISelfUser
 {
     /// <inheritdoc cref="QQBot.WebSocket.SocketGuildUser.Id" />
@@ -34,4 +36,7 @@ public class SocketSelfUser : SocketGuildUser, ISelfUser
     {
         base.Update(state, model);
     }
+
+    private string DebuggerDisplay =>
+        $"{Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Self)";
 }

@@ -78,8 +78,11 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
     public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
         UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
 
+    /// <inheritdoc cref="QQBot.Rest.RestGuildUser.Username" />
+    public override string ToString() => Username;
+
     private string DebuggerDisplay =>
-        $"{Nickname ?? Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild Member)";
+        $"{Nickname ?? Username}{(Nickname is not null ? Username : string.Empty)} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
 
     #region IGuild
 

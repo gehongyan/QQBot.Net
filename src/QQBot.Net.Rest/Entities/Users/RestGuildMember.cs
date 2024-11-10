@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using QQBot.API;
 
 namespace QQBot.Rest;
@@ -5,6 +6,7 @@ namespace QQBot.Rest;
 /// <summary>
 ///     表示一个基于 REST 的子频道内用户。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class RestGuildMember : RestGuildUser, IGuildMember
 {
     /// <inheritdoc />
@@ -49,4 +51,10 @@ public class RestGuildMember : RestGuildUser, IGuildMember
     /// <inheritdoc />
     public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
         UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
+
+    /// <inheritdoc cref="QQBot.Rest.RestGuildUser.Username" />
+    public override string ToString() => Username;
+
+    private string DebuggerDisplay =>
+        $"{Nickname ?? Username}{(Nickname is not null ? Username : string.Empty)} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
 }

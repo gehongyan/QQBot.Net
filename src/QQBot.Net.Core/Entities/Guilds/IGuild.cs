@@ -76,6 +76,14 @@ public interface IGuild : IEntity<ulong>
     // /// <returns> 一个表示异步获取操作的任务。任务的结果包含与指定的 <paramref name="id"/> 关联的角色；如果未找到，则返回 <c>null</c>。 </returns>
     // IRole? GetRole(uint id);
 
+    /// <summary>
+    ///     获取此频道的所有角色。
+    /// </summary>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有角色。 </returns>
+    Task<IReadOnlyCollection<IRole>> GetRolesAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
     #endregion
 
     #region Users

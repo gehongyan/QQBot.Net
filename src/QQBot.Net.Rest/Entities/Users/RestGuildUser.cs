@@ -1,10 +1,12 @@
-﻿using QQBot.API;
+﻿using System.Diagnostics;
+using QQBot.API;
 
 namespace QQBot.Rest;
 
 /// <summary>
 ///     表示一个基于 REST 的子频道用户。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class RestGuildUser : RestUser, IGuildUser
 {
     /// <inheritdoc cref="QQBot.IGuildUser.Id" />
@@ -46,4 +48,9 @@ public class RestGuildUser : RestUser, IGuildUser
         UnionOpenId = model.UnionOpenId;
         UnionUserAccount = model.UnionUserAccount;
     }
+
+    /// <inheritdoc cref="QQBot.Rest.RestGuildUser.Username" />
+    public override string ToString() => Username;
+
+    private string DebuggerDisplay => $"{Username} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
 }
