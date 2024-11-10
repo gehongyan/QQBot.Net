@@ -84,6 +84,23 @@ public interface IGuild : IEntity<ulong>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有角色。 </returns>
     Task<IReadOnlyCollection<IRole>> GetRolesAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
+    /// <summary>
+    ///     获取此频道的角色。
+    /// </summary>
+    /// <param name="id"> 要获取的角色的 ID。 </param>
+    /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有角色。 </returns>
+    Task<IRole?> GetRoleAsync(uint id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在此服务器内创建一个新的角色。
+    /// </summary>
+    /// <param name="func"> 一个包含要应用到新创建角色的配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的角色。 </returns>
+    Task<IRole> CreateRoleAsync(Action<RoleProperties> func, RequestOptions? options = null);
+
     #endregion
 
     #region Users

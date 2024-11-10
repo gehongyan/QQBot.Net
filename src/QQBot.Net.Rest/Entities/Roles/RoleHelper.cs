@@ -5,6 +5,31 @@ namespace QQBot.Rest;
 
 internal static class RoleHelper
 {
+    #region Roles
+
+    public static async Task<API.Role> ModifyAsync(IRole role, BaseQQBotClient client,
+        Action<RoleProperties>? func, RequestOptions? options)
+    {
+        RoleProperties properties = new()
+        {
+            Name = role.Name,
+            Color = role.Color,
+            IsHoisted = role.IsHoisted
+        };
+        func?.Invoke(properties);
+        ModifyGuildRoleParams args = new()
+        {
+            Name = properties.Name,
+            Color = properties.Color,
+            Hoist = properties.IsHoisted
+        };
+        ModifyGuildRoleResponse model = await client.ApiClient
+            .ModifyGuildRoleAsync(role.Guild.Id, role.Id, args, options);
+        return model.Role;
+    }
+
+    #endregion
+
     #region Users
 
     public static async IAsyncEnumerable<IReadOnlyCollection<RestGuildMember>> GetUsersAsync(
@@ -16,7 +41,7 @@ internal static class RoleHelper
         {
             GetGuildRoleMembersParams args = new()
             {
-                Limit = QQBotConfig.MaxMembersPerBatch,
+                Limit = Math.Clamp(limit ?? QQBotConfig.MaxMembersPerBatch, 1, QQBotConfig.MaxMembersPerBatch),
                 StartIndex = startIndex
             };
             GetGuildRoleMembersResponse model = await client.ApiClient
@@ -31,4 +56,7 @@ internal static class RoleHelper
     }
 
     #endregion
+
+    public static async Task DeleteAsync(IRole role, BaseQQBotClient client, RequestOptions? options) =>
+        await client.ApiClient.DeleteGuildRoleAsync(role.Guild.Id, role.Id, options).ConfigureAwait(false);
 }

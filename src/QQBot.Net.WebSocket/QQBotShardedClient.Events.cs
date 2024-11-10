@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace QQBot.WebSocket;
 
 public partial class QQBotShardedClient

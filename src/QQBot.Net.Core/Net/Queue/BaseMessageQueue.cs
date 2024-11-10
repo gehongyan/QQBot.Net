@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace QQBot.Net.Queue;
+﻿namespace QQBot.Net.Queue;
 
 /// <summary>
 ///     表示一个通用的消息队列抽象类。

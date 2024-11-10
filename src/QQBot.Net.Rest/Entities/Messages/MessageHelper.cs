@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Text.RegularExpressions;
 using QQBot.API.Rest;
 
 namespace QQBot.Rest;

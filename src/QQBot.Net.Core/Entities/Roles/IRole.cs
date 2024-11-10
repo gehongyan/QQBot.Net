@@ -3,7 +3,7 @@
 /// <summary>
 ///     表示一个子频道身份组。
 /// </summary>
-public interface IRole : IEntity<uint>
+public interface IRole : IEntity<uint>, IDeletable
 {
     /// <summary>
     ///     获取拥有此角色的频道。
@@ -47,4 +47,15 @@ public interface IRole : IEntity<uint>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含所有拥有此身份组的用户。 </returns>
     IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+
+    /// <summary>
+    ///     修改此角色。
+    /// </summary>
+    /// <remarks>
+    ///     此方法使用指定的属性修改当前角色信息。要查看可用的属性，请参考 <see cref="QQBot.RoleProperties"/>。
+    /// </remarks>
+    /// <param name="func"> 一个包含修改角色属性的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步修改操作的任务。 </returns>
+    Task ModifyAsync(Action<RoleProperties> func, RequestOptions? options = null);
 }

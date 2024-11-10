@@ -1,15 +1,10 @@
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
-using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using QQBot.API;
 using QQBot.API.Gateway;
-using QQBot.API.Rest;
 using QQBot.Logging;
-using QQBot.Net;
-using QQBot.Net.Converters;
 using QQBot.Net.Queue;
 using QQBot.Net.WebSockets;
 using QQBot.Rest;

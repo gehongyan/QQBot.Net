@@ -219,10 +219,6 @@ internal static class GuildHelper
 
     #region Roles
 
-
-
-    #endregion
-
     public static async Task<IReadOnlyCollection<RestRole>> GetRolesAsync(IGuild guild,
         BaseQQBotClient client, RequestOptions? options)
     {
@@ -230,4 +226,30 @@ internal static class GuildHelper
             await client.ApiClient.GetGuildRolesAsync(guild.Id, options).ConfigureAwait(false);
         return [..model.Roles.Select(x => RestRole.Create(guild, client, x))];
     }
+
+    public static async Task<RestRole?> GetRoleAsync(IGuild guild,
+        BaseQQBotClient client, ulong id, RequestOptions? options)
+    {
+        GetGuildRolesResponse model =
+            await client.ApiClient.GetGuildRolesAsync(guild.Id, options).ConfigureAwait(false);
+        Role? role = model.Roles.FirstOrDefault(x => x.Id == id);
+        return role is not null ? RestRole.Create(guild, client, role) : null;
+    }
+
+    public static async Task<RestRole> CreateRoleAsync(IGuild guild, BaseQQBotClient client,
+        Action<RoleProperties>? func, RequestOptions? options)
+    {
+        RoleProperties properties = new();
+        func?.Invoke(properties);
+        CreateGuildRoleParams args = new()
+        {
+            Name = properties.Name,
+            Color = properties.Color,
+            Hoist = properties.IsHoisted
+        };
+        CreateGuildRoleResponse model = await client.ApiClient.CreateGuildRoleAsync(guild.Id, args, options);
+        return RestRole.Create(guild, client, model.Role);
+    }
+
+    #endregion
 }

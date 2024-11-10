@@ -65,6 +65,17 @@ public class SocketRole : SocketEntity<uint>, IRole
     public IAsyncEnumerable<IReadOnlyCollection<RestGuildMember>> GetUsersAsync(RequestOptions? options = null) =>
         RoleHelper.GetUsersAsync(this, Client, null, options);
 
+    /// <inheritdoc />
+    public async Task ModifyAsync(Action<RoleProperties> func, RequestOptions? options = null)
+    {
+        Model model = await RoleHelper.ModifyAsync(this, Client, func, options);
+        Update(Client.State, model);
+    }
+
+    /// <inheritdoc />
+    public Task DeleteAsync(RequestOptions? options = null) =>
+        RoleHelper.DeleteAsync(this, Client, options);
+
     /// <inheritdoc cref="QQBot.WebSocket.SocketRole.Name" />
     public override string ToString() => Name;
 

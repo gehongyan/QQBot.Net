@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace QQBot.Net.Queue.SynchronousImmediate;
+﻿namespace QQBot.Net.Queue.SynchronousImmediate;
 
 /// <summary>
 ///     表示一个同步处理消息队列。

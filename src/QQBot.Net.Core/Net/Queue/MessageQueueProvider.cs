@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace QQBot.Net.Queue;
+﻿namespace QQBot.Net.Queue;
 
 /// <summary>
 ///     表示一个提供新的 <see cref="IMessageQueue"/> 实例的委托。

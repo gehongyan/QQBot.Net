@@ -295,6 +295,19 @@ public class RestGuild : RestEntity<ulong>, IGuild
     public Task<IReadOnlyCollection<RestRole>> GetRolesAsync(RequestOptions? options = null) =>
         GuildHelper.GetRolesAsync(this, Client, options);
 
+    /// <summary>
+    ///     获取此频道的角色。
+    /// </summary>
+    /// <param name="id"> 要获取的角色的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的所有角色。 </returns>
+    public Task<RestRole?> GetRoleAsync(uint id, RequestOptions? options = null) =>
+        GuildHelper.GetRoleAsync(this, Client, id, options);
+
+    /// <inheritdoc cref="QQBot.IGuild.CreateRoleAsync(System.Action{QQBot.RoleProperties},QQBot.RequestOptions)" />
+    public Task<RestRole> CreateRoleAsync(Action<RoleProperties>? func = null, RequestOptions? options = null) =>
+        GuildHelper.CreateRoleAsync(this, Client, func, options);
+
     #endregion
 
     #region Users
@@ -398,29 +411,36 @@ public class RestGuild : RestEntity<ulong>, IGuild
     async Task<ICategoryChannel?> IGuild.GetCategoryChannelAsync(ulong id, CacheMode mode, RequestOptions? options) =>
         mode == CacheMode.AllowDownload ? await GetCategoryChannelAsync(id, options).ConfigureAwait(false) : null;
 
-    async Task<ITextChannel> IGuild.CreateTextChannelAsync(string name, Action<CreateTextChannelProperties>? action, RequestOptions? options) =>
-        await CreateTextChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<ITextChannel> IGuild.CreateTextChannelAsync(string name, Action<CreateTextChannelProperties>? func, RequestOptions? options) =>
+        await CreateTextChannelAsync(name, func, options).ConfigureAwait(false);
 
-    async Task<IVoiceChannel> IGuild.CreateVoiceChannelAsync(string name, Action<CreateVoiceChannelProperties>? action, RequestOptions? options) =>
-        await CreateVoiceChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<IVoiceChannel> IGuild.CreateVoiceChannelAsync(string name, Action<CreateVoiceChannelProperties>? func, RequestOptions? options) =>
+        await CreateVoiceChannelAsync(name, func, options).ConfigureAwait(false);
 
-    async Task<ILiveStreamChannel> IGuild.CreateLiveStreamChannelAsync(string name, Action<CreateLiveStreamChannelProperties>? action, RequestOptions? options) =>
-        await CreateLiveStreamChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<ILiveStreamChannel> IGuild.CreateLiveStreamChannelAsync(string name, Action<CreateLiveStreamChannelProperties>? func, RequestOptions? options) =>
+        await CreateLiveStreamChannelAsync(name, func, options).ConfigureAwait(false);
 
-    async Task<IApplicationChannel> IGuild.CreateApplicationChannelAsync(string name, Action<CreateApplicationChannelProperties>? action, RequestOptions? options) =>
-        await CreateApplicationChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<IApplicationChannel> IGuild.CreateApplicationChannelAsync(string name, Action<CreateApplicationChannelProperties>? func, RequestOptions? options) =>
+        await CreateApplicationChannelAsync(name, func, options).ConfigureAwait(false);
 
-    async Task<IForumChannel> IGuild.CreateForumChannelAsync(string name, Action<CreateForumChannelProperties>? action, RequestOptions? options) =>
-        await CreateForumChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<IForumChannel> IGuild.CreateForumChannelAsync(string name, Action<CreateForumChannelProperties>? func, RequestOptions? options) =>
+        await CreateForumChannelAsync(name, func, options).ConfigureAwait(false);
 
-    async Task<IScheduleChannel> IGuild.CreateScheduleChannelAsync(string name, Action<CreateScheduleChannelProperties>? action, RequestOptions? options) =>
-        await CreateScheduleChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<IScheduleChannel> IGuild.CreateScheduleChannelAsync(string name, Action<CreateScheduleChannelProperties>? func, RequestOptions? options) =>
+        await CreateScheduleChannelAsync(name, func, options).ConfigureAwait(false);
 
-    async Task<ICategoryChannel> IGuild.CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? action, RequestOptions? options) =>
-        await CreateCategoryChannelAsync(name, action, options).ConfigureAwait(false);
+    async Task<ICategoryChannel> IGuild.CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? func, RequestOptions? options) =>
+        await CreateCategoryChannelAsync(name, func, options).ConfigureAwait(false);
 
     async Task<IReadOnlyCollection<IRole>> IGuild.GetRolesAsync(CacheMode mode, RequestOptions? options) =>
         mode is CacheMode.CacheOnly ? ([]) : await GetRolesAsync(options).ConfigureAwait(false);
+
+    async Task<IRole?> IGuild.GetRoleAsync(uint id, CacheMode mode, RequestOptions? options) =>
+        mode is CacheMode.CacheOnly ? null : await GetRoleAsync(id, options).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    async Task<IRole> IGuild.CreateRoleAsync(Action<RoleProperties> func, RequestOptions? options) =>
+        await CreateRoleAsync(func, options);
 
     #endregion
 }
