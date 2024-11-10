@@ -28,5 +28,15 @@ public enum RoleType
     /// <summary>
     ///     身份组是由系统默认创建的子频道管理员。
     /// </summary>
-    ChannelManager = 5
+    ChannelManager = 5,
+
+    /// <summary>
+    ///     身份组是由系统默认创建的访客身份组。
+    /// </summary>
+    Guest = 6,
+
+    /// <summary>
+    ///     身份组是由系统默认创建的分组管理员。
+    /// </summary>
+    CategoryManager = 7
 }

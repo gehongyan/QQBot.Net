@@ -37,6 +37,8 @@ public class SocketRole : SocketEntity<uint>, IRole
     {
         Name = string.Empty;
         Guild = guild;
+        RoleType type = (RoleType)id;
+        Type = Enum.IsDefined(type) ? type : RoleType.UserCreated;
     }
 
     internal static SocketRole Create(SocketGuild guild, ClientState state, Model model)
@@ -66,7 +68,8 @@ public class SocketRole : SocketEntity<uint>, IRole
     /// <inheritdoc cref="QQBot.WebSocket.SocketRole.Name" />
     public override string ToString() => Name;
 
-    private string DebuggerDisplay => $"{Name} ({Id})";
+    private string DebuggerDisplay => $"{Name} ({Id}, {Type})";
+
     internal SocketRole Clone() => (SocketRole)MemberwiseClone();
 
     #region IRole

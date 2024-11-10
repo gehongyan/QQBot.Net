@@ -36,6 +36,8 @@ public class RestRole : RestEntity<uint>, IRole
     {
         Name = string.Empty;
         Guild = guild;
+        RoleType type = (RoleType)id;
+        Type = Enum.IsDefined(type) ? type : RoleType.UserCreated;
     }
 
     internal static RestRole Create(RestGuild guild, Model model) =>
@@ -68,7 +70,7 @@ public class RestRole : RestEntity<uint>, IRole
     /// <inheritdoc cref="Name" />
     public override string ToString() => Name;
 
-    private string DebuggerDisplay => $"{Name} ({Id})";
+    private string DebuggerDisplay => $"{Name} ({Id}, {Type})";
     internal RestRole Clone() => (RestRole)MemberwiseClone();
 
     #region IRole
