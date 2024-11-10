@@ -78,6 +78,42 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
     public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
         UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
 
+    #region Roles
+
+    /// <inheritdoc />
+    public Task AddRoleAsync(uint roleId, RequestOptions? options = null) =>
+        AddRolesAsync([roleId], options);
+
+    /// <inheritdoc />
+    public Task AddRoleAsync(IRole role, RequestOptions? options = null) =>
+        AddRoleAsync(role.Id, options);
+
+    /// <inheritdoc />
+    public Task AddRolesAsync(IEnumerable<uint> roleIds, RequestOptions? options = null) =>
+        UserHelper.AddRolesAsync(this, Client, roleIds, options);
+
+    /// <inheritdoc />
+    public Task AddRolesAsync(IEnumerable<IRole> roles, RequestOptions? options = null) =>
+        AddRolesAsync(roles.Select(x => x.Id), options);
+
+    /// <inheritdoc />
+    public Task RemoveRoleAsync(uint roleId, RequestOptions? options = null) =>
+        RemoveRolesAsync([roleId], options);
+
+    /// <inheritdoc />
+    public Task RemoveRoleAsync(IRole role, RequestOptions? options = null) =>
+        RemoveRoleAsync(role.Id, options);
+
+    /// <inheritdoc />
+    public Task RemoveRolesAsync(IEnumerable<uint> roleIds, RequestOptions? options = null) =>
+        UserHelper.RemoveRolesAsync(this, Client, roleIds, options);
+
+    /// <inheritdoc />
+    public Task RemoveRolesAsync(IEnumerable<IRole> roles, RequestOptions? options = null) =>
+        RemoveRolesAsync(roles.Select(x => x.Id));
+
+    #endregion
+
     /// <inheritdoc cref="QQBot.Rest.RestGuildUser.Username" />
     public override string ToString() => Username;
 

@@ -46,4 +46,72 @@ public interface IGuildMember : IGuildUser
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步踢出操作的任务。 </returns>
     Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null);
+
+    #region Roles
+
+    /// <summary>
+    ///     在该服务器内授予此用户指定的角色。
+    /// </summary>
+    /// <param name="roleId"> 要在该服务器内为此用户授予的角色的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步授予操作的任务。 </returns>
+    Task AddRoleAsync(uint roleId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内授予此用户指定的角色。
+    /// </summary>
+    /// <param name="role"> 要在该服务器内为此用户授予的角色。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步授予操作的任务。 </returns>
+    Task AddRoleAsync(IRole role, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内授予此用户指定的一些角色。
+    /// </summary>
+    /// <param name="roleIds"> 要在该服务器内为此用户授予的所有角色的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步授予操作的任务。 </returns>
+    Task AddRolesAsync(IEnumerable<uint> roleIds, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内授予此用户指定的一些角色。
+    /// </summary>
+    /// <param name="roles"> 要在该服务器内为此用户授予的所有角色。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步授予操作的任务。 </returns>
+    Task AddRolesAsync(IEnumerable<IRole> roles, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内撤销此用户指定的角色。
+    /// </summary>
+    /// <param name="roleId"> 要在该服务器内为此用户撤销的角色的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步撤销操作的任务。 </returns>
+    Task RemoveRoleAsync(uint roleId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内撤销此用户指定的角色。
+    /// </summary>
+    /// <param name="role"> 要在该服务器内为此用户撤销的角色。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步撤销操作的任务。 </returns>
+    Task RemoveRoleAsync(IRole role, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内撤销此用户指定的一些角色。
+    /// </summary>
+    /// <param name="roleIds"> 要在该服务器内为此用户撤销的所有角色的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步撤销操作的任务。 </returns>
+    Task RemoveRolesAsync(IEnumerable<uint> roleIds, RequestOptions? options = null);
+
+    /// <summary>
+    ///     在该服务器内撤销此用户指定的一些角色。
+    /// </summary>
+    /// <param name="roles"> 要在该服务器内为此用户撤销的所有角色。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步撤销操作的任务。 </returns>
+    Task RemoveRolesAsync(IEnumerable<IRole> roles, RequestOptions? options = null);
+
+    #endregion
 }
