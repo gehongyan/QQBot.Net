@@ -313,12 +313,8 @@ public class RestGuild : RestEntity<ulong>, IGuild
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>
         mode == CacheMode.AllowDownload ? await GetUserAsync(id, options).ConfigureAwait(false) : null;
 
-    async Task<IReadOnlyCollection<IGuildMember>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions? options)
-    {
-        if (mode is CacheMode.AllowDownload)
-            return [..await GetUsersAsync(options).FlattenAsync().ConfigureAwait(false)];
-        return [];
-    }
+    IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions? options) =>
+        mode is CacheMode.AllowDownload ? GetUsersAsync(options) : AsyncEnumerable.Empty<IReadOnlyCollection<IGuildMember>>();
 
     /// <inheritdoc />
     /// <exception cref="NotSupportedException">Downloading users is not supported for a REST-based guild.</exception>

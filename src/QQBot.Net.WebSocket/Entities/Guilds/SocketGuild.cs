@@ -439,12 +439,10 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     async Task<ICategoryChannel> IGuild.CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? action, RequestOptions? options) =>
         await CreateCategoryChannelAsync(name, action, options).ConfigureAwait(false);
 
-    async Task<IReadOnlyCollection<IGuildMember>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions? options)
-    {
-        if (mode is CacheMode.AllowDownload && !HasAllMembers)
-            return [..await GetUsersAsync(options).FlattenAsync().ConfigureAwait(false)];
-        return [.._members.Values];
-    }
+    IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> IGuild.GetUsersAsync(CacheMode mode, RequestOptions? options) =>
+        mode is CacheMode.AllowDownload && !HasAllMembers
+            ? GetUsersAsync(options)
+            : ImmutableArray.Create(Users).ToAsyncEnumerable<IReadOnlyCollection<IGuildMember>>();
 
     /// <inheritdoc />
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options)

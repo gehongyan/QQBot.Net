@@ -736,7 +736,7 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
-    public async Task<IReadOnlyCollection<GetGuildRoleMembersResponse>> GetGuildRoleMembersAsync(ulong guildId, uint roleId, GetGuildRoleMembersParams args, RequestOptions? options = null)
+    public async Task<GetGuildRoleMembersResponse> GetGuildRoleMembersAsync(ulong guildId, uint roleId, GetGuildRoleMembersParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(guildId, 0, nameof(guildId));
         Preconditions.NotEqual(roleId, 0, nameof(roleId));
@@ -748,7 +748,7 @@ internal class QQBotRestApiClient : IDisposable
             query += $"&start_index={args.StartIndex}";
 
         BucketIds ids = new(guildId);
-        return await SendAsync<IReadOnlyCollection<GetGuildRoleMembersResponse>>(HttpMethod.Get,
+        return await SendAsync<GetGuildRoleMembersResponse>(HttpMethod.Get,
                 () => $"guilds/{guildId}/roles/{roleId}/members{query}", ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }

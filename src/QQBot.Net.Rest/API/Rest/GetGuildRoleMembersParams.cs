@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace QQBot.API.Rest;
 
 internal class GetGuildRoleMembersParams

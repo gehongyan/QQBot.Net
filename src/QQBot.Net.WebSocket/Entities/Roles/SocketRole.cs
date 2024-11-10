@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Immutable;
+using System.Diagnostics;
+using QQBot.Rest;
 using Model = QQBot.API.Role;
 
 namespace QQBot.WebSocket;
@@ -53,6 +55,14 @@ public class SocketRole : SocketEntity<uint>, IRole
         MaxMembers = model.MemberLimit;
     }
 
+    /// <summary>
+    ///     获取此频道内的所有用户。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道内的所有用户。 </returns>
+    public IAsyncEnumerable<IReadOnlyCollection<RestGuildMember>> GetUsersAsync(RequestOptions? options = null) =>
+        RoleHelper.GetUsersAsync(this, Client, null, options);
+
     /// <inheritdoc cref="QQBot.WebSocket.SocketRole.Name" />
     public override string ToString() => Name;
 
@@ -63,6 +73,16 @@ public class SocketRole : SocketEntity<uint>, IRole
 
     /// <inheritdoc />
     IGuild IRole.Guild => Guild;
+
+    IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> IRole.GetUsersAsync(CacheMode mode, RequestOptions? options)
+    {
+        if (!Guild.HasAllMembers && mode == CacheMode.AllowDownload)
+            return GetUsersAsync(options);
+        IReadOnlyCollection<SocketGuildMember> userCollections = Guild.Users
+            .Where(u => u.Roles?.Contains(this) is true)
+            .ToImmutableList();
+        return ImmutableArray.Create(userCollections).ToAsyncEnumerable();
+    }
 
     #endregion
 }

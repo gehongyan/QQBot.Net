@@ -68,7 +68,7 @@ public interface IGuild : IEntity<ulong>
     // ///     获取此频道中的 <c>@全体成员</c> 全体成员角色。
     // /// </summary>
     // IRole EveryoneRole { get; }
-    //
+
     // /// <summary>
     // ///     获取此频道内的角色。
     // /// </summary>
@@ -86,7 +86,7 @@ public interface IGuild : IEntity<ulong>
     /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道内的所有用户。 </returns>
-    Task<IReadOnlyCollection<IGuildMember>> GetUsersAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
+    IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     /// <summary>
     ///     获取此频道内的用户。
