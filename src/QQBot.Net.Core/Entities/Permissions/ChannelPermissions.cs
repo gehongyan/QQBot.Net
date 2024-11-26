@@ -21,7 +21,7 @@ public struct ChannelPermissions
     /// <summary>
     ///     获取一个包含所有可以为直播子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
-    public static readonly ChannelPermissions LiveStream = new(0b1111); // TODO: 检查直播频道的权限位
+    public static readonly ChannelPermissions LiveStream = new(0b1011);
 
     /// <summary>
     ///     为指定的子频道根据其类型获取一个包含所有权限的 <see cref="ChannelPermissions"/>。
