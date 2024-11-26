@@ -54,5 +54,13 @@ public class RestApplicationChannel : RestGuildChannel, IApplicationChannel
         Update(model);
     }
 
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IGuildMember user, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, user, options);
+
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, role, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Application)";
 }

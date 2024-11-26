@@ -20,12 +20,15 @@ client.Ready += async () =>
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    if (message.Channel is SocketTextChannel textChannel)
+    if (message.Channel is SocketTextChannel textChannel
+        && textChannel.Guild.CurrentUser is { } currentUser)
     {
-        await textChannel.ModifyAsync(x =>
+        foreach (INestedChannel channel in textChannel.Guild.Channels.OfType<INestedChannel>())
         {
-            x.Name = message.Content;
-        });
+            Console.WriteLine($"Channel: {channel.Name} ({channel.Type})");
+            ChannelPermissions channelPermissions = await channel.GetPermissionsAsync(currentUser);
+            Console.WriteLine($"Permissions: {channelPermissions}");
+        }
     }
 
 //     IUserMessage msg = await message.ReplyAsync(

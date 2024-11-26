@@ -50,5 +50,13 @@ public class RestScheduleChannel : RestGuildChannel, IScheduleChannel
         Update(model);
     }
 
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IGuildMember user, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, user, options);
+
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, role, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Schedule)";
 }

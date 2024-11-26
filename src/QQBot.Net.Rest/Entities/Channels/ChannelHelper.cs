@@ -430,4 +430,24 @@ internal static class ChannelHelper
     }
 
     #endregion
+
+    #region Roles
+
+    public static async Task<ChannelPermissions> GetPermissionsAsync(IGuildChannel channel, BaseQQBotClient client,
+        IGuildMember user, RequestOptions? options)
+    {
+        API.ChannelPermissions model = await client.ApiClient
+            .GetMemberPermissionsAsync(channel.Id, user.Id, options).ConfigureAwait(false);
+        return new ChannelPermissions(ulong.Parse(model.Permissions));
+    }
+
+    public static async Task<ChannelPermissions> GetPermissionsAsync(IGuildChannel channel, BaseQQBotClient client,
+        IRole role, RequestOptions? options)
+    {
+        API.ChannelPermissions model = await client.ApiClient
+            .GetMemberPermissionsAsync(channel.Id, role.Id, options).ConfigureAwait(false);
+        return new ChannelPermissions(ulong.Parse(model.Permissions));
+    }
+
+    #endregion
 }

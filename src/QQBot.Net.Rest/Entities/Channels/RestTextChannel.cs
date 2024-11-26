@@ -59,6 +59,14 @@ public class RestTextChannel : RestGuildChannel, ITextChannel
 
     private string DebuggerDisplay => $"{Name} ({Id}, Text)";
 
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IGuildMember user, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, user, options);
+
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, role, options);
+
     #region Messages
 
     /// <summary>

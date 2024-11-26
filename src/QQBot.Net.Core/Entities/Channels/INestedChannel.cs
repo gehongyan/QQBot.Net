@@ -25,4 +25,20 @@ public interface INestedChannel : IGuildChannel
     ///     获取当前用户在此子频道的权限。
     /// </summary>
     ChannelPermission? Permission { get; }
+
+    /// <summary>
+    ///     获取指定用户在此子频道的权限。
+    /// </summary>
+    /// <param name="user"> 要获取权限的用户。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 用户在此子频道的权限。 </returns>
+    Task<ChannelPermissions> GetPermissionsAsync(IGuildMember user, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取指定角色在此子频道的权限。
+    /// </summary>
+    /// <param name="role"> 要获取权限的角色。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 角色在此子频道的权限。 </returns>
+    Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null);
 }

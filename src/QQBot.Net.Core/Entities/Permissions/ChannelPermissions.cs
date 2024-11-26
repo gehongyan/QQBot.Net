@@ -16,22 +16,12 @@ public struct ChannelPermissions
     /// <summary>
     ///     获取一个包含所有可以为文字子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
-    public static readonly ChannelPermissions Text = new(0b0_0000_0000_0110_0111_1100_0010_1000);
+    public static readonly ChannelPermissions Text = new(0b0111);
 
     /// <summary>
-    ///     获取一个包含所有可以为语音子频道设置的权限的 <see cref="ChannelPermissions"/>。
+    ///     获取一个包含所有可以为直播子频道设置的权限的 <see cref="ChannelPermissions"/>。
     /// </summary>
-    public static readonly ChannelPermissions Voice = new(0b1_1011_1101_0111_1111_1100_0010_1000);
-
-    /// <summary>
-    ///     获取一个包含所有可以为分组子频道设置的权限的 <see cref="ChannelPermissions"/>。
-    /// </summary>
-    public static readonly ChannelPermissions Category = new(0b1_1011_1101_0111_1111_1100_0010_1000);
-
-    /// <summary>
-    ///     获取一个包含所有可以为私聊子频道设置的权限的 <see cref="ChannelPermissions"/>。
-    /// </summary>
-    public static readonly ChannelPermissions DM = new(0b0_0000_0000_0100_0101_1000_0000_0000);
+    public static readonly ChannelPermissions LiveStream = new(0b1111); // TODO: 检查直播频道的权限位
 
     /// <summary>
     ///     为指定的子频道根据其类型获取一个包含所有权限的 <see cref="ChannelPermissions"/>。
@@ -42,11 +32,9 @@ public struct ChannelPermissions
     public static ChannelPermissions All(IChannel channel) =>
         channel switch
         {
-            IVoiceChannel => Voice,
-            ITextChannel => Text,
-            ICategoryChannel => Category,
-            // IDMChannel => DM,
-            _ => throw new ArgumentException("Unknown channel type.", nameof(channel))
+            ILiveStreamChannel => LiveStream,
+            IGuildChannel => Text,
+            _ => throw new NotSupportedException("Not supported channel type.")
         };
 
     /// <summary>
@@ -54,59 +42,25 @@ public struct ChannelPermissions
     /// </summary>
     public ulong RawValue { get; }
 
-    /// <inheritdoc cref="QQBot.GuildPermissions.CreateInvites" />
-    public bool CreateInvites => Permissions.GetValue(RawValue, ChannelPermission.CreateInvites);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.ManageChannels" />
-    public bool ManageChannels => Permissions.GetValue(RawValue, ChannelPermission.ManageChannels);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.ManageRoles" />
-    public bool ManageRoles => Permissions.GetValue(RawValue, ChannelPermission.ManageRoles);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.ViewChannel" />
+    /// <summary>
+    ///     获取此权限集是否允许相关用户查看文字与语音子频道。
+    /// </summary>
     public bool ViewChannel => Permissions.GetValue(RawValue, ChannelPermission.ViewChannel);
 
-    /// <inheritdoc cref="QQBot.GuildPermissions.SendMessages" />
+    /// <summary>
+    ///     获取此权限集是否允许相关用户管理子频道。
+    /// </summary>
+    public bool ManageChannels => Permissions.GetValue(RawValue, ChannelPermission.ManageChannels);
+
+    /// <summary>
+    ///     获取此权限集是否允许相关用户发送文字消息。
+    /// </summary>
     public bool SendMessages => Permissions.GetValue(RawValue, ChannelPermission.SendMessages);
 
-    /// <inheritdoc cref="QQBot.GuildPermissions.ManageMessages" />
-    public bool ManageMessages => Permissions.GetValue(RawValue, ChannelPermission.ManageMessages);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.AttachFiles" />
-    public bool AttachFiles => Permissions.GetValue(RawValue, ChannelPermission.AttachFiles);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.Connect" />
-    public bool Connect => Permissions.GetValue(RawValue, ChannelPermission.Connect);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.ManageVoice" />
-    public bool ManageVoice => Permissions.GetValue(RawValue, ChannelPermission.ManageVoice);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.MentionEveryone" />
-    public bool MentionEveryone => Permissions.GetValue(RawValue, ChannelPermission.MentionEveryone);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.AddReactions" />
-    public bool AddReactions => Permissions.GetValue(RawValue, ChannelPermission.AddReactions);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.PassiveConnect" />
-    public bool PassiveConnect => Permissions.GetValue(RawValue, ChannelPermission.PassiveConnect);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.UseVoiceActivity" />
-    public bool UseVoiceActivity => Permissions.GetValue(RawValue, ChannelPermission.UseVoiceActivity);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.Speak" />
-    public bool Speak => Permissions.GetValue(RawValue, ChannelPermission.Speak);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.DeafenMembers" />
-    public bool DeafenMembers => Permissions.GetValue(RawValue, ChannelPermission.DeafenMembers);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.MuteMembers" />
-    public bool MuteMembers => Permissions.GetValue(RawValue, ChannelPermission.MuteMembers);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.PlaySoundtrack" />
-    public bool PlaySoundtrack => Permissions.GetValue(RawValue, ChannelPermission.PlaySoundtrack);
-
-    /// <inheritdoc cref="QQBot.GuildPermissions.ShareScreen" />
-    public bool ShareScreen => Permissions.GetValue(RawValue, ChannelPermission.ShareScreen);
+    /// <summary>
+    ///     获取此权限集是否允许相关用户在发起直播。
+    /// </summary>
+    public bool Stream => Permissions.GetValue(RawValue, ChannelPermission.Stream);
 
     /// <summary>
     ///     使用指定的权限原始值创建一个 <see cref="ChannelPermissions"/> 结构的新实例。
@@ -118,45 +72,17 @@ public struct ChannelPermissions
     }
 
     private ChannelPermissions(ulong initialValue,
-        bool? createInvites = null,
-        bool? manageChannels = null,
-        bool? manageRoles = null,
         bool? viewChannel = null,
+        bool? manageChannels = null,
         bool? sendMessages = null,
-        bool? manageMessages = null,
-        bool? attachFiles = null,
-        bool? connect = null,
-        bool? manageVoice = null,
-        bool? mentionEveryone = null,
-        bool? addReactions = null,
-        bool? passiveConnect = null,
-        bool? useVoiceActivity = null,
-        bool? speak = null,
-        bool? deafenMembers = null,
-        bool? muteMembers = null,
-        bool? playSoundtrack = null,
-        bool? shareScreen = null)
+        bool? stream = null)
     {
         ulong value = initialValue;
 
-        Permissions.SetValue(ref value, createInvites, ChannelPermission.CreateInvites);
-        Permissions.SetValue(ref value, manageChannels, ChannelPermission.ManageChannels);
-        Permissions.SetValue(ref value, manageRoles, ChannelPermission.ManageRoles);
         Permissions.SetValue(ref value, viewChannel, ChannelPermission.ViewChannel);
+        Permissions.SetValue(ref value, manageChannels, ChannelPermission.ManageChannels);
         Permissions.SetValue(ref value, sendMessages, ChannelPermission.SendMessages);
-        Permissions.SetValue(ref value, manageMessages, ChannelPermission.ManageMessages);
-        Permissions.SetValue(ref value, attachFiles, ChannelPermission.AttachFiles);
-        Permissions.SetValue(ref value, connect, ChannelPermission.Connect);
-        Permissions.SetValue(ref value, manageVoice, ChannelPermission.ManageVoice);
-        Permissions.SetValue(ref value, mentionEveryone, ChannelPermission.MentionEveryone);
-        Permissions.SetValue(ref value, addReactions, ChannelPermission.AddReactions);
-        Permissions.SetValue(ref value, passiveConnect, ChannelPermission.PassiveConnect);
-        Permissions.SetValue(ref value, useVoiceActivity, ChannelPermission.UseVoiceActivity);
-        Permissions.SetValue(ref value, speak, ChannelPermission.Speak);
-        Permissions.SetValue(ref value, deafenMembers, ChannelPermission.DeafenMembers);
-        Permissions.SetValue(ref value, muteMembers, ChannelPermission.MuteMembers);
-        Permissions.SetValue(ref value, playSoundtrack, ChannelPermission.PlaySoundtrack);
-        Permissions.SetValue(ref value, shareScreen, ChannelPermission.ShareScreen);
+        Permissions.SetValue(ref value, stream, ChannelPermission.Stream);
 
         RawValue = value;
     }
@@ -164,109 +90,37 @@ public struct ChannelPermissions
     /// <summary>
     ///     使用指定的权限位信息创建一个 <see cref="ChannelPermissions"/> 结构的新实例。
     /// </summary>
-    /// <param name="createInvites"> 创建邀请。 </param>
-    /// <param name="manageChannels"> 子频道管理。 </param>
-    /// <param name="manageRoles"> 管理角色权限。 </param>
     /// <param name="viewChannel"> 查看文字与语音子频道。 </param>
+    /// <param name="manageChannels"> 子频道管理。 </param>
     /// <param name="sendMessages"> 发送文字消息。 </param>
-    /// <param name="manageMessages"> 消息管理。 </param>
-    /// <param name="attachFiles"> 上传文件。 </param>
-    /// <param name="connect"> 语音连接。 </param>
-    /// <param name="manageVoice"> 语音管理。 </param>
-    /// <param name="mentionEveryone"> 提及全体成员、在线成员和所有角色。 </param>
-    /// <param name="addReactions"> 添加回应。 </param>
-    /// <param name="passiveConnect"> 被动连接语音子频道。 </param>
-    /// <param name="useVoiceActivity"> 使用自由麦。 </param>
-    /// <param name="speak"> 发言。 </param>
-    /// <param name="deafenMembers"> 频道静音。 </param>
-    /// <param name="muteMembers"> 频道闭麦。 </param>
-    /// <param name="playSoundtrack"> 共享计算机音频。 </param>
-    /// <param name="shareScreen"> 屏幕分享。 </param>
+    /// <param name="stream"> 发起直播。 </param>
     public ChannelPermissions(
-        bool? createInvites = false,
-        bool? manageChannels = false,
-        bool? manageRoles = false,
         bool? viewChannel = false,
+        bool? manageChannels = false,
         bool? sendMessages = false,
-        bool? manageMessages = false,
-        bool? attachFiles = false,
-        bool? connect = false,
-        bool? manageVoice = false,
-        bool? mentionEveryone = false,
-        bool? addReactions = false,
-        bool? passiveConnect = false,
-        bool? useVoiceActivity = false,
-        bool? speak = false,
-        bool? deafenMembers = false,
-        bool? muteMembers = false,
-        bool? playSoundtrack = false,
-        bool? shareScreen = false)
-        : this(0, createInvites, manageChannels, manageRoles, viewChannel, sendMessages, manageMessages, attachFiles,
-            connect, manageVoice, mentionEveryone, addReactions, passiveConnect, useVoiceActivity, speak, deafenMembers,
-            muteMembers, playSoundtrack, shareScreen)
+        bool? stream = false)
+        : this(0, viewChannel, manageChannels, sendMessages, stream)
     {
     }
 
     /// <summary>
     ///     以当前权限集为基础，更改指定的权限，返回一个 <see cref="ChannelPermissions"/> 结构的新实例。
     /// </summary>
-    /// <param name="createInvites"> 创建邀请。 </param>
-    /// <param name="manageChannels"> 子频道管理。 </param>
-    /// <param name="manageRoles"> 管理角色权限。 </param>
     /// <param name="viewChannel"> 查看文字与语音子频道。 </param>
+    /// <param name="manageChannels"> 子频道管理。 </param>
     /// <param name="sendMessages"> 发送文字消息。 </param>
-    /// <param name="manageMessages"> 消息管理。 </param>
-    /// <param name="attachFiles"> 上传文件。 </param>
-    /// <param name="connect"> 语音连接。 </param>
-    /// <param name="manageVoice"> 语音管理。 </param>
-    /// <param name="mentionEveryone"> 提及全体成员、在线成员和所有角色。 </param>
-    /// <param name="addReactions"> 添加回应。 </param>
-    /// <param name="passiveConnect"> 被动连接语音子频道。 </param>
-    /// <param name="useVoiceActivity"> 使用自由麦。 </param>
-    /// <param name="speak"> 发言。 </param>
-    /// <param name="deafenMembers"> 频道静音。 </param>
-    /// <param name="muteMembers"> 频道闭麦。 </param>
-    /// <param name="playSoundtrack"> 共享计算机音频。 </param>
-    /// <param name="shareScreen"> 屏幕分享。 </param>
+    /// <param name="stream"> 发起直播。 </param>
     /// <returns> 更改了指定权限的新的权限集。 </returns>
     public ChannelPermissions Modify(
-        bool? createInvites = null,
-        bool? manageChannels = null,
-        bool? manageRoles = null,
         bool? viewChannel = null,
+        bool? manageChannels = null,
         bool? sendMessages = null,
-        bool? manageMessages = null,
-        bool? attachFiles = null,
-        bool? connect = null,
-        bool? manageVoice = null,
-        bool? mentionEveryone = null,
-        bool? addReactions = null,
-        bool? passiveConnect = null,
-        bool? useVoiceActivity = null,
-        bool? speak = null,
-        bool? deafenMembers = null,
-        bool? muteMembers = null,
-        bool? playSoundtrack = null,
-        bool? shareScreen = null) =>
+        bool? stream = null) =>
         new(RawValue,
-            createInvites,
-            manageChannels,
-            manageRoles,
             viewChannel,
+            manageChannels,
             sendMessages,
-            manageMessages,
-            attachFiles,
-            connect,
-            manageVoice,
-            mentionEveryone,
-            addReactions,
-            passiveConnect,
-            useVoiceActivity,
-            speak,
-            deafenMembers,
-            muteMembers,
-            playSoundtrack,
-            shareScreen);
+            stream);
 
     /// <summary>
     ///     获取当前权限集是否包含指定的权限。

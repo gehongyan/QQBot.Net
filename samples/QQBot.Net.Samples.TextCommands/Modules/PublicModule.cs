@@ -1,6 +1,5 @@
 using QQBot.Commands;
 using QQBot.Net.Samples.TextCommands.Services;
-using QQBot.WebSocket;
 
 namespace QQBot.Net.Samples.TextCommands.Modules;
 

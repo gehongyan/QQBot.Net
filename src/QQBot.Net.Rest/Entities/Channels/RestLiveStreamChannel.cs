@@ -54,5 +54,13 @@ public class RestLiveStreamChannel : RestGuildChannel, ILiveStreamChannel
     public async Task<int> CountOnlineUsersAsync(RequestOptions? options = null) =>
         await ChannelHelper.CountOnlineUsersAsync(this, Client, options).ConfigureAwait(false);
 
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IGuildMember user, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, user, options);
+
+    /// <inheritdoc />
+    public Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null) =>
+        ChannelHelper.GetPermissionsAsync(this, Client, role, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, LiveStream)";
 }
