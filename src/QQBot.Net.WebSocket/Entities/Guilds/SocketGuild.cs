@@ -381,6 +381,34 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     #endregion
 
+    #region API Permissions
+
+    /// <inheritdoc />
+    public Task<IReadOnlyCollection<ApplicationPermission>> GetApplicationPermissionsAsync(RequestOptions? options = null) =>
+        GuildHelper.GetApplicationPermissionsAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task RequestApplicationPermissionAsync(ulong channelId,
+        string title, ApplicationPermission permission, RequestOptions? options = null) =>
+        GuildHelper.RequestApplicationPermissionAsync(this, Client, channelId, title, permission, options);
+
+    /// <inheritdoc />
+    public Task RequestApplicationPermissionAsync(ITextChannel channel,
+        string title, ApplicationPermission permission, RequestOptions? options = null) =>
+        GuildHelper.RequestApplicationPermissionAsync(this, Client, channel, title, permission, options);
+
+    /// <inheritdoc />
+    public Task RequestApplicationPermissionAsync(ulong channelId,
+        string title, string description, HttpMethod method, string path, RequestOptions? options = null) =>
+        GuildHelper.RequestApplicationPermissionAsync(this, Client, channelId, title, description, method, path, options);
+
+    /// <inheritdoc />
+    public Task RequestApplicationPermissionAsync(ITextChannel channel,
+        string title, string description, HttpMethod method, string path, RequestOptions? options = null) =>
+        GuildHelper.RequestApplicationPermissionAsync(this, Client, channel, title, description, method, path, options);
+
+    #endregion
+
     #region IGuild
 
     /// <inheritdoc />

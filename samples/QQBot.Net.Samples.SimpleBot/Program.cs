@@ -20,10 +20,9 @@ client.Ready += async () =>
 client.MessageReceived += async message =>
 {
     if (message.Source is not MessageSource.User) return;
-    if (message.Channel is SocketTextChannel textChannel
-        && textChannel.Guild.CurrentUser is { } currentUser)
+    if (message.Channel is SocketTextChannel textChannel)
     {
-        await textChannel.ModifyPermissionsAsync(currentUser, OverwritePermissions.InheritAll);
+        IReadOnlyCollection<ApplicationPermission> permissions = await textChannel.Guild.GetApplicationPermissionsAsync();
     }
 
 //      IUserMessage msg = await message.ReplyAsync(

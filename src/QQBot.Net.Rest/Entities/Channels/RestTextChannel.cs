@@ -105,6 +105,20 @@ public class RestTextChannel : RestGuildChannel, ITextChannel
 
     #endregion
 
+    #region API Permissions
+
+    /// <inheritdoc />
+    public Task RequestApplicationPermissionAsync(string title, ApplicationPermission permission,
+        RequestOptions? options = null) =>
+        ChannelHelper.RequestApplicationPermissionAsync(this, Client, title, permission, options);
+
+    /// <inheritdoc />
+    public Task RequestApplicationPermissionAsync(string title, string description,
+        HttpMethod method, string path, RequestOptions? options = null) =>
+        ChannelHelper.RequestApplicationPermissionAsync(this, Client, title, description, method, path, options);
+
+    #endregion
+
     #region IMessageChannel
 
     /// <inheritdoc />

@@ -342,4 +342,63 @@ public interface IGuild : IEntity<ulong>
     Task<ICategoryChannel> CreateCategoryChannelAsync(string name, Action<CreateCategoryChannelProperties>? func = null, RequestOptions? options = null);
 
     #endregion
+
+    #region API Permissions
+
+    /// <summary>
+    ///     获取当前用户在此子频道内的可用权限。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 当前用户在此子频道内的可用权限。 </returns>
+    Task<IReadOnlyCollection<ApplicationPermission>> GetApplicationPermissionsAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     请求应用程序权限。
+    /// </summary>
+    /// <param name="channelId"> 要发送权限请求消息的频道 ID。 </param>
+    /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
+    /// <param name="permission"> 要请求的权限。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RequestApplicationPermissionAsync(ulong channelId, string title, ApplicationPermission permission,
+        RequestOptions? options = null);
+
+    /// <summary>
+    ///     请求应用程序权限。
+    /// </summary>
+    /// <param name="channel"> 要发送权限请求消息的频道。 </param>
+    /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
+    /// <param name="permission"> 要请求的权限。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RequestApplicationPermissionAsync(ITextChannel channel, string title, ApplicationPermission permission,
+        RequestOptions? options = null);
+
+    /// <summary>
+    ///     请求应用程序权限。
+    /// </summary>
+    /// <param name="channelId"> 要发送权限请求消息的频道 ID。 </param>
+    /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
+    /// <param name="description"> 接口权限链接中的机器人可使用功能的描述信息。 </param>
+    /// <param name="method"> 要请求的权限的请求方法。 </param>
+    /// <param name="path"> 要请求的权限的路径。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RequestApplicationPermissionAsync(ulong channelId, string title, string description,
+        HttpMethod method, string path, RequestOptions? options = null);
+
+    /// <summary>
+    ///     请求应用程序权限。
+    /// </summary>
+    /// <param name="channel"> 要发送权限请求消息的频道。 </param>
+    /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
+    /// <param name="description"> 接口权限链接中的机器人可使用功能的描述信息。 </param>
+    /// <param name="method"> 要请求的权限的请求方法。 </param>
+    /// <param name="path"> 要请求的权限的路径。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RequestApplicationPermissionAsync(ITextChannel channel, string title, string description,
+        HttpMethod method, string path, RequestOptions? options = null);
+
+    #endregion
 }

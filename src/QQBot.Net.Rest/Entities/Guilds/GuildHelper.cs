@@ -252,4 +252,33 @@ internal static class GuildHelper
     }
 
     #endregion
+
+    #region API Permissions
+
+    public static async Task<IReadOnlyCollection<ApplicationPermission>> GetApplicationPermissionsAsync(IGuild guild,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        IReadOnlyCollection<ApiPermission> models =
+            await client.ApiClient.GetApplicationGuildPermissionsAsync(guild.Id, options);
+        return [..models.Select(x => new ApplicationPermission(new HttpMethod(x.Method), x.Path, x.Description, x.AuthStatus))];
+    }
+
+    #endregion
+
+    public static Task RequestApplicationPermissionAsync(IGuild guild, BaseQQBotClient client, ITextChannel channel,
+        string title, ApplicationPermission permission, RequestOptions? options) =>
+        RequestApplicationPermissionAsync(guild, client, channel.Id, title, permission, options);
+
+    public static Task RequestApplicationPermissionAsync(IGuild guild, BaseQQBotClient client, ulong channelId,
+        string title, ApplicationPermission permission, RequestOptions? options) =>
+        RequestApplicationPermissionAsync(guild, client, channelId, title,
+            permission.Description, permission.Method, permission.Path, options);
+
+    public static Task RequestApplicationPermissionAsync(IGuild guild, BaseQQBotClient client, ITextChannel channel,
+        string title, string description, HttpMethod method, string path, RequestOptions? options) =>
+        RequestApplicationPermissionAsync(guild, client, channel.Id, title, description, method, path, options);
+
+    public static Task RequestApplicationPermissionAsync(IGuild guild, BaseQQBotClient client, ulong channelId,
+        string title, string description, HttpMethod method, string path, RequestOptions? options) =>
+        ChannelHelper.RequestApplicationPermissionAsync(guild.Id, channelId, client, title, description, method, path, options);
 }

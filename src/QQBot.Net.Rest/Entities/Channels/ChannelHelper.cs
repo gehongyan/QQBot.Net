@@ -472,4 +472,35 @@ internal static class ChannelHelper
     }
 
     #endregion
+
+    #region API Permissions
+
+    public static Task RequestApplicationPermissionAsync(ITextChannel channel, BaseQQBotClient client,
+        string title, ApplicationPermission permission, RequestOptions? options) =>
+        RequestApplicationPermissionAsync(channel, client, title, permission.Description,
+            permission.Method, permission.Path, options);
+
+    public static Task RequestApplicationPermissionAsync(ITextChannel channel, BaseQQBotClient client,
+        string title, string description, HttpMethod method, string path, RequestOptions? options) =>
+        RequestApplicationPermissionAsync(channel.GuildId, channel.Id, client, title, description, method, path, options);
+
+    public static async Task RequestApplicationPermissionAsync(ulong guildId, ulong channelId, BaseQQBotClient client,
+        string title, string description, HttpMethod method, string path, RequestOptions? options)
+    {
+        RequestApplicationGuildPermissionParams args = new()
+        {
+            GuildId = guildId,
+            ChannelId = channelId,
+            ApiIdentify = new ApiPermissionDemandIdentify
+            {
+                Method = method.Method,
+                Path = path
+            },
+            Title = title,
+            Description = description
+        };
+        await client.ApiClient.RequestApplicationGuildPermissionAsync(guildId, args, options);
+    }
+
+    #endregion
 }

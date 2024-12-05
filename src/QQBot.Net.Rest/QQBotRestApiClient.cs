@@ -919,17 +919,19 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(guildId);
-        return await SendAsync<IReadOnlyCollection<ApiPermission>>(HttpMethod.Get,
+        GetApplicationGuildPermissionResponse response = await SendAsync<GetApplicationGuildPermissionResponse>(HttpMethod.Get,
                 () => $"guilds/{guildId}/api_permission", ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
+        return response.ApiPermissions;
     }
 
     public async Task RequestApplicationGuildPermissionAsync(ulong guildId, RequestApplicationGuildPermissionParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(guildId, 0, nameof(guildId));
+        Preconditions.NotEqual(args.ChannelId, 0, nameof(args.ChannelId));
         options = RequestOptions.CreateOrClone(options);
 
-        BucketIds ids = new(guildId);
+        BucketIds ids = new(guildId, args.ChannelId);
         await SendJsonAsync(HttpMethod.Post,
                 () => $"guilds/{guildId}/api_permission/demand", args, ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
