@@ -445,8 +445,30 @@ internal static class ChannelHelper
         IRole role, RequestOptions? options)
     {
         API.ChannelPermissions model = await client.ApiClient
-            .GetMemberPermissionsAsync(channel.Id, role.Id, options).ConfigureAwait(false);
+            .GetRolePermissionsAsync(channel.Id, role.Id, options).ConfigureAwait(false);
         return new ChannelPermissions(ulong.Parse(model.Permissions));
+    }
+
+    public static async Task ModifyPermissionsAsync(IGuildChannel channel, BaseQQBotClient client,
+        IGuildMember user, OverwritePermissions permissions, RequestOptions? options)
+    {
+        ModifyMemberPermissionsParams args = new()
+        {
+            Add = permissions.AllowValue,
+            Remove = permissions.DenyValue
+        };
+        await client.ApiClient.ModifyMemberPermissionsAsync(channel.Id, user.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static async Task ModifyPermissionsAsync(IGuildChannel channel, BaseQQBotClient client,
+        IRole role, OverwritePermissions permissions, RequestOptions? options)
+    {
+        ModifyRolePermissionsParams args = new()
+        {
+            Add = permissions.AllowValue,
+            Remove = permissions.DenyValue
+        };
+        await client.ApiClient.ModifyRolePermissionsAsync(channel.Id, role.Id, args, options).ConfigureAwait(false);
     }
 
     #endregion

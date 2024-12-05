@@ -79,6 +79,14 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
     public Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null) =>
         ChannelHelper.GetPermissionsAsync(this, Client, role, options);
 
+    /// <inheritdoc />
+    public Task ModifyPermissionsAsync(IGuildMember user, OverwritePermissions permissions, RequestOptions? options = null) =>
+        ChannelHelper.ModifyPermissionsAsync(this, Client, user, permissions, options);
+
+    /// <inheritdoc />
+    public Task ModifyPermissionsAsync(IRole role, OverwritePermissions permissions, RequestOptions? options = null) =>
+        ChannelHelper.ModifyPermissionsAsync(this, Client, role, permissions, options);
+
     #region Messages
 
     /// <inheritdoc />

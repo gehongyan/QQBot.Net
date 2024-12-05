@@ -23,21 +23,16 @@ client.MessageReceived += async message =>
     if (message.Channel is SocketTextChannel textChannel
         && textChannel.Guild.CurrentUser is { } currentUser)
     {
-        foreach (INestedChannel channel in textChannel.Guild.Channels.OfType<INestedChannel>())
-        {
-            Console.WriteLine($"Channel: {channel.Name} ({channel.Type})");
-            ChannelPermissions channelPermissions = await channel.GetPermissionsAsync(currentUser);
-            Console.WriteLine($"Permissions: {channelPermissions}");
-        }
+        await textChannel.ModifyPermissionsAsync(currentUser, OverwritePermissions.InheritAll);
     }
 
-//     IUserMessage msg = await message.ReplyAsync(
-//         $"""
-//         [Content] {message.Content}
-//         [Content] {Format.Escape(message.Content)}
-//         [Content] {Format.Sanitize(message.Content)}
-//         [Attachments] {message.Attachments.Count}
-//         """);
+//      IUserMessage msg = await message.ReplyAsync(
+//          $"""
+//          [Content] {message.Content}
+//          [Content] {Format.Escape(message.Content)}
+//          [Content] {Format.Sanitize(message.Content)}
+//          [Attachments] {message.Attachments.Count}
+//          """);
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

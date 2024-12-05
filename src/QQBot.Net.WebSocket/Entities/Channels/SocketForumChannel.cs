@@ -59,5 +59,13 @@ public class SocketForumChannel : SocketGuildChannel, IForumChannel
     public Task<ChannelPermissions> GetPermissionsAsync(IRole role, RequestOptions? options = null) =>
         ChannelHelper.GetPermissionsAsync(this, Client, role, options);
 
+    /// <inheritdoc />
+    public Task ModifyPermissionsAsync(IGuildMember user, OverwritePermissions permissions, RequestOptions? options = null) =>
+        ChannelHelper.ModifyPermissionsAsync(this, Client, user, permissions, options);
+
+    /// <inheritdoc />
+    public Task ModifyPermissionsAsync(IRole role, OverwritePermissions permissions, RequestOptions? options = null) =>
+        ChannelHelper.ModifyPermissionsAsync(this, Client, role, permissions, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Forum)";
 }
