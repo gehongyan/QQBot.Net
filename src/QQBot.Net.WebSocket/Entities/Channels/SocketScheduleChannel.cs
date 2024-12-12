@@ -67,5 +67,37 @@ public class SocketScheduleChannel : SocketGuildChannel, IScheduleChannel
     public Task ModifyPermissionsAsync(IRole role, OverwritePermissions permissions, RequestOptions? options = null) =>
         ChannelHelper.ModifyPermissionsAsync(this, Client, role, permissions, options);
 
+    /// <inheritdoc cref="QQBot.IScheduleChannel.GetSchedulesAsync(System.Nullable{System.DateTimeOffset},QQBot.RequestOptions)" />
+    public Task<IReadOnlyCollection<RestGuildSchedule>> GetSchedulesAsync(DateTimeOffset? since = null, RequestOptions? options = null) =>
+        ChannelHelper.GetSchedulesAsync(this, Client, since, options);
+
+    /// <inheritdoc cref="QQBot.IScheduleChannel.GetScheduleAsync(System.UInt64,QQBot.RequestOptions)" />
+    public Task<RestGuildSchedule> GetScheduleAsync(ulong id, RequestOptions? options = null) =>
+        ChannelHelper.GetScheduleAsync(this, Client, id, options);
+
+    /// <inheritdoc cref="QQBot.IScheduleChannel.CreateScheduleAsync(System.String,System.DateTimeOffset,System.DateTimeOffset,System.String,QQBot.IGuildChannel,QQBot.RemindType,QQBot.RequestOptions)" />
+    public Task<RestGuildSchedule> CreateScheduleAsync(string name, DateTimeOffset startTime, DateTimeOffset endTime,
+        string? description = null, IGuildChannel? jumpChannel = null, RemindType remindType = RemindType.None,
+        RequestOptions? options = null) =>
+        ChannelHelper.CreateScheduleAsync(this, Client, name,
+            startTime, endTime, description, jumpChannel, remindType, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Schedule)";
+
+    #region IScheduleChannel
+
+    /// <inheritdoc />
+    async Task<IReadOnlyCollection<IGuildSchedule>> IScheduleChannel.GetSchedulesAsync(DateTimeOffset? since, RequestOptions? options) =>
+        await GetSchedulesAsync(since, options).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    async Task<IGuildSchedule> IScheduleChannel.GetScheduleAsync(ulong id, RequestOptions? options) =>
+        await GetScheduleAsync(id, options).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    async Task<IGuildSchedule> IScheduleChannel.CreateScheduleAsync(string name, DateTimeOffset startTime, DateTimeOffset endTime,
+        string? description, IGuildChannel? jumpChannel, RemindType remindType, RequestOptions? options ) =>
+        await CreateScheduleAsync(name, startTime, endTime, description, jumpChannel, remindType, options);
+
+    #endregion
 }

@@ -249,8 +249,7 @@ internal class QQBotRestApiClient : IDisposable
     internal async Task<TResponse> SendAsync<TResponse>(HttpMethod method, Expression<Func<string>> endpointExpr,
         BucketIds ids, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null,
-        [CallerMemberName] string? funcName = null)
-        where TResponse : class =>
+        [CallerMemberName] string? funcName = null) =>
         await SendAsync<TResponse>(method, GetEndpoint(endpointExpr),
             GetBucketId(method, ids, endpointExpr, funcName), clientBucket, bypassDeserialization, options);
 
@@ -258,15 +257,13 @@ internal class QQBotRestApiClient : IDisposable
         Expression<Func<TArg1, TArg2, string>> endpointExpr, TArg1 arg1, TArg2 arg2,
         BucketIds ids, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null,
-        [CallerMemberName] string? funcName = null)
-        where TResponse : class =>
+        [CallerMemberName] string? funcName = null) =>
         await SendAsync<TResponse>(method, GetEndpoint(endpointExpr, arg1, arg2),
             GetBucketId(method, ids, endpointExpr, arg1, arg2, funcName), clientBucket, bypassDeserialization, options);
 
     public async Task<TResponse> SendAsync<TResponse>(HttpMethod method, string endpoint,
         BucketId? bucketId = null, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null)
-        where TResponse : class
     {
         options ??= new RequestOptions();
         options.BucketId = bucketId;
@@ -282,15 +279,13 @@ internal class QQBotRestApiClient : IDisposable
         Expression<Func<string>> endpointExpr, object payload,
         BucketIds ids, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null,
-        [CallerMemberName] string? funcName = null)
-        where TResponse : class =>
+        [CallerMemberName] string? funcName = null) =>
         await SendJsonAsync<TResponse>(method, GetEndpoint(endpointExpr), payload,
             GetBucketId(method, ids, endpointExpr, funcName), clientBucket, bypassDeserialization, options);
 
     public async Task<TResponse> SendJsonAsync<TResponse>(HttpMethod method, string endpoint, object payload,
         BucketId? bucketId = null, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null)
-        where TResponse : class
     {
         options ??= new RequestOptions();
         options.BucketId = bucketId;
@@ -307,8 +302,7 @@ internal class QQBotRestApiClient : IDisposable
         Expression<Func<string>> endpointExpr, IReadOnlyDictionary<string, object> multipartArgs,
         BucketIds ids, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null,
-        [CallerMemberName] string? funcName = null)
-        where TResponse : class =>
+        [CallerMemberName] string? funcName = null) =>
         SendMultipartAsync<TResponse>(method, GetEndpoint(endpointExpr), multipartArgs,
             GetBucketId(method, ids, endpointExpr, funcName), clientBucket, bypassDeserialization, options);
 
@@ -316,7 +310,6 @@ internal class QQBotRestApiClient : IDisposable
         string endpoint, IReadOnlyDictionary<string, object> multipartArgs,
         BucketId? bucketId = null, ClientBucketType clientBucket = ClientBucketType.Unbucketed,
         bool bypassDeserialization = false, RequestOptions? options = null)
-        where TResponse : class
     {
         options ??= new RequestOptions();
         options.BucketId = bucketId;
@@ -1056,6 +1049,23 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Schedules
 
+    public async Task<IReadOnlyCollection<Schedule>> GetSchedulesAsync(ulong channelId, DateTimeOffset? since = null, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(channelId, 0, nameof(channelId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new(0, channelId);
+        string query = since.HasValue
+            ? $"?since={since.Value.ToUnixTimeMilliseconds()}"
+            : string.Empty;
+        JsonElement response = await SendAsync<JsonElement>(HttpMethod.Get,
+                () => $"channels/{channelId}/schedules{query}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+        if (response.ValueKind is JsonValueKind.Array)
+            return DeserializeJsonAsync<IReadOnlyCollection<Schedule>>(response);
+        return [];
+    }
+
     public async Task<Schedule> GetScheduleAsync(ulong channelId, ulong scheduleId, RequestOptions? options = null)
     {
         Preconditions.NotEqual(channelId, 0, nameof(channelId));
@@ -1071,6 +1081,9 @@ internal class QQBotRestApiClient : IDisposable
     public async Task<Schedule> CreateScheduleAsync(ulong channelId, CreateScheduleParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(channelId, 0, nameof(channelId));
+        Preconditions.NotNull(args, nameof(args));
+        Preconditions.NotNull(args.Schedule, nameof(args.Schedule));
+        Preconditions.NotNullOrEmpty(args.Schedule.Name, nameof(args.Schedule.Name));
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(0, channelId);
@@ -1225,6 +1238,21 @@ internal class QQBotRestApiClient : IDisposable
             }
 
             throw;
+        }
+    }
+
+    protected T DeserializeJsonAsync<T>(JsonElement jsonElement)
+    {
+        try
+        {
+            T? jsonObject = jsonElement.Deserialize<T>(_serializerOptions);
+            if (jsonObject is null)
+                throw new JsonException($"Failed to deserialize JSON to type {typeof(T).FullName}");
+            return jsonObject;
+        }
+        catch (JsonException ex)
+        {
+            throw new JsonException($"Failed to deserialize JSON to type {typeof(T).FullName}\nJSON: {jsonElement.GetRawText()}", ex);
         }
     }
 

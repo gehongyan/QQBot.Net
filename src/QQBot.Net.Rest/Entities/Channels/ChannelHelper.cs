@@ -522,4 +522,50 @@ internal static class ChannelHelper
         client.ApiClient.UnpinMessageAsync(channel.Id, messageId, options);
 
     #endregion
+
+    #region Schedules
+
+    public static async Task<IReadOnlyCollection<RestGuildSchedule>> GetSchedulesAsync(IScheduleChannel channel,
+        BaseQQBotClient client, DateTimeOffset? since, RequestOptions? options)
+    {
+        IReadOnlyCollection<Schedule> models = await client.ApiClient
+            .GetSchedulesAsync(channel.Id, since, options)
+            .ConfigureAwait(false);
+        return
+        [
+            ..models.Select(x => RestGuildSchedule.Create(client, channel, x,
+                x.Creator.User is not null ? RestGuildMember.Create(client, channel.Guild, x.Creator.User, x.Creator) : null))
+        ];
+    }
+
+    public static async Task<RestGuildSchedule> GetScheduleAsync(IScheduleChannel channel,
+        BaseQQBotClient client, ulong id, RequestOptions? options)
+    {
+        Schedule model = await client.ApiClient.GetScheduleAsync(channel.Id, id, options);
+        return RestGuildSchedule.Create(client, channel, model,
+            model.Creator.User is not null ? RestGuildMember.Create(client, channel.Guild, model.Creator.User, model.Creator) : null);
+    }
+
+    public static async Task<RestGuildSchedule> CreateScheduleAsync(IScheduleChannel channel, BaseQQBotClient client,
+        string name, DateTimeOffset startTime, DateTimeOffset endTime, string? description, IGuildChannel? jumpChannel,
+        RemindType remindType, RequestOptions? options)
+    {
+        CreateScheduleParams args = new()
+        {
+            Schedule = new ScheduleParams
+            {
+                Name = name,
+                Description = description,
+                StartTimestamp = startTime,
+                EndTimestamp = endTime,
+                JumpChannelId = jumpChannel?.Id,
+                RemindType = remindType
+            }
+        };
+        Schedule model = await client.ApiClient.CreateScheduleAsync(channel.Id, args, options);
+        return RestGuildSchedule.Create(client, channel, model,
+            model.Creator.User is not null ? RestGuildMember.Create(client, channel.Guild, model.Creator.User, model.Creator) : null);
+    }
+
+    #endregion
 }

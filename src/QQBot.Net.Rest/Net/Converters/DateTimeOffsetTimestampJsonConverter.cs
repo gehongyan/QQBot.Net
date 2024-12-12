@@ -47,6 +47,12 @@ internal class DateTimeOffsetTimestampJsonConverter : JsonConverter<DateTimeOffs
             case Format.Seconds:
                 writer.WriteNumberValue(value.ToUnixTimeSeconds());
                 break;
+            case Format.MillisecondsString:
+                writer.WriteStringValue(value.ToUnixTimeMilliseconds().ToString());
+                break;
+            case Format.SecondsString:
+                writer.WriteStringValue(value.ToUnixTimeSeconds().ToString());
+                break;
             case Format.RFC3339:
                 writer.WriteStringValue(value.ToString("yyyy-MM-ddTHH:mm:ssK"));
                 break;
@@ -62,6 +68,8 @@ internal class DateTimeOffsetTimestampJsonConverter : JsonConverter<DateTimeOffs
     {
         Milliseconds,
         Seconds,
+        MillisecondsString,
+        SecondsString,
         RFC3339,
         ISO8601
     }
