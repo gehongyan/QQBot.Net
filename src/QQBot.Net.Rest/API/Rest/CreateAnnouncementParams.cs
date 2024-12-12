@@ -8,6 +8,7 @@ internal class CreateAnnouncementParams
     public string? MessageId { get; set; }
 
     [JsonPropertyName("channel_id")]
+    [JsonNumberHandling(JsonNumberHandling.WriteAsString)]
     public ulong? ChannelId { get; set; }
 
     [JsonPropertyName("announces_type")]

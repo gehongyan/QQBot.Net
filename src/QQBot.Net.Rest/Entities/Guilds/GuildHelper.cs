@@ -387,4 +387,45 @@ internal static class GuildHelper
     }
 
     #endregion
+
+    #region Announcements
+
+    public static Task PublishAnnouncementAsync(IGuild guild, BaseQQBotClient client,
+        ulong channelId, string messageId, RequestOptions? options)
+    {
+        CreateAnnouncementParams args = new()
+        {
+            ChannelId = channelId,
+            MessageId = messageId
+        };
+        return client.ApiClient.CreateAnnouncementAsync(guild.Id, args, options);
+    }
+
+    public static Task RevokeAnnouncementAsync(IGuild guild, BaseQQBotClient client,
+        string messageId, RequestOptions? options) =>
+        client.ApiClient.DeleteAnnouncementAsync(guild.Id, messageId, options);
+
+    public static Task RecommendChannelsAsync(IGuild guild, BaseQQBotClient client,
+        IEnumerable<ChannelRecommendation> recommendations, RequestOptions? options)
+    {
+        CreateAnnouncementParams args = new()
+        {
+            AnnouncementType = AnnouncementType.Welcome,
+            RecommendChannels =
+            [
+                ..recommendations.Select(x => new API.RecommendChannel
+                {
+                    ChannelId = x.ChannelId,
+                    Introduce = x.Introduction
+                })
+            ],
+        };
+        return client.ApiClient.CreateAnnouncementAsync(guild.Id, args, options);
+    }
+
+    public static Task RemoveAllChannelRecommendationsAsync(IGuild guild, BaseQQBotClient client,
+        RequestOptions? options) =>
+        client.ApiClient.DeleteAnnouncementAsync(guild.Id, "all", options);
+
+    #endregion
 }

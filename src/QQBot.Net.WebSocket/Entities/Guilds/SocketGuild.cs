@@ -477,6 +477,38 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     #endregion
 
+    #region Announcements
+
+    /// <inheritdoc />
+    public Task PublishAnnouncementAsync(ulong channelId, string messageId, RequestOptions? options = null) =>
+        GuildHelper.PublishAnnouncementAsync(this, Client, channelId, messageId, options);
+
+    /// <inheritdoc />
+    public Task PublishAnnouncementAsync(IUserMessage message, RequestOptions? options = null)
+    {
+        if (message.Channel is not IGuildChannel channel)
+            throw new ArgumentException("The message must be from a guild channel.", nameof(message));
+        return GuildHelper.PublishAnnouncementAsync(this, Client, channel.Id, message.Id, options);
+    }
+
+    /// <inheritdoc />
+    public Task RevokeAnnouncementAsync(string messageId, RequestOptions? options = null) =>
+        GuildHelper.RevokeAnnouncementAsync(this, Client, messageId, options);
+
+    /// <inheritdoc />
+    public Task RevokeAnnouncementAsync(IUserMessage message, RequestOptions? options = null) =>
+        GuildHelper.RevokeAnnouncementAsync(this, Client, message.Id, options);
+
+    /// <inheritdoc />
+    public Task RecommendChannelsAsync(IEnumerable<ChannelRecommendation> recommendations, RequestOptions? options = null) =>
+        GuildHelper.RecommendChannelsAsync(this, Client, recommendations, options);
+
+    /// <inheritdoc />
+    public Task RemoveAllChannelRecommendationsAsync(RequestOptions? options = null) =>
+        GuildHelper.RemoveAllChannelRecommendationsAsync(this, Client, options);
+
+    #endregion
+
     #region IGuild
 
     /// <inheritdoc />

@@ -539,4 +539,59 @@ public interface IGuild : IEntity<ulong>
     Task UnmuteMembersAsync(IEnumerable<ulong> userIds, RequestOptions? options = null);
 
     #endregion
+
+    #region Announcements
+
+    /// <summary>
+    ///     发布消息类型的频道公告。
+    /// </summary>
+    /// <param name="channelId"> 要发布为公告的消息所在的频道的 ID。 </param>
+    /// <param name="messageId"> 要发布为公告的消息的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task PublishAnnouncementAsync(ulong channelId, string messageId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     发布消息类型的频道公告。
+    /// </summary>
+    /// <param name="message"> 要发布为公告的消息。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task PublishAnnouncementAsync(IUserMessage message, RequestOptions? options = null);
+
+    /// <summary>
+    ///     撤销频道公告。
+    /// </summary>
+    /// <param name="messageId"> 要撤销的公告的消息的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RevokeAnnouncementAsync(string messageId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     撤销频道公告。
+    /// </summary>
+    /// <param name="message"> 要撤销的公告的消息。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RevokeAnnouncementAsync(IUserMessage message, RequestOptions? options = null);
+
+    /// <summary>
+    ///     发布子频道推荐类型的公告。
+    /// </summary>
+    /// <param name="recommendations"> 所有要推荐的子频道及推荐于。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    /// <remarks>
+    ///     同频道内最多同时推荐 3 个子频道。
+    /// </remarks>
+    Task RecommendChannelsAsync(IEnumerable<ChannelRecommendation> recommendations, RequestOptions? options = null);
+
+    /// <summary>
+    ///     移除所有子频道推荐。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task RemoveAllChannelRecommendationsAsync(RequestOptions? options = null);
+
+    #endregion
 }
