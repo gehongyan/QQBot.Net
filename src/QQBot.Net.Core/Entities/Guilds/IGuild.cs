@@ -355,50 +355,188 @@ public interface IGuild : IEntity<ulong>
     /// <summary>
     ///     请求应用程序权限。
     /// </summary>
-    /// <param name="channelId"> 要发送权限请求消息的频道 ID。 </param>
+    /// <param name="channelId"> 要发送请求的频道的 ID。 </param>
     /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
     /// <param name="permission"> 要请求的权限。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步操作的任务。 </returns>
-    Task RequestApplicationPermissionAsync(ulong channelId, string title, ApplicationPermission permission,
-        RequestOptions? options = null);
+    Task RequestApplicationPermissionAsync(ulong channelId,
+        string title, ApplicationPermission permission, RequestOptions? options = null);
 
     /// <summary>
     ///     请求应用程序权限。
     /// </summary>
-    /// <param name="channel"> 要发送权限请求消息的频道。 </param>
+    /// <param name="channel"> 要发送请求的频道。 </param>
     /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
     /// <param name="permission"> 要请求的权限。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步操作的任务。 </returns>
-    Task RequestApplicationPermissionAsync(ITextChannel channel, string title, ApplicationPermission permission,
-        RequestOptions? options = null);
+    Task RequestApplicationPermissionAsync(ITextChannel channel,
+        string title, ApplicationPermission permission, RequestOptions? options = null);
 
     /// <summary>
     ///     请求应用程序权限。
     /// </summary>
-    /// <param name="channelId"> 要发送权限请求消息的频道 ID。 </param>
+    /// <param name="channelId"> 要发送请求的频道的 ID。 </param>
     /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
     /// <param name="description"> 接口权限链接中的机器人可使用功能的描述信息。 </param>
     /// <param name="method"> 要请求的权限的请求方法。 </param>
     /// <param name="path"> 要请求的权限的路径。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步操作的任务。 </returns>
-    Task RequestApplicationPermissionAsync(ulong channelId, string title, string description,
-        HttpMethod method, string path, RequestOptions? options = null);
+    Task RequestApplicationPermissionAsync(ulong channelId,
+        string title, string description, HttpMethod method, string path, RequestOptions? options = null);
 
     /// <summary>
     ///     请求应用程序权限。
     /// </summary>
-    /// <param name="channel"> 要发送权限请求消息的频道。 </param>
+    /// <param name="channel"> 要发送请求的频道。 </param>
     /// <param name="title"> 接口权限链接中的接口权限描述信息。 </param>
     /// <param name="description"> 接口权限链接中的机器人可使用功能的描述信息。 </param>
     /// <param name="method"> 要请求的权限的请求方法。 </param>
     /// <param name="path"> 要请求的权限的路径。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步操作的任务。 </returns>
-    Task RequestApplicationPermissionAsync(ITextChannel channel, string title, string description,
-        HttpMethod method, string path, RequestOptions? options = null);
+    Task RequestApplicationPermissionAsync(ITextChannel channel,
+        string title, string description, HttpMethod method, string path, RequestOptions? options = null);
+
+    #endregion
+
+    #region Message Settings
+
+    /// <summary>
+    ///     获取此频道的消息设置。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道的消息设置。 </returns>
+    Task<MessageSetting> GetMessageSettingAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言全体成员。
+    /// </summary>
+    /// <param name="duration"> 禁言的时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteEveryoneAsync(TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言全体成员。
+    /// </summary>
+    /// <param name="until"> 禁言的结束时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteEveryoneAsync(DateTimeOffset until, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言全体成员。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnmuteEveryoneAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言指定用户。
+    /// </summary>
+    /// <param name="user"> 要禁言的用户。 </param>
+    /// <param name="duration"> 禁言的时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMemberAsync(IGuildMember user, TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言指定用户。
+    /// </summary>
+    /// <param name="userId"> 要禁言的用户的 ID。 </param>
+    /// <param name="duration"> 禁言的时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMemberAsync(ulong userId, TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言指定用户。
+    /// </summary>
+    /// <param name="user"> 要禁言的用户。 </param>
+    /// <param name="until"> 禁言的结束时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMemberAsync(IGuildMember user, DateTimeOffset until, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言指定用户。
+    /// </summary>
+    /// <param name="userId"> 要禁言的用户的 ID。 </param>
+    /// <param name="until"> 禁言的结束时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMemberAsync(ulong userId, DateTimeOffset until, RequestOptions? options = null);
+
+    /// <summary>
+    ///     取消禁言用户。
+    /// </summary>
+    /// <param name="user"> 要取消禁言的用户。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnmuteMemberAsync(IGuildMember user, RequestOptions? options = null);
+
+    /// <summary>
+    ///     取消禁言用户。
+    /// </summary>
+    /// <param name="userId"> 要取消禁言的用户的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnmuteMemberAsync(ulong userId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量禁言用户。
+    /// </summary>
+    /// <param name="users"> 所有要禁言的用户。 </param>
+    /// <param name="duration"> 禁言的时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMembersAsync(IEnumerable<IGuildMember> users, TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量禁言用户。
+    /// </summary>
+    /// <param name="userIds"> 所有要禁言的用户的 ID。 </param>
+    /// <param name="duration"> 禁言的时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMembersAsync(IEnumerable<ulong> userIds, TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量禁言用户。
+    /// </summary>
+    /// <param name="users"> 所有要禁言的用户。 </param>
+    /// <param name="until"> 禁言的结束时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMembersAsync(IEnumerable<IGuildMember> users, DateTimeOffset until, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量禁言用户。
+    /// </summary>
+    /// <param name="userIds"> 所有要禁言的用户的 ID。 </param>
+    /// <param name="until"> 禁言的结束时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task MuteMembersAsync(IEnumerable<ulong> userIds, DateTimeOffset until, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量取消禁言用户。
+    /// </summary>
+    /// <param name="users"> 所有要取消禁言的用户。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnmuteMembersAsync(IEnumerable<IGuildMember> users, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量取消禁言用户。
+    /// </summary>
+    /// <param name="userIds"> 所有要取消禁言的用户的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnmuteMembersAsync(IEnumerable<ulong> userIds, RequestOptions? options = null);
 
     #endregion
 }

@@ -22,7 +22,7 @@ client.MessageReceived += async message =>
     if (message.Source is not MessageSource.User) return;
     if (message.Channel is SocketTextChannel textChannel)
     {
-        IReadOnlyCollection<ApplicationPermission> permissions = await textChannel.Guild.GetApplicationPermissionsAsync();
+        MessageSetting messageSetting = await textChannel.Guild.GetMessageSettingAsync();
     }
 
 //      IUserMessage msg = await message.ReplyAsync(

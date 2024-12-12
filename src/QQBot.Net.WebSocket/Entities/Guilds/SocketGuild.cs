@@ -409,6 +409,74 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
 
     #endregion
 
+    #region Message Settings
+
+    /// <inheritdoc />
+    public Task<MessageSetting> GetMessageSettingAsync(RequestOptions? options = null) =>
+        GuildHelper.GetMessageSettingAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task MuteEveryoneAsync(TimeSpan duration, RequestOptions? options = null) =>
+        GuildHelper.MuteEveryoneAsync(this, Client, duration, options);
+
+    /// <inheritdoc />
+    public Task MuteEveryoneAsync(DateTimeOffset until, RequestOptions? options = null) =>
+        GuildHelper.MuteEveryoneAsync(this, Client, until, options);
+
+    /// <inheritdoc />
+    public Task UnmuteEveryoneAsync(RequestOptions? options = null) =>
+        GuildHelper.UnmuteEveryoneAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task MuteMemberAsync(IGuildMember user, TimeSpan duration, RequestOptions? options = null) =>
+        GuildHelper.MuteMemberAsync(this, Client, user.Id, duration, options);
+
+    /// <inheritdoc />
+    public Task MuteMemberAsync(ulong userId, TimeSpan duration, RequestOptions? options = null) =>
+        GuildHelper.MuteMemberAsync(this, Client, userId, duration, options);
+
+    /// <inheritdoc />
+    public Task MuteMemberAsync(IGuildMember user, DateTimeOffset until, RequestOptions? options = null) =>
+        GuildHelper.MuteMemberAsync(this, Client, user.Id, until, options);
+
+    /// <inheritdoc />
+    public Task MuteMemberAsync(ulong userId, DateTimeOffset until, RequestOptions? options = null) =>
+        GuildHelper.MuteMemberAsync(this, Client, userId, until, options);
+
+    /// <inheritdoc />
+    public Task UnmuteMemberAsync(IGuildMember user, RequestOptions? options = null) =>
+        GuildHelper.UnmuteMemberAsync(this, Client, user.Id, options);
+
+    /// <inheritdoc />
+    public Task UnmuteMemberAsync(ulong userId, RequestOptions? options = null) =>
+        GuildHelper.UnmuteMemberAsync(this, Client, userId, options);
+
+    /// <inheritdoc />
+    public Task MuteMembersAsync(IEnumerable<IGuildMember> users, TimeSpan duration, RequestOptions? options = null) =>
+        GuildHelper.MuteMembersAsync(this, Client, users.Select(x => x.Id), duration, options);
+
+    /// <inheritdoc />
+    public Task MuteMembersAsync(IEnumerable<ulong> userIds, TimeSpan duration, RequestOptions? options = null) =>
+        GuildHelper.MuteMembersAsync(this, Client, userIds, duration, options);
+
+    /// <inheritdoc />
+    public Task MuteMembersAsync(IEnumerable<IGuildMember> users, DateTimeOffset until, RequestOptions? options = null) =>
+        GuildHelper.MuteMembersAsync(this, Client, users.Select(x => x.Id), until, options);
+
+    /// <inheritdoc />
+    public Task MuteMembersAsync(IEnumerable<ulong> userIds, DateTimeOffset until, RequestOptions? options = null) =>
+        GuildHelper.MuteMembersAsync(this, Client, userIds, until, options);
+
+    /// <inheritdoc />
+    public Task UnmuteMembersAsync(IEnumerable<IGuildMember> users, RequestOptions? options = null) =>
+        GuildHelper.UnmuteMembersAsync(this, Client, users.Select(x => x.Id), options);
+
+    /// <inheritdoc />
+    public Task UnmuteMembersAsync(IEnumerable<ulong> userIds, RequestOptions? options = null) =>
+        GuildHelper.UnmuteMembersAsync(this, Client, userIds, options);
+
+    #endregion
+
     #region IGuild
 
     /// <inheritdoc />

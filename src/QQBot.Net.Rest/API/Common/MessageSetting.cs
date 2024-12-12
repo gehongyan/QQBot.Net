@@ -14,5 +14,5 @@ internal class MessageSetting
     public required ulong[] ChannelIds { get; set; }
 
     [JsonPropertyName("channel_push_max_num")]
-    public required int ChannelPushMaxNumber { get; set; }
+    public required uint ChannelPushMaxNumber { get; set; }
 }

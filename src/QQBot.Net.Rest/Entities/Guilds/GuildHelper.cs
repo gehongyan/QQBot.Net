@@ -263,8 +263,6 @@ internal static class GuildHelper
         return [..models.Select(x => new ApplicationPermission(new HttpMethod(x.Method), x.Path, x.Description, x.AuthStatus))];
     }
 
-    #endregion
-
     public static Task RequestApplicationPermissionAsync(IGuild guild, BaseQQBotClient client, ITextChannel channel,
         string title, ApplicationPermission permission, RequestOptions? options) =>
         RequestApplicationPermissionAsync(guild, client, channel.Id, title, permission, options);
@@ -281,4 +279,112 @@ internal static class GuildHelper
     public static Task RequestApplicationPermissionAsync(IGuild guild, BaseQQBotClient client, ulong channelId,
         string title, string description, HttpMethod method, string path, RequestOptions? options) =>
         ChannelHelper.RequestApplicationPermissionAsync(guild.Id, channelId, client, title, description, method, path, options);
+
+    #endregion
+
+    #region Message Settings
+
+    public static async Task<MessageSetting> GetMessageSettingAsync(IGuild guild,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        API.MessageSetting model = await client.ApiClient.GetMessageSettingAsync(guild.Id, options);
+        return new MessageSetting(
+            !model.DisableCreateDirectMessage,
+            !model.DisablePushMessage,
+            [..model.ChannelIds],
+            model.ChannelPushMaxNumber);
+    }
+
+    public static Task MuteEveryoneAsync(IGuild guild,
+        BaseQQBotClient client, TimeSpan duration, RequestOptions? options)
+    {
+        MuteAllParams args = new()
+        {
+            MuteSeconds = duration
+        };
+        return client.ApiClient.MuteAllAsync(guild.Id, args, options);
+    }
+
+    public static Task MuteEveryoneAsync(IGuild guild, BaseQQBotClient client, DateTimeOffset until, RequestOptions? options)
+    {
+        MuteAllParams args = new()
+        {
+            MuteEndTimestamp = until
+        };
+        return client.ApiClient.MuteAllAsync(guild.Id, args, options);
+    }
+
+    public static Task UnmuteEveryoneAsync(IGuild guild, BaseQQBotClient client, RequestOptions? options)
+    {
+        MuteAllParams args = new()
+        {
+            MuteSeconds = TimeSpan.Zero
+        };
+        return client.ApiClient.MuteAllAsync(guild.Id, args, options);
+    }
+
+    public static Task MuteMemberAsync(IGuild guild, BaseQQBotClient client,
+        ulong userId, TimeSpan duration, RequestOptions? options)
+    {
+        MuteMemberParams args = new()
+        {
+            MuteSeconds = duration
+        };
+        return client.ApiClient.MuteMemberAsync(guild.Id, userId, args, options);
+    }
+
+    public static Task MuteMemberAsync(IGuild guild, BaseQQBotClient client,
+        ulong userId, DateTimeOffset until, RequestOptions? options)
+    {
+        MuteMemberParams args = new()
+        {
+            MuteEndTimestamp = until
+        };
+        return client.ApiClient.MuteMemberAsync(guild.Id, userId, args, options);
+    }
+
+    public static Task UnmuteMemberAsync(IGuild guild, BaseQQBotClient client,
+        ulong userId, RequestOptions? options)
+    {
+        MuteMemberParams args = new()
+        {
+            MuteSeconds = TimeSpan.Zero
+        };
+        return client.ApiClient.MuteMemberAsync(guild.Id, userId, args, options);
+    }
+
+    public static Task MuteMembersAsync(IGuild guild, BaseQQBotClient client,
+        IEnumerable<ulong> userIds, TimeSpan duration, RequestOptions? options)
+    {
+        MuteMembersParams args = new()
+        {
+            UserIds = [..userIds],
+            MuteSeconds = duration
+        };
+        return client.ApiClient.MuteMembersAsync(guild.Id, args, options);
+    }
+
+    public static Task MuteMembersAsync(IGuild guild, BaseQQBotClient client,
+        IEnumerable<ulong> userIds, DateTimeOffset until, RequestOptions? options)
+    {
+        MuteMembersParams args = new()
+        {
+            UserIds = [..userIds],
+            MuteEndTimestamp = until
+        };
+        return client.ApiClient.MuteMembersAsync(guild.Id, args, options);
+    }
+
+    public static Task UnmuteMembersAsync(IGuild guild, BaseQQBotClient client,
+        IEnumerable<ulong> userIds, RequestOptions? options)
+    {
+        MuteMembersParams args = new()
+        {
+            UserIds = [..userIds],
+            MuteSeconds = TimeSpan.Zero
+        };
+        return client.ApiClient.MuteMembersAsync(guild.Id, args, options);
+    }
+
+    #endregion
 }
