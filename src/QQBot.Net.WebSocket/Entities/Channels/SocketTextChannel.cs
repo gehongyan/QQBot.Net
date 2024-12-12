@@ -134,6 +134,30 @@ public class SocketTextChannel : SocketGuildChannel, ITextChannel, ISocketMessag
 
     #endregion
 
+    #region Message Pins
+
+    /// <inheritdoc />
+    public Task<IReadOnlyCollection<ulong>> GetPinnedMessagesAsync(RequestOptions? options = null) =>
+        ChannelHelper.GetPinnedMessagesAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task PinMessageAsync(string messageId, RequestOptions? options = null) =>
+        ChannelHelper.PinMessageAsync(this, Client, messageId, options);
+
+    /// <inheritdoc />
+    public Task PinMessageAsync(IUserMessage message, RequestOptions? options = null) =>
+        ChannelHelper.PinMessageAsync(this, Client, message.Id, options);
+
+    /// <inheritdoc />
+    public Task UnpinMessageAsync(string messageId, RequestOptions? options = null) =>
+        ChannelHelper.UnpinMessageAsync(this, Client, messageId, options);
+
+    /// <inheritdoc />
+    public Task UnpinMessageAsync(IUserMessage message, RequestOptions? options = null) =>
+        ChannelHelper.UnpinMessageAsync(this, Client, message.Id, options);
+
+    #endregion
+
     #region IMessageChannel
 
     /// <inheritdoc />

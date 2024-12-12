@@ -503,4 +503,23 @@ internal static class ChannelHelper
     }
 
     #endregion
+
+    #region Message Pins
+
+    public static async Task<IReadOnlyCollection<ulong>> GetPinnedMessagesAsync(ITextChannel channel,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        PinsMessage models = await client.ApiClient.GetPinedMessagesAsync(channel.Id, options).ConfigureAwait(false);
+        return models.MessageIds;
+    }
+
+    public static Task PinMessageAsync(ITextChannel channel,
+        BaseQQBotClient client, string messageId, RequestOptions? options) =>
+        client.ApiClient.PinMessageAsync(channel.Id, messageId, options);
+
+    public static Task UnpinMessageAsync(ITextChannel channel,
+        BaseQQBotClient client, string messageId, RequestOptions? options) =>
+        client.ApiClient.UnpinMessageAsync(channel.Id, messageId, options);
+
+    #endregion
 }

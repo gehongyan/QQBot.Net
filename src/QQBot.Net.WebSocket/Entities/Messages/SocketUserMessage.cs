@@ -42,5 +42,21 @@ public class SocketUserMessage : SocketMessage, IUserMessage
         MessageHelper.DeleteAsync(this, Client, hideTip, options);
 
     /// <inheritdoc />
+    public async Task PinAsync(RequestOptions? options = null)
+    {
+        if (Channel is not ITextChannel textChannel)
+            throw new NotSupportedException("The message must be in a ITextChannel to pin.");
+        await textChannel.PinMessageAsync(Id, options).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task UnpinAsync(RequestOptions? options = null)
+    {
+        if (Channel is not ITextChannel textChannel)
+            throw new NotSupportedException("The message must be in a ITextChannel to unpin.");
+        await textChannel.UnpinMessageAsync(Id, options).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
     Task IDeletable.DeleteAsync(RequestOptions? options) => DeleteAsync(null, options);
 }

@@ -39,4 +39,43 @@ public interface ITextChannel : IMessageChannel, INestedChannel, IMentionable
     /// <returns> 一个表示异步操作的任务。 </returns>
     Task RequestApplicationPermissionAsync(string title, string description,
         HttpMethod method, string path, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取此频道的所有置顶消息的 ID。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务，其结果为此频道的所有置顶消息的 ID 的只读集合。 </returns>
+    Task<IReadOnlyCollection<ulong>> GetPinnedMessagesAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     置顶消息。
+    /// </summary>
+    /// <param name="messageId"> 要置顶的消息的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task PinMessageAsync(string messageId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     置顶消息。
+    /// </summary>
+    /// <param name="message"> 要置顶的消息。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task PinMessageAsync(IUserMessage message, RequestOptions? options = null);
+
+    /// <summary>
+    ///     取消置顶消息。
+    /// </summary>
+    /// <param name="messageId"> 要取消置顶的消息的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnpinMessageAsync(string messageId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     取消置顶消息。
+    /// </summary>
+    /// <param name="message"> 要取消置顶的消息。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。 </returns>
+    Task UnpinMessageAsync(IUserMessage message, RequestOptions? options = null);
 }

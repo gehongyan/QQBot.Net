@@ -1041,7 +1041,7 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
-    public async Task<PinsMessage> GetPinedMessageAsync(ulong channelId, RequestOptions? options = null)
+    public async Task<PinsMessage> GetPinedMessagesAsync(ulong channelId, RequestOptions? options = null)
     {
         Preconditions.NotEqual(channelId, 0, nameof(channelId));
         options = RequestOptions.CreateOrClone(options);
