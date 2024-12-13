@@ -597,4 +597,39 @@ internal static class ChannelHelper
         client.ApiClient.DeleteScheduleAsync(schedule.Channel.Id, schedule.Id, options);
 
     #endregion
+
+    #region Audio Control
+
+    public static Task JoinAsync(IVoiceChannel channel, BaseQQBotClient client, RequestOptions? options) =>
+        client.ApiClient.JoinMicrophoneAsync(channel.Id, options);
+
+    public static Task LeaveAsync(IVoiceChannel channel, BaseQQBotClient client, RequestOptions? options) =>
+        client.ApiClient.LeaveMicrophoneAsync(channel.Id, options);
+
+    public static Task PlayAsync(IVoiceChannel channel, BaseQQBotClient client,
+        string url, string displayText, RequestOptions? options) =>
+        ControlAudioAsync(channel, client, AudioStatus.Start, url, displayText, options);
+
+    public static Task PauseAsync(IVoiceChannel channel, BaseQQBotClient client, RequestOptions? options) =>
+        ControlAudioAsync(channel, client, AudioStatus.Pause, null, null, options);
+
+    public static Task ResumeAsync(IVoiceChannel channel, BaseQQBotClient client, RequestOptions? options) =>
+        ControlAudioAsync(channel, client, AudioStatus.Resume, null, null, options);
+
+    public static Task StopAsync(IVoiceChannel channel, BaseQQBotClient client, RequestOptions? options) =>
+        ControlAudioAsync(channel, client, AudioStatus.Stop, null, null, options);
+
+    private static Task ControlAudioAsync(IVoiceChannel channel, BaseQQBotClient client,
+        AudioStatus status, string? audioUrl, string? text, RequestOptions? options)
+    {
+        AudioControl args = new()
+        {
+            Status = status,
+            AudioUrl = audioUrl,
+            Text = text
+        };
+        return client.ApiClient.ControlAudioAsync(channel.Id, args, options);
+    }
+
+    #endregion
 }

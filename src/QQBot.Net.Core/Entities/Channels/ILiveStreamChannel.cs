@@ -20,4 +20,3 @@ public interface ILiveStreamChannel : INestedChannel
     /// <returns> 一个表示异步获取操作的任务。任务的结果包含此频道内在线用户的数量；如果无法获取，则返回 <c>null</c>。 </returns>
     Task<int> CountOnlineUsersAsync(RequestOptions? options = null);
 }
-

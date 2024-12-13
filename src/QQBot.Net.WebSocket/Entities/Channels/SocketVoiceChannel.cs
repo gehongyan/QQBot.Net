@@ -71,5 +71,28 @@ public class SocketVoiceChannel : SocketGuildChannel, IVoiceChannel
     public Task ModifyPermissionsAsync(IRole role, OverwritePermissions permissions, RequestOptions? options = null) =>
         ChannelHelper.ModifyPermissionsAsync(this, Client, role, permissions, options);
 
+    /// <inheritdoc />
+    public Task JoinAsync(RequestOptions? options = null) => ChannelHelper.JoinAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task LeaveAsync(RequestOptions? options = null) => ChannelHelper.LeaveAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task PlayAsync(Uri url, string displayText, RequestOptions? options = null) =>
+        ChannelHelper.PlayAsync(this, Client, url.OriginalString, displayText, options);
+
+    /// <inheritdoc />
+    public Task PlayAsync(string url, string displayText, RequestOptions? options = null) =>
+        ChannelHelper.PlayAsync(this, Client, url, displayText, options);
+
+    /// <inheritdoc />
+    public Task PauseAsync(RequestOptions? options = null) => ChannelHelper.PauseAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task ResumeAsync(RequestOptions? options = null) => ChannelHelper.ResumeAsync(this, Client, options);
+
+    /// <inheritdoc />
+    public Task StopAsync(RequestOptions? options = null) => ChannelHelper.StopAsync(this, Client, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Voice)";
 }

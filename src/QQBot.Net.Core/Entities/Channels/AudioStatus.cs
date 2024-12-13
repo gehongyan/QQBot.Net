@@ -3,7 +3,7 @@
 /// <summary>
 ///     表示音频状态。
 /// </summary>
-public enum AudioStatus
+internal enum AudioStatus
 {
     /// <summary>
     ///     开始播放操作。
