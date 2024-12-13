@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using QQBot.API;
 using Model = QQBot.API.Channel;
 
 namespace QQBot.Rest;
@@ -71,8 +72,14 @@ public class RestScheduleChannel : RestGuildChannel, IScheduleChannel
         ChannelHelper.GetSchedulesAsync(this, Client, since, options);
 
     /// <inheritdoc cref="QQBot.IScheduleChannel.GetScheduleAsync(System.UInt64,QQBot.RequestOptions)" />
-    public Task<RestGuildSchedule> GetScheduleAsync(ulong id, RequestOptions? options = null) =>
-        ChannelHelper.GetScheduleAsync(this, Client, id, options);
+    public async Task<RestGuildSchedule> GetScheduleAsync(ulong id, RequestOptions? options = null)
+    {
+        Schedule model = await ChannelHelper.GetScheduleAsync(this, Client, id, options);
+        RestGuildMember? creator = model.Creator.User is not null
+            ? RestGuildMember.Create(Client, Guild, model.Creator.User, model.Creator)
+            : null;
+        return RestGuildSchedule.Create(Client, this, model, creator);
+    }
 
     /// <inheritdoc cref="QQBot.IScheduleChannel.CreateScheduleAsync(System.String,System.DateTimeOffset,System.DateTimeOffset,System.String,QQBot.IGuildChannel,QQBot.RemindType,QQBot.RequestOptions)" />
     public Task<RestGuildSchedule> CreateScheduleAsync(string name, DateTimeOffset startTime, DateTimeOffset endTime,

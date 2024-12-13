@@ -30,5 +30,5 @@ internal class Schedule
 
     [JsonPropertyName("remind_type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public required RemindType? RemindType { get; set; }
+    public required RemindType RemindType { get; set; }
 }

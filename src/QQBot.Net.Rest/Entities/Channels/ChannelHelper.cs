@@ -538,13 +538,9 @@ internal static class ChannelHelper
         ];
     }
 
-    public static async Task<RestGuildSchedule> GetScheduleAsync(IScheduleChannel channel,
-        BaseQQBotClient client, ulong id, RequestOptions? options)
-    {
-        Schedule model = await client.ApiClient.GetScheduleAsync(channel.Id, id, options);
-        return RestGuildSchedule.Create(client, channel, model,
-            model.Creator.User is not null ? RestGuildMember.Create(client, channel.Guild, model.Creator.User, model.Creator) : null);
-    }
+    public static async Task<Schedule> GetScheduleAsync(IScheduleChannel channel,
+        BaseQQBotClient client, ulong id, RequestOptions? options) =>
+        await client.ApiClient.GetScheduleAsync(channel.Id, id, options).ConfigureAwait(false);
 
     public static async Task<RestGuildSchedule> CreateScheduleAsync(IScheduleChannel channel, BaseQQBotClient client,
         string name, DateTimeOffset startTime, DateTimeOffset endTime, string? description, IGuildChannel? jumpChannel,
@@ -566,6 +562,39 @@ internal static class ChannelHelper
         return RestGuildSchedule.Create(client, channel, model,
             model.Creator.User is not null ? RestGuildMember.Create(client, channel.Guild, model.Creator.User, model.Creator) : null);
     }
+
+    public static async Task<Schedule> ModifyAsync(IGuildSchedule schedule, BaseQQBotClient client,
+        Action<ModifyGuildScheduleProperties> func, RequestOptions? options)
+    {
+        ModifyGuildScheduleProperties props = new()
+        {
+            Name = schedule.Name,
+            Description = schedule.Description,
+            StartTime = schedule.StartTime,
+            EndTime = schedule.EndTime,
+            JumpChannelId = schedule.JumpChannelId,
+            RemindType = schedule.RemindType
+        };
+        func(props);
+        ModifyScheduleParams args = new()
+        {
+            Schedule = new ScheduleParams
+            {
+                Name = props.Name,
+                Description = props.Description,
+                StartTimestamp = props.StartTime,
+                EndTimestamp = props.EndTime,
+                JumpChannelId = props.JumpChannelId,
+                RemindType = props.RemindType
+            }
+        };
+        return await client.ApiClient
+            .ModifyScheduleAsync(schedule.Channel.Id, schedule.Id, args, options)
+            .ConfigureAwait(false);
+    }
+
+    public static Task DeleteAsync(IGuildSchedule schedule, BaseQQBotClient client, RequestOptions? options) =>
+        client.ApiClient.DeleteScheduleAsync(schedule.Channel.Id, schedule.Id, options);
 
     #endregion
 }

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using QQBot.API;
 using QQBot.Rest;
 using Model = QQBot.API.Channel;
 
@@ -72,8 +73,22 @@ public class SocketScheduleChannel : SocketGuildChannel, IScheduleChannel
         ChannelHelper.GetSchedulesAsync(this, Client, since, options);
 
     /// <inheritdoc cref="QQBot.IScheduleChannel.GetScheduleAsync(System.UInt64,QQBot.RequestOptions)" />
-    public Task<RestGuildSchedule> GetScheduleAsync(ulong id, RequestOptions? options = null) =>
-        ChannelHelper.GetScheduleAsync(this, Client, id, options);
+    public async Task<RestGuildSchedule> GetScheduleAsync(ulong id, RequestOptions? options = null)
+    {
+        Schedule model = await ChannelHelper.GetScheduleAsync(this, Client, id, options);
+        IGuildMember? creator;
+        if (model.Creator.User is not { Id: var userId } userModel)
+            creator = null;
+        else if (Guild.GetUser(userId) is { } socketGuildMember)
+        {
+            socketGuildMember.Update(Client.State, userModel, model.Creator);
+            creator = socketGuildMember;
+        }
+        else
+            creator = RestGuildMember.Create(Client, Guild, userModel, model.Creator);
+
+        return RestGuildSchedule.Create(Client, this, model, creator);
+    }
 
     /// <inheritdoc cref="QQBot.IScheduleChannel.CreateScheduleAsync(System.String,System.DateTimeOffset,System.DateTimeOffset,System.String,QQBot.IGuildChannel,QQBot.RemindType,QQBot.RequestOptions)" />
     public Task<RestGuildSchedule> CreateScheduleAsync(string name, DateTimeOffset startTime, DateTimeOffset endTime,
