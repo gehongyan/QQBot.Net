@@ -66,5 +66,25 @@ public class RestForumChannel : RestGuildChannel, IForumChannel
     public Task ModifyPermissionsAsync(IRole role, OverwritePermissions permissions, RequestOptions? options = null) =>
         ChannelHelper.ModifyPermissionsAsync(this, Client, role, permissions, options);
 
+    /// <inheritdoc cref="QQBot.IForumChannel.GetThreadsAsync(QQBot.RequestOptions)" />
+    public async Task<IReadOnlyCollection<RestForumThread>> GetThreadsAsync(RequestOptions? options = null) =>
+        await ChannelHelper.GetThreadsAsync(this, Client, options).ConfigureAwait(false);
+
+    /// <inheritdoc cref="QQBot.IForumChannel.GetThreadAsync(System.String,QQBot.RequestOptions)" />
+    public async Task<RestForumThread> GetThreadAsync(string id,RequestOptions? options = null) =>
+        await ChannelHelper.GetThreadAsync(this, Client, id, options).ConfigureAwait(false);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Forum)";
+
+    #region IForumChannel
+
+    /// <inheritdoc />
+    async Task<IReadOnlyCollection<IForumThread>> IForumChannel.GetThreadsAsync(RequestOptions? options) =>
+        await GetThreadsAsync(options);
+
+    /// <inheritdoc />
+    async Task<IForumThread> IForumChannel.GetThreadAsync(string id, RequestOptions? options) =>
+        await GetThreadAsync(id, options);
+
+    #endregion
 }

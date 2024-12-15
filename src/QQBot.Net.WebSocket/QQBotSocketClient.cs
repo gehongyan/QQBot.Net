@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using QQBot.API;
 using QQBot.API.Gateway;
+using QQBot.API.Rest;
 using QQBot.Logging;
 using QQBot.Net.Queue;
 using QQBot.Net.WebSockets;

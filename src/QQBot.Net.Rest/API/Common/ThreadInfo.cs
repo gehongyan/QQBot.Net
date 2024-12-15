@@ -5,7 +5,7 @@ namespace QQBot.API;
 internal class ThreadInfo
 {
     [JsonPropertyName("thread_id")]
-    public required ulong ThreadId { get; set; }
+    public required string ThreadId { get; set; }
 
     [JsonPropertyName("title")]
     public required string Title { get; set; }

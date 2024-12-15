@@ -22,9 +22,7 @@ client.MessageReceived += async message =>
     if (message.Source is not MessageSource.User) return;
     if (message.Channel is SocketTextChannel textChannel)
     {
-        SocketScheduleChannel scheduleChannel = textChannel.Guild.ScheduleChannels.First();
-        IGuildSchedule schedule = await scheduleChannel.CreateScheduleAsync(
-            "name", DateTimeOffset.Now.AddDays(1), DateTimeOffset.Now.AddDays(2));
+        IReadOnlyCollection<IForumThread> threads = await textChannel.Guild.ForumChannels.First().GetThreadsAsync();
     }
 
 //      IUserMessage msg = await message.ReplyAsync(

@@ -1,4 +1,6 @@
 using System.Collections.Immutable;
+using System.Drawing;
+using System.Text.Json;
 using QQBot.API;
 
 namespace QQBot.Rest;
@@ -84,7 +86,7 @@ internal static class EntityExtensions
         Obj = (entity.Value as ArkMultiDictionaryParameter?)?.Value.Select(x => x.ToModel()).ToArray()
     };
 
-    private static MessageArkObject ToModel(this IReadOnlyDictionary<string,string> entity) => new()
+    private static MessageArkObject ToModel(this IReadOnlyDictionary<string, string> entity) => new()
     {
         ObjectKeyValues = entity.Select(x => new MessageArkObjectKeyValue
         {
@@ -138,6 +140,66 @@ internal static class EntityExtensions
             UnsupportedTips = entity.UnsupportedVersionTip
         }
     };
+
+    #endregion
+
+    #region RichText
+
+    public static TextElement ToEntity(this API.TextElement model)
+    {
+        TextStyle style = TextStyle.None;
+        if (model.Properties is { Bold: true })
+            style |= TextStyle.Bold;
+        if (model.Properties is { Italic: true })
+            style |= TextStyle.Italic;
+        if (model.Properties is { Underline: true })
+            style |= TextStyle.Underline;
+        return new TextElement(model.Text, style);
+    }
+
+    public static ImageElement ToEntity(this API.ImageElement model)
+    {
+        Size size = new(model.PlatformImage.Width, model.PlatformImage.Height);
+        return new ImageElement(model.PlatformImage.ImageId, model.PlatformImage.Url, size);
+    }
+
+    public static VideoElement ToEntity(this API.VideoElement model)
+    {
+        Size size = new(model.PlatformVideo.Width, model.PlatformVideo.Height);
+        Size coverSize = new(model.PlatformVideo.Cover.Width, model.PlatformVideo.Cover.Height);
+        return new VideoElement(model.PlatformVideo.VideoId, model.PlatformVideo.Url, size,
+            model.PlatformVideo.Duration.HasValue ? TimeSpan.FromSeconds(model.PlatformVideo.Duration.Value) : null,
+            model.PlatformVideo.Cover.Url, coverSize);
+    }
+
+    public static UrlElement ToEntity(this API.UrlElement model)
+    {
+        return new UrlElement(model.Url, model.Description);
+    }
+
+    public static IElement? ToEntity(this API.Element model)
+    {
+        return model switch
+        {
+            { ElementType: null } => null,
+            { ElementType: ElementType.Text, Text: { } text } => text.ToEntity(),
+            { ElementType: ElementType.Image, Image: { } image } => image.ToEntity(),
+            { ElementType: ElementType.Video, Video: { } video } => video.ToEntity(),
+            { ElementType: ElementType.Url, Url: { } url } => url.ToEntity(),
+            _ => throw new JsonException("Missing element values for a rich text element.")
+        };
+    }
+
+    public static Paragraph ToEntity(this API.Paragraph model)
+    {
+        ImmutableArray<IElement> elements = [..model.Elements.Select(x => x.ToEntity()).OfType<IElement>()];
+        return new Paragraph(elements, model.Properties.Alignment);
+    }
+
+    public static RichText ToEntity(this API.RichText model)
+    {
+        return new RichText(model.Paragraphs.Select(x => x.ToEntity()).ToImmutableArray());
+    }
 
     #endregion
 }

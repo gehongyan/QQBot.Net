@@ -632,4 +632,26 @@ internal static class ChannelHelper
     }
 
     #endregion
+
+    #region Forum
+
+    public static async Task<IReadOnlyCollection<RestForumThread>> GetThreadsAsync(IForumChannel channel,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        GetForumThreadsResponse response = await client.ApiClient
+            .GetForumThreadsAsync(channel.Id, options)
+            .ConfigureAwait(false);
+        return [..response.Threads.Select(x => RestForumThread.Create(client, channel, x.AuthorId, x.ThreadInfo))];
+    }
+
+    public static async Task<RestForumThread> GetThreadAsync(IForumChannel channel,
+        BaseQQBotClient client, string id, RequestOptions? options)
+    {
+        GetForumThreadResponse response = await client.ApiClient
+            .GetForumThreadAsync(channel.Id, id, options)
+            .ConfigureAwait(false);
+        return RestForumThread.Create(client, channel, response.Thread.AuthorId, response.Thread.ThreadInfo);
+    }
+
+    #endregion
 }

@@ -5,5 +5,5 @@ namespace QQBot.API.Rest;
 internal class GetForumThreadResponse
 {
     [JsonPropertyName("thread")]
-    public required ThreadInfo Thread { get; set; }
+    public required Thread Thread { get; set; }
 }
