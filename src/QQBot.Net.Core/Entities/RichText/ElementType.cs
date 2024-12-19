@@ -6,6 +6,11 @@
 public enum ElementType
 {
     /// <summary>
+    ///     表示一个空元素。
+    /// </summary>
+    Empty = 0,
+
+    /// <summary>
     ///     表示一个文本元素。
     /// </summary>
     Text = 1,

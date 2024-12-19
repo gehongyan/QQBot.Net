@@ -1,4 +1,7 @@
-﻿using QQBot.API;
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using QQBot.API;
 using QQBot.API.Rest;
 using QQBot.Net.Rest;
 
@@ -6,6 +9,13 @@ namespace QQBot.Rest;
 
 internal static class ChannelHelper
 {
+    private static readonly JsonSerializerOptions _serializerOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
     #region Channels
 
     public static async Task UpdateAsync(RestGuildChannel channel, RequestOptions? options)
@@ -635,23 +645,46 @@ internal static class ChannelHelper
 
     #region Forum
 
-    public static async Task<IReadOnlyCollection<RestForumThread>> GetThreadsAsync(IForumChannel channel,
+    public static async Task<IReadOnlyCollection<RestThread>> GetThreadsAsync(IForumChannel channel,
         BaseQQBotClient client, RequestOptions? options)
     {
         GetForumThreadsResponse response = await client.ApiClient
             .GetForumThreadsAsync(channel.Id, options)
             .ConfigureAwait(false);
-        return [..response.Threads.Select(x => RestForumThread.Create(client, channel, x.AuthorId, x.ThreadInfo))];
+        return [..response.Threads.Select(x => RestThread.Create(client, channel, x.AuthorId, x.ThreadInfo))];
     }
 
-    public static async Task<RestForumThread> GetThreadAsync(IForumChannel channel,
+    public static async Task<API.Thread> GetThreadAsync(IForumChannel channel,
         BaseQQBotClient client, string id, RequestOptions? options)
     {
         GetForumThreadResponse response = await client.ApiClient
             .GetForumThreadAsync(channel.Id, id, options)
             .ConfigureAwait(false);
-        return RestForumThread.Create(client, channel, response.Thread.AuthorId, response.Thread.ThreadInfo);
+        return response.Thread;
     }
+
+    public static async Task CreateThreadAsync(IForumChannel channel, BaseQQBotClient client,
+        string title, ThreadTextType textType, string content, RequestOptions? options)
+    {
+        CreateForumThreadParams args = new()
+        {
+            Title = title,
+            Format = textType,
+            Content = content
+        };
+        await client.ApiClient.CreateForumThreadAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
+    public static Task CreateThreadAsync(IForumChannel channel, BaseQQBotClient client,
+        string title, RichTextBuilder content, RequestOptions? options)
+    {
+        string json = JsonSerializer.Serialize(content.ToModel(), _serializerOptions);
+        return CreateThreadAsync(channel, client, title, ThreadTextType.Json, json, options);
+    }
+
+    public static Task DeleteThreadAsync(IForumChannel channel, BaseQQBotClient client,
+        string id, RequestOptions? options) =>
+        client.ApiClient.DeleteForumThreadAsync(channel.Id, id, options);
 
     #endregion
 }

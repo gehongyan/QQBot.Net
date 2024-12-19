@@ -11,7 +11,7 @@ internal class CreateForumThreadParams
     public required string Content { get; set; }
 
     [JsonPropertyName("format")]
-    public required ForumTextType Format { get; set; }
+    public required ThreadTextType Format { get; set; }
 }
 
 internal class CreateForumThreadResponse

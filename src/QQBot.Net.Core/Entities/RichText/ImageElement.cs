@@ -27,6 +27,11 @@ public class ImageElement : IElement
     /// </summary>
     public Size Size { get; }
 
+    /// <summary>
+    ///     获取此图片元素的长宽比例。
+    /// </summary>
+    public double Ratio => (double)Size.Width / Size.Height;
+
     internal ImageElement(string id, string url, Size size)
     {
         Id = id;

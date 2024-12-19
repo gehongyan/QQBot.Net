@@ -51,14 +51,6 @@ public class SocketForumChannel : SocketGuildChannel, IForumChannel
         Update(Client.State, model);
     }
 
-    /// <inheritdoc cref="QQBot.IForumChannel.GetThreadsAsync(QQBot.RequestOptions)" />
-    public async Task<IReadOnlyCollection<RestForumThread>> GetThreadsAsync(RequestOptions? options = null) =>
-        await ChannelHelper.GetThreadsAsync(this, Client, options).ConfigureAwait(false);
-
-    /// <inheritdoc cref="QQBot.IForumChannel.GetThreadAsync(System.String,QQBot.RequestOptions)" />
-    public async Task<RestForumThread> GetThreadAsync(string id,RequestOptions? options = null) =>
-        await ChannelHelper.GetThreadAsync(this, Client, id, options).ConfigureAwait(false);
-
     /// <inheritdoc />
     public Task<ChannelPermissions> GetPermissionsAsync(IGuildMember user, RequestOptions? options = null) =>
         ChannelHelper.GetPermissionsAsync(this, Client, user, options);
@@ -75,16 +67,35 @@ public class SocketForumChannel : SocketGuildChannel, IForumChannel
     public Task ModifyPermissionsAsync(IRole role, OverwritePermissions permissions, RequestOptions? options = null) =>
         ChannelHelper.ModifyPermissionsAsync(this, Client, role, permissions, options);
 
+    /// <inheritdoc cref="QQBot.IForumChannel.GetThreadsAsync(QQBot.RequestOptions)" />
+    public async Task<IReadOnlyCollection<RestThread>> GetThreadsAsync(RequestOptions? options = null) =>
+        await ChannelHelper.GetThreadsAsync(this, Client, options).ConfigureAwait(false);
+
+    /// <inheritdoc cref="QQBot.IForumChannel.GetThreadAsync(System.String,QQBot.RequestOptions)" />
+    public async Task<RestThread> GetThreadAsync(string id, RequestOptions? options = null)
+    {
+        API.Thread model = await ChannelHelper.GetThreadAsync(this, Client, id, options).ConfigureAwait(false);
+        return RestThread.Create(Client, this, model.AuthorId, model.ThreadInfo);
+    }
+
+    /// <inheritdoc />
+    public Task CreateThreadAsync(string title, ThreadTextType textType, string content, RequestOptions? options = null) =>
+        ChannelHelper.CreateThreadAsync(this, Client, title, textType, content, options);
+
+    /// <inheritdoc />
+    public Task CreateThreadAsync(string title, RichTextBuilder content, RequestOptions? options = null) =>
+        ChannelHelper.CreateThreadAsync(this, Client, title, content, options);
+
     private string DebuggerDisplay => $"{Name} ({Id}, Forum)";
 
     #region IForumChannel
 
     /// <inheritdoc />
-    async Task<IReadOnlyCollection<IForumThread>> IForumChannel.GetThreadsAsync(RequestOptions? options) =>
+    async Task<IReadOnlyCollection<IThread>> IForumChannel.GetThreadsAsync(RequestOptions? options) =>
         await GetThreadsAsync(options);
 
     /// <inheritdoc />
-    async Task<IForumThread> IForumChannel.GetThreadAsync(string id, RequestOptions? options) =>
+    async Task<IThread> IForumChannel.GetThreadAsync(string id, RequestOptions? options) =>
         await GetThreadAsync(id, options);
 
     #endregion
