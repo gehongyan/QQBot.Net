@@ -1191,10 +1191,10 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
-    public async Task DeleteForumThreadAsync(ulong channelId, ulong threadId, RequestOptions? options = null)
+    public async Task DeleteForumThreadAsync(ulong channelId, string threadId, RequestOptions? options = null)
     {
         Preconditions.NotEqual(channelId, 0, nameof(channelId));
-        Preconditions.NotEqual(threadId, 0, nameof(threadId));
+        Preconditions.NotNullOrEmpty(threadId, nameof(threadId));
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(0, channelId);

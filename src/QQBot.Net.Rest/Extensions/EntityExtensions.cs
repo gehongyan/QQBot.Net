@@ -143,7 +143,7 @@ internal static class EntityExtensions
 
     #endregion
 
-    #region RichText
+    #region RichText Model -> Entity
 
     public static TextElement ToEntity(this API.TextElement model)
     {
@@ -157,19 +157,19 @@ internal static class EntityExtensions
         return new TextElement(model.Text, style);
     }
 
-    public static ImageElement ToEntity(this API.ImageElement model)
+    public static ImageElement ToEntity(this API.PlatformImage model)
     {
-        Size size = new(model.PlatformImage.Width, model.PlatformImage.Height);
-        return new ImageElement(model.PlatformImage.ImageId, model.PlatformImage.Url, size);
+        Size size = new(model.Width, model.Height);
+        return new ImageElement(model.ImageId, model.Url, size);
     }
 
-    public static VideoElement ToEntity(this API.VideoElement model)
+    public static VideoElement ToEntity(this API.PlatformVideo model)
     {
-        Size size = new(model.PlatformVideo.Width, model.PlatformVideo.Height);
-        Size coverSize = new(model.PlatformVideo.Cover.Width, model.PlatformVideo.Cover.Height);
-        return new VideoElement(model.PlatformVideo.VideoId, model.PlatformVideo.Url, size,
-            model.PlatformVideo.Duration.HasValue ? TimeSpan.FromSeconds(model.PlatformVideo.Duration.Value) : null,
-            model.PlatformVideo.Cover.Url, coverSize);
+        Size size = new(model.Width, model.Height);
+        Size coverSize = new(model.Cover.Width, model.Cover.Height);
+        return new VideoElement(model.VideoId, model.Url, size,
+            model.Duration.HasValue ? TimeSpan.FromSeconds(model.Duration.Value) : null,
+            model.Cover.Url, coverSize);
     }
 
     public static UrlElement ToEntity(this API.UrlElement model)
@@ -177,14 +177,14 @@ internal static class EntityExtensions
         return new UrlElement(model.Url, model.Description);
     }
 
-    public static IElement? ToEntity(this API.Element model)
+    public static IElement ToEntity(this API.Element model)
     {
         return model switch
         {
-            { ElementType: null } => null,
+            { ElementType: null } => new EmptyElement(),
             { ElementType: ElementType.Text, Text: { } text } => text.ToEntity(),
-            { ElementType: ElementType.Image, Image: { } image } => image.ToEntity(),
-            { ElementType: ElementType.Video, Video: { } video } => video.ToEntity(),
+            { ElementType: ElementType.Image, Image.PlatformImage: { } image } => image.ToEntity(),
+            { ElementType: ElementType.Video, Video.PlatformVideo: { } video } => video.ToEntity(),
             { ElementType: ElementType.Url, Url: { } url } => url.ToEntity(),
             _ => throw new JsonException("Missing element values for a rich text element.")
         };
@@ -192,7 +192,7 @@ internal static class EntityExtensions
 
     public static Paragraph ToEntity(this API.Paragraph model)
     {
-        ImmutableArray<IElement> elements = [..model.Elements.Select(x => x.ToEntity()).OfType<IElement>()];
+        ImmutableArray<IElement> elements = [..model.Elements.Select(x => x.ToEntity())];
         return new Paragraph(elements, model.Properties.Alignment);
     }
 
@@ -200,6 +200,85 @@ internal static class EntityExtensions
     {
         return new RichText(model.Paragraphs.Select(x => x.ToEntity()).ToImmutableArray());
     }
+
+    #endregion
+
+    #region RichText Builder -> Model
+
+    public static API.TextElement ToModel(this TextElementBuilder builder)
+    {
+        if (string.IsNullOrEmpty(builder.Text))
+            throw new ArgumentNullException(nameof(builder.Text), "The text cannot be null or empty.");
+        return new API.TextElement
+        {
+            Text = builder.Text,
+            Properties = new TextProperties
+            {
+                Bold = builder.Style.HasFlag(TextStyle.Bold),
+                Italic = builder.Style.HasFlag(TextStyle.Italic),
+                Underline = builder.Style.HasFlag(TextStyle.Underline)
+            }
+        };
+    }
+
+    public static API.ImageElement ToModel(this ImageElementBuilder builder)
+    {
+        if (string.IsNullOrEmpty(builder.Url))
+            throw new ArgumentNullException(nameof(builder.Url), "The url cannot be null or empty.");
+        if (!builder.Ratio.HasValue)
+            throw new ArgumentNullException(nameof(builder.Url), "The ratio cannot be null.");
+        return new API.ImageElement
+        {
+            Url = builder.Url,
+            Ratio = builder.Ratio.Value
+        };
+    }
+
+    public static API.VideoElement ToModel(this VideoElementBuilder builder)
+    {
+        if (string.IsNullOrEmpty(builder.Url))
+            throw new ArgumentNullException(nameof(builder.Url), "The url cannot be null or empty.");
+        return new API.VideoElement
+        {
+            Url = builder.Url
+        };
+    }
+
+    public static API.UrlElement ToModel(this UrlElementBuilder builder)
+    {
+        if (string.IsNullOrEmpty(builder.Url))
+            throw new ArgumentNullException(nameof(builder.Url), "The url cannot be null or empty.");
+        if (string.IsNullOrEmpty(builder.Description))
+            throw new ArgumentNullException(nameof(builder.Description), "The description cannot be null or empty.");
+        return new API.UrlElement
+        {
+            Url = builder.Url,
+            Description = builder.Description
+        };
+    }
+
+    public static API.Element ToModel(this IElementBuilder builder) => new()
+    {
+        ElementType = builder.Type is not ElementType.Empty ? builder.Type : null,
+        Text = builder is TextElementBuilder text ? text.ToModel() : null,
+        Image = builder is ImageElementBuilder image ? image.ToModel() : null,
+        Video = builder is VideoElementBuilder video ? video.ToModel() : null,
+        Url = builder is UrlElementBuilder url ? url.ToModel() : null
+    };
+
+    public static API.Paragraph ToModel(this ParagraphBuilder builder) => new()
+    {
+        Elements = [..builder.Elements.Select(x => x.ToModel())],
+        Properties = new ParagraphProperties
+        {
+            Alignment = builder.Alignment
+        }
+    };
+
+    public static API.RichText ToModel(this RichTextBuilder builder) => new()
+    {
+        Paragraphs = [..builder.Paragraphs.Select(x => x.ToModel())]
+    };
 
     #endregion
 }

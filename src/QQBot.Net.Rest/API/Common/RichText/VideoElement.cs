@@ -5,5 +5,8 @@ namespace QQBot.API;
 internal class VideoElement
 {
     [JsonPropertyName("plat_video")]
-    public required PlatformVideo PlatformVideo { get; set; }
+    public PlatformVideo? PlatformVideo { get; set; }
+
+    [JsonPropertyName("third_url")]
+    public string? Url { get; set; }
 }

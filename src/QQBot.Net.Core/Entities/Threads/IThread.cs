@@ -3,7 +3,7 @@
 /// <summary>
 ///     表示一个通用的论坛主题。
 /// </summary>
-public interface IForumThread : IEntity<string>
+public interface IThread : IEntity<string>, IUpdateable, IDeletable
 {
     /// <summary>
     ///     获取此主题所属的频道。

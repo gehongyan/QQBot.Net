@@ -6,7 +6,7 @@ namespace QQBot.Rest;
 ///     表示一个基于 REST 的论坛主题。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class RestForumThread : RestEntity<string>, IForumThread
+public class RestThread : RestEntity<string>, IThread
 {
     /// <inheritdoc />
     public IGuild Guild { get; }
@@ -30,7 +30,7 @@ public class RestForumThread : RestEntity<string>, IForumThread
     public DateTimeOffset CreatedAt { get; private set; }
 
     /// <inheritdoc />
-    private RestForumThread(BaseQQBotClient client, string id,
+    private RestThread(BaseQQBotClient client, string id,
         IForumChannel channel, ulong authorId, string title, string content, DateTimeOffset createdAt)
         : base(client, id)
     {
@@ -43,7 +43,7 @@ public class RestForumThread : RestEntity<string>, IForumThread
         CreatedAt = createdAt;
     }
 
-    internal static RestForumThread Create(BaseQQBotClient client,
+    internal static RestThread Create(BaseQQBotClient client,
         IForumChannel channel, ulong authorId, API.ThreadInfo model) =>
         new(client, model.ThreadId, channel, authorId, model.Title, model.Content, model.DateTime);
 
@@ -55,8 +55,19 @@ public class RestForumThread : RestEntity<string>, IForumThread
         CreatedAt = model.DateTime;
     }
 
+    /// <inheritdoc />
+    public async Task UpdateAsync(RequestOptions? options = null)
+    {
+        API.Thread model = await ChannelHelper.GetThreadAsync(Channel, Client, Id, options).ConfigureAwait(false);
+        Update(model.ThreadInfo);
+    }
+
+    /// <inheritdoc />
+    public Task DeleteAsync(RequestOptions? options = null) =>
+        ChannelHelper.DeleteThreadAsync(Channel, Client, Id, options);
+
     private string DebuggerDisplay => $"{Title} ({Id}, {Content.DebuggerDisplay})";
 
-    /// <inheritdoc cref="QQBot.Rest.RestForumThread.Content" />
+    /// <inheritdoc cref="RestThread.Content" />
     public override string ToString() => RawContent;
 }

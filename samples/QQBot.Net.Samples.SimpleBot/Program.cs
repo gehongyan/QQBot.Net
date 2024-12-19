@@ -22,7 +22,7 @@ client.MessageReceived += async message =>
     if (message.Source is not MessageSource.User) return;
     if (message.Channel is SocketTextChannel textChannel)
     {
-        IReadOnlyCollection<IForumThread> threads = await textChannel.Guild.ForumChannels.First().GetThreadsAsync();
+        IReadOnlyCollection<IThread> threads = await textChannel.Guild.ForumChannels.First().GetThreadsAsync();
     }
 
 //      IUserMessage msg = await message.ReplyAsync(
@@ -33,7 +33,7 @@ client.MessageReceived += async message =>
 //          [Attachments] {message.Attachments.Count}
 //          """);
 };
-await client.LoginAsync(0, TokenType.BotToken, "");
+await client.LoginAsync(102074969, TokenType.BotToken, "5oFvBVAgPdrKW7sACikfGTlTRj56lncI");
 await client.StartAsync();
 await Task.Delay(TimeSpan.FromSeconds(10));
 await Task.Delay(Timeout.Infinite);
