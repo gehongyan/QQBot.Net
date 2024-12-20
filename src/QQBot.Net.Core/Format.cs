@@ -221,6 +221,37 @@ public static class Format
         };
 
     /// <summary>
+    ///     获取一个格式化的命令。
+    /// </summary>
+    /// <param name="text"> 用户点击后直接发送的文本。 </param>
+    /// <returns> 获取格式化后的命令。 </returns>
+    public static string Command(string text) => $"""<qqbot-cmd-enter text="{text}" />""";
+
+    /// <summary>
+    ///     获取一个格式化的命令。
+    /// </summary>
+    /// <param name="text"> 用户点击后直接发送的文本。 </param>
+    /// <param name="displayText"> 用户在消息内看到的文本。 </param>
+    /// <param name="reference"> 插入输入框时是否带消息原文回复引用。 </param>
+    /// <returns> 获取格式化后的命令。 </returns>
+    public static string Command(string text, string displayText, bool reference) =>
+        $"""<qqbot-cmd-enter text="{text}" show="{displayText}" reference="{reference}" />""";
+
+    /// <summary>
+    ///     获取一个格式化的表情符号。
+    /// </summary>
+    /// <param name="emote"> 表情符号。 </param>
+    /// <returns> 获取格式化后的表情符号。 </returns>
+    public static string Emote(Emotes.System emote) => Emote((int)emote);
+
+    /// <summary>
+    ///     获取一个格式化的表情符号。
+    /// </summary>
+    /// <param name="emoteId"> 表情符号 ID。 </param>
+    /// <returns> 获取格式化后的表情符号。 </returns>
+    public static string Emote(int emoteId) => $"<emoji:{emoteId}>";
+
+    /// <summary>
     ///     转义字符串，安全地转义任何 Markdown 序列。
     /// </summary>
     /// <param name="text"> 要转义的文本。 </param>

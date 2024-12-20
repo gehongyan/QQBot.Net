@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
@@ -8,17 +9,18 @@ namespace QQBot;
 /// <summary>
 ///     表示一个系统表情符号。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class Emote : IEmote
 {
     // <faceType=3,faceId="338",ext="eyJ0ZXh0Ijoi5oiR5oOz5byA5LqGIn0="​>
     private static readonly Regex EmoteRegex = new("""^<faceType=(?<type>\d+),faceId="(?<id>\d*)",ext="(?<ext>[a-zA-Z0-9+/=]+)"\u200b?>$""", RegexOptions.Compiled);
 
+    private string? _raw;
+
     /// <inheritdoc />
     public string Id { get; }
 
-    /// <summary>
-    ///     获取表情符号的类型。
-    /// </summary>
+    /// <inheritdoc />
     public EmojiType Type { get; }
 
     /// <inheritdoc />
@@ -83,7 +85,9 @@ public class Emote : IEmote
         string json = Encoding.UTF8.GetString(Convert.FromBase64String(ext));
         JsonElement element = JsonSerializer.Deserialize<JsonElement>(json);
         string name = element.GetProperty("text").GetString() ?? string.Empty;
-        return new Emote((EmojiType)type, id, name);
+        Emote emote = new((EmojiType)type, id, name);
+        emote._raw = text;
+        return emote;
     }
 
     /// <summary>
@@ -111,4 +115,19 @@ public class Emote : IEmote
             return false;
         }
     }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        if (!string.IsNullOrEmpty(_raw))
+            return _raw;
+
+        int type = (int)Type;
+        string extJson = JsonSerializer.Serialize(new { text = Name });
+        string ext = Convert.ToBase64String(Encoding.UTF8.GetBytes(extJson));
+        _raw = $"<faceType={type},faceId=\"{Id}\",ext=\"{ext}\u200b\">";
+        return _raw;
+    }
+
+    private string DebuggerDisplay => $"{Name} ({Type}, {Id})";
 }

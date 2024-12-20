@@ -87,11 +87,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// <summary>
     ///     将指定的文本追加到当前构建器的文本内容中。
     /// </summary>
-    /// <param name="text"></param>
-    public void Append(string text)
+    /// <returns> 当前文本构建器实例。 </returns>
+    /// <param name="text"> 要追加的文本。 </param>
+    public MarkdownTextBuilder Append(string text)
     {
         EnsureStringBuilder();
         _textBuilder.Append(text);
+        return this;
     }
 
     /// <summary>
@@ -99,11 +101,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="text"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Bold(System.String,System.Boolean)"/>
-    public void AppendBold(string text, bool sanitize = true)
+    public MarkdownTextBuilder AppendBold(string text, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Bold(text, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -111,11 +115,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="text"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Italics(System.String,System.Boolean)"/>
-    public void AppendItalics(string text, bool sanitize = true)
+    public MarkdownTextBuilder AppendItalics(string text, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Italics(text, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -123,11 +129,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="text"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.BoldItalics(System.String,System.Boolean)"/>
-    public void AppendBoldItalics(string text, bool sanitize = true)
+    public MarkdownTextBuilder AppendBoldItalics(string text, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.BoldItalics(text, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -135,11 +143,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="text"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Strikethrough(System.String,System.Boolean)"/>
-    public void AppendStrikethrough(string text, bool sanitize = true)
+    public MarkdownTextBuilder AppendStrikethrough(string text, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Strikethrough(text, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -147,11 +157,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="url"> 要链接到的 URL。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="url"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Url(System.String,System.Boolean)"/>
-    public void AppendUrl(string url, bool sanitize = true)
+    public MarkdownTextBuilder AppendUrl(string url, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Url(url, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -159,11 +171,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="url"> 要链接到的 URL。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="url"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Url(System.Uri,System.Boolean)"/>
-    public void AppendUrl(Uri url, bool sanitize = true)
+    public MarkdownTextBuilder AppendUrl(Uri url, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Url(url, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -172,11 +186,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// <param name="url"> 要链接到的 URL。 </param>
     /// <param name="text"> 要显示的文本。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="text"/> 与 <paramref name="url"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Url(System.String,System.String,System.Boolean)"/>
-    public void AppendUrl(string url, string text, bool sanitize = true)
+    public MarkdownTextBuilder AppendUrl(string url, string text, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Url(url, text, sanitize));
+        return this;
     }
 
     /// <summary>
@@ -185,55 +201,65 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// <param name="url"> 要链接到的 URL。 </param>
     /// <param name="text"> 要显示的文本。 </param>
     /// <param name="sanitize"> 是否要先对 <paramref name="text"/> 与 <paramref name="url"/> 中与当前格式化操作有冲突的字符进行转义。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Url(System.Uri,System.String,System.Boolean)"/>
-    public void AppendUrl(Uri url, string text, bool sanitize = true)
+    public MarkdownTextBuilder AppendUrl(Uri url, string text, bool sanitize = true)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Url(url, text, sanitize));
+        return this;
     }
 
     /// <summary>
     ///     将指定的文本格式化为一级标题并追加到当前构建器的文本内容中。
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.H1(System.String)"/>
-    public void AppendH1(string text)
+    public MarkdownTextBuilder AppendH1(string text)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.H1(text));
+        return this;
     }
 
     /// <summary>
     ///     将指定的文本格式化为二级标题并追加到当前构建器的文本内容中。
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.H2(System.String)"/>
-    public void AppendH2(string text)
+    public MarkdownTextBuilder AppendH2(string text)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.H2(text));
+        return this;
     }
 
     /// <summary>
     ///     将指定的图片 URL 格式化为图片并追加到当前构建器的文本内容中。
     /// </summary>
     /// <param name="url"> 图片的 URL。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Image(System.String)"/>
-    public void AppendImage(string url)
+    public MarkdownTextBuilder AppendImage(string url)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Image(url));
+        return this;
     }
 
     /// <summary>
     ///     将指定的图片 URL 格式化为图片并追加到当前构建器的文本内容中。
     /// </summary>
     /// <param name="url"> 图片的 URL。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Image(System.Uri)"/>
-    public void AppendImage(Uri url)
+    public MarkdownTextBuilder AppendImage(Uri url)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Image(url));
+        return this;
     }
 
     /// <summary>
@@ -242,11 +268,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// <param name="url"> 图片的 URL。 </param>
     /// <param name="alternative"> 图片的替代文本。 </param>
     /// <param name="size"> 图片的尺寸。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Image(System.String,System.String,System.Nullable{System.Drawing.Size})"/>
-    public void AppendImage(string url, string alternative, Size? size = null)
+    public MarkdownTextBuilder AppendImage(string url, string alternative, Size? size = null)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Image(url, alternative, size));
+        return this;
     }
 
     /// <summary>
@@ -255,11 +283,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// <param name="url"> 图片的 URL。 </param>
     /// <param name="alternative"> 图片的替代文本。 </param>
     /// <param name="size"> 图片的尺寸。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Image(System.Uri,System.String,System.Nullable{System.Drawing.Size})"/>
-    public void AppendImage(Uri url, string alternative, Size? size = null)
+    public MarkdownTextBuilder AppendImage(Uri url, string alternative, Size? size = null)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Image(url, alternative, size));
+        return this;
     }
 
     /// <summary>
@@ -267,11 +297,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="attachment"> 图片的附件信息。 </param>
     /// <param name="size"> 图片的尺寸。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.Image(QQBot.FileAttachment,System.Nullable{System.Drawing.Size})"/>
-    public void AppendImage(FileAttachment attachment, Size? size = null)
+    public MarkdownTextBuilder AppendImage(FileAttachment attachment, Size? size = null)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.Image(attachment, size));
+        return this;
     }
 
     /// <summary>
@@ -279,11 +311,13 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="items"> 要追加的列表项。 </param>
     /// <param name="indentLevel"> 列表项的缩进级别。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.OrderedList(System.Collections.Generic.IEnumerable{System.String},System.Int32)"/>
-    public void AppendOrderedList(IEnumerable<string> items, int indentLevel = 0)
+    public MarkdownTextBuilder AppendOrderedList(IEnumerable<string> items, int indentLevel = 0)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.OrderedList(items, indentLevel));
+        return this;
     }
 
     /// <summary>
@@ -291,43 +325,105 @@ public class MarkdownTextBuilder : IMarkdownBuilder, IEquatable<MarkdownTextBuil
     /// </summary>
     /// <param name="items"> 要追加的列表项。 </param>
     /// <param name="indentLevel"> 列表项的缩进级别。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.UnorderedList(System.Collections.Generic.IEnumerable{System.String},System.Int32)"/>
-    public void AppendUnorderedList(IEnumerable<string> items, int indentLevel = 0)
+    public MarkdownTextBuilder AppendUnorderedList(IEnumerable<string> items, int indentLevel = 0)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.UnorderedList(items, indentLevel));
+        return this;
     }
 
     /// <summary>
     ///     将指定的文本格式化为块引用并追加到当前构建器的文本内容中。
     /// </summary>
     /// <param name="text"> 要追加的文本。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.BlockQuote(System.String)"/>
-    public void AppendBlockQuote(string text)
+    public MarkdownTextBuilder AppendBlockQuote(string text)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.BlockQuote(text));
+        return this;
     }
 
     /// <summary>
     ///     将水平分割线追加到当前构建器的文本内容中。
     /// </summary>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="QQBot.Format.HorizontalRule"/>
-    public void AppendHorizontalRule()
+    public MarkdownTextBuilder AppendHorizontalRule()
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.HorizontalRule());
+        return this;
     }
 
     /// <summary>
     ///     将指定数量的换行符追加到当前构建器的文本内容中。
     /// </summary>
     /// <param name="count"> 要追加的换行数量。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
     /// <seealso cref="Format.NewLine(System.Int32)"/>
-    public void AppendNewLine(int count = 1)
+    public MarkdownTextBuilder AppendNewLine(int count = 1)
     {
         EnsureStringBuilder();
         _textBuilder.Append(Format.NewLine(count));
+        return this;
+    }
+
+    /// <summary>
+    ///     将指定的命令追加到当前构建器的文本内容中。
+    /// </summary>
+    /// <param name="command"> 用户点击后直接发送的文本。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
+    /// <seealso cref="Format.Command(System.String)"/>
+    public MarkdownTextBuilder AppendCommand(string command)
+    {
+        EnsureStringBuilder();
+        _textBuilder.Append(Format.Command(command));
+        return this;
+    }
+
+    /// <summary>
+    ///     将指定的命令追加到当前构建器的文本内容中。
+    /// </summary>
+    /// <param name="command"> 用户点击后直接发送的文本。 </param>
+    /// <param name="displayText"> 用户在消息内看到的文本。 </param>
+    /// <param name="reference"> 插入输入框时是否带消息原文回复引用。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
+    /// <seealso cref="Format.Command(System.String,System.String,System.Boolean)"/>
+    public MarkdownTextBuilder AppendCommand(string command, string displayText, bool reference)
+    {
+        EnsureStringBuilder();
+        _textBuilder.Append(Format.Command(command, displayText, reference));
+        return this;
+    }
+
+    /// <summary>
+    ///     将指定的表情符号追加到当前构建器的文本内容中。
+    /// </summary>
+    /// <param name="emote"> 表情符号。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
+    /// <seealso cref="Format.Emote(QQBot.Emotes.System)"/>
+    public MarkdownTextBuilder AppendEmote(Emotes.System emote)
+    {
+        EnsureStringBuilder();
+        _textBuilder.Append(Format.Emote(emote));
+        return this;
+    }
+
+    /// <summary>
+    ///     将指定的表情符号追加到当前构建器的文本内容中。
+    /// </summary>
+    /// <param name="emote"> 表情符号。 </param>
+    /// <returns> 当前文本构建器实例。 </returns>
+    /// <seealso cref="Format.Emote(System.Int32)"/>
+    public MarkdownTextBuilder AppendEmote(int emote)
+    {
+        EnsureStringBuilder();
+        _textBuilder.Append(Format.Emote(emote));
+        return this;
     }
 
     /// <inheritdoc />
