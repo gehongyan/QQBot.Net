@@ -31,11 +31,12 @@
 
 ## 目标框架
 
+- [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 > [!TIP]
-> .NET 8 之外的目标框架尚未完全测试。
+> .NET 9 之外的目标框架尚未完全测试。
 
 ---
 

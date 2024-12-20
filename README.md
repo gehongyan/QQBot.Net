@@ -31,11 +31,12 @@ Documents are available on [qqbotnet.dev](https://qqbotnet.dev). (Simplified Chi
 
 ## Targets
 
+- [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 > [!TIP]
-> Targets other than .NET 8.0 have not been fully tested.
+> Targets other than .NET 9.0 have not been fully tested.
 
 ---
 
