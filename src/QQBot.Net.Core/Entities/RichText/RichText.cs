@@ -8,6 +8,8 @@ namespace QQBot;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class RichText
 {
+    internal static RichText Empty { get; } = new([]);
+
     /// <summary>
     ///     获取此富文本的段落。
     /// </summary>

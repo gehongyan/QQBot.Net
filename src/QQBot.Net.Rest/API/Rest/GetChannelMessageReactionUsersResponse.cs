@@ -8,8 +8,8 @@ internal class GetChannelMessageReactionUsersResponse
     public required User[] Users { get; set; }
 
     [JsonPropertyName("cookie")]
-    public required string Cookie { get; set; }
+    public string? Cookie { get; set; }
 
-    [JsonPropertyName("ie_end")]
+    [JsonPropertyName("is_end")]
     public required bool IsEnd { get; set; }
 }

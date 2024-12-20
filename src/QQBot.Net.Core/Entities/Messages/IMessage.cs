@@ -49,4 +49,28 @@ public interface IMessage : IEntity<string>
     ///     获取此消息中解析出的所有标签。
     /// </summary>
     IReadOnlyCollection<ITag> Tags { get; }
+
+    /// <summary>
+    ///     获此消息指定表情符号的所有回应用户。
+    /// </summary>
+    /// <param name="emote"> 要获取回应用户的表情符号。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的可枚举集合，结果包含了所有回应用户的集合。 </returns>
+    IAsyncEnumerable<IReadOnlyCollection<IGuildUser>> GetReactionUsersAsync(IEmote emote, RequestOptions? options = null);
+
+    /// <summary>
+    ///     向此消息添加一个回应。
+    /// </summary>
+    /// <param name="emote"> 要用于向此消息添加回应的表情符号。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示添加添加异步操作的任务。 </returns>
+    Task AddReactionAsync(IEmote emote, RequestOptions? options = null);
+
+    /// <summary>
+    ///     从此消息中移除一个当前用户的回应。
+    /// </summary>
+    /// <param name="emote"> 要从此消息移除的回应的表情符号。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步移除操作的任务。 </returns>
+    Task RemoveReactionAsync(IEmote emote, RequestOptions? options = null);
 }

@@ -115,10 +115,13 @@ public static class MentionUtils
         return false;
     }
 
-    internal static string Resolve(IMessage msg, int startIndex,
+    internal static string? Resolve(IMessage msg, int startIndex,
         TagHandling userHandling, TagHandling channelHandling,
         TagHandling everyoneHandling, TagHandling emojiHandling)
     {
+        if (string.IsNullOrWhiteSpace(msg.Content))
+            return msg.Content;
+
         StringBuilder text = new(msg.Content[startIndex..]);
         IReadOnlyCollection<ITag> tags = msg.Tags;
         int indexOffset = -startIndex;
@@ -209,7 +212,7 @@ public static class MentionUtils
     {
         if (mode == TagHandling.Remove)
             return string.Empty;
-        if (tag.Value is not Emote emoji)
+        if (tag.Value is not IEmote emoji)
             return string.Empty;
 
         //Remove if its name contains any bad chars (prevents a few tag exploits)

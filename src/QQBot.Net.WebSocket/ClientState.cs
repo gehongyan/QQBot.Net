@@ -12,7 +12,7 @@ internal class ClientState
     private readonly ConcurrentDictionary<Guid, SocketUserChannel> _userChannels;
     private readonly ConcurrentDictionary<ulong, SocketGuild> _guilds;
     private readonly ConcurrentDictionary<string, SocketGlobalUser> _globalUsers;
-    private readonly ConcurrentDictionary<string, SocketGuildUser> _guildUsers;
+    private readonly ConcurrentDictionary<ulong, SocketGuildUser> _guildUsers;
 
     internal IReadOnlyCollection<SocketChannel> Channels => _channels.ToReadOnlyCollection();
 
@@ -31,7 +31,7 @@ internal class ClientState
         _userChannels = new ConcurrentDictionary<Guid, SocketUserChannel>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
         _guilds = new ConcurrentDictionary<ulong, SocketGuild>(ConcurrentHashSet.DefaultConcurrencyLevel, (int)(guildCount * CollectionMultiplier));
         _globalUsers = new ConcurrentDictionary<string, SocketGlobalUser>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
-        _guildUsers = new ConcurrentDictionary<string, SocketGuildUser>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
+        _guildUsers = new ConcurrentDictionary<ulong, SocketGuildUser>(ConcurrentHashSet.DefaultConcurrencyLevel, 0);
     }
 
     #region Guild
@@ -92,15 +92,12 @@ internal class ClientState
 
     #region Guild Users
 
-    internal SocketGuildUser? GetGuildUser(string id) => _guildUsers.GetValueOrDefault(id);
+    internal SocketGuildUser? GetGuildUser(ulong id) => _guildUsers.GetValueOrDefault(id);
 
     internal SocketGuildUser GetOrAddGuildUser(ulong id, Func<ulong, SocketGuildUser> userFactory) =>
-        _guildUsers.GetOrAdd(id.ToString(), _ => userFactory(id));
+        _guildUsers.GetOrAdd(id, _ => userFactory(id));
 
-    internal SocketGuildUser GetOrAddGuildUser(Guid id, Func<Guid, SocketGuildUser> userFactory) =>
-        _guildUsers.GetOrAdd(id.ToIdString(), _ => userFactory(id));
-
-    internal SocketGuildUser? RemoveGuildUser(string id) =>
+    internal SocketGuildUser? RemoveGuildUser(ulong id) =>
         _guildUsers.TryRemove(id, out SocketGuildUser? user) ? user : null;
 
     #endregion

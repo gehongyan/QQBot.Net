@@ -65,9 +65,12 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
     internal void Update(ClientState state, API.User userModel, API.Member? model)
     {
         base.Update(state, userModel);
-        Nickname = model?.Nickname;
-        RoleIds = model?.Roles;
-        JoinedAt = model?.JoinedAt;
+        if (model is not null)
+        {
+            Nickname = model.Nickname;
+            RoleIds = model.Roles;
+            JoinedAt = model.JoinedAt;
+        }
     }
 
     /// <inheritdoc />
@@ -118,7 +121,7 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
     public override string ToString() => Username;
 
     private string DebuggerDisplay =>
-        $"{Nickname ?? Username}{(Nickname is not null ? Username : string.Empty)} ({Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
+        $"{Nickname ?? Username} ({(Nickname is not null ? $"{Username}, " : string.Empty)}{Id}{(IsBot ?? false ? ", Bot" : "")}, GuildMember)";
 
     #region IGuild
 

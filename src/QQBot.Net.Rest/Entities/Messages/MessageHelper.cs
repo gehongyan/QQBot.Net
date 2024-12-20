@@ -43,9 +43,10 @@ internal static class MessageHelper
         }
     }
 
-    public static ImmutableArray<ITag> ParseTags(string text, IMessageChannel channel, IGuild? guild,
+    public static ImmutableArray<ITag> ParseTags(string? text, IMessageChannel channel, IGuild? guild,
         IRole? everyoneRole, IReadOnlyCollection<IGuildUser> userMentions)
     {
+        if (string.IsNullOrWhiteSpace(text)) return ImmutableArray<ITag>.Empty;
         ImmutableArray<ITag>.Builder tags = ImmutableArray.CreateBuilder<ITag>();
         int index = 0;
 
@@ -128,5 +129,42 @@ internal static class MessageHelper
         return i;
     }
 
+    public static async IAsyncEnumerable<IReadOnlyCollection<API.User>> GetReactionUsersAsync(IMessage message,
+        BaseQQBotClient client, IEmote emote, int? limit, RequestOptions? options)
+    {
+        if (message.Channel is not ITextChannel textChannel)
+            throw new NotSupportedException("Unsupported channel type.");
+        int? remaining = limit;
+        bool isEnd = false;
+        string? cookie = null;
+        while (remaining <= 0 || !isEnd)
+        {
+            GetChannelMessageReactionUsersParams args = new()
+            {
+                Cookie = cookie,
+                Limit = Math.Clamp(remaining ?? QQBotConfig.MaxReactionUsersPerBatch, 1, QQBotConfig.MaxReactionUsersPerBatch)
+            };
+            GetChannelMessageReactionUsersResponse response = await client.ApiClient
+                .GetChannelMessageReactionUsersAsync(textChannel.Id, message.Id, emote.Type, emote.Id, args, options)
+                .ConfigureAwait(false);
+            isEnd = response.IsEnd || response.Users.Length == 0;
+            cookie = response.Cookie;
+            remaining -= response.Users.Length;
+            yield return response.Users;
+        }
+    }
 
+    public static Task AddReactionAsync(IMessage message, BaseQQBotClient client, IEmote emote, RequestOptions? options)
+    {
+        if (message.Channel is not ITextChannel textChannel)
+            throw new NotSupportedException("Unsupported channel type.");
+        return client.ApiClient.AddChannelMessageReactionAsync(textChannel.Id, message.Id, emote.Type, emote.Id, options);
+    }
+
+    public static Task RemoveReactionAsync(IMessage message, BaseQQBotClient client, IEmote emote, RequestOptions? options)
+    {
+        if (message.Channel is not ITextChannel textChannel)
+            throw new NotSupportedException("Unsupported channel type.");
+        return client.ApiClient.RemoveChannelMessageReactionAsync(textChannel.Id, message.Id, emote.Type, emote.Id, options);
+    }
 }

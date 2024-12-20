@@ -92,5 +92,5 @@ public class RestGuildMember : RestGuildUser, IGuildMember
     public override string ToString() => Username;
 
     private string DebuggerDisplay =>
-        $"{Nickname ?? Username} ({(Nickname is not null ? $"{Username}, " : string.Empty)}{Id}{(IsBot ?? false ? ", Bot" : "")}, Guild)";
+        $"{Nickname ?? Username} ({(Nickname is not null ? $"{Username}, " : string.Empty)}{Id}{(IsBot ?? false ? ", Bot" : "")}, GuildMember)";
 }

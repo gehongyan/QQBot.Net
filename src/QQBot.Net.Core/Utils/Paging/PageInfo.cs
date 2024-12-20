@@ -7,6 +7,7 @@ internal class PageInfo
     public int? Count { get; set; }
     public int PageSize { get; set; }
     public int? Remaining { get; set; }
+    public string? Cookie { get; set; }
 
     internal PageInfo(ulong? position, int? count, int pageSize)
     {

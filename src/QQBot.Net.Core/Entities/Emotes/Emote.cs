@@ -11,7 +11,7 @@ namespace QQBot;
 public class Emote : IEmote
 {
     // <faceType=3,faceId="338",ext="eyJ0ZXh0Ijoi5oiR5oOz5byA5LqGIn0="​>
-    private static readonly Regex EmoteRegex = new("""^<faceType=(?<type>\d+),faceId="(?<id>\d+)",ext="(?<ext>[a-zA-Z0-9+/=]+)"\u200b?>$""", RegexOptions.Compiled);
+    private static readonly Regex EmoteRegex = new("""^<faceType=(?<type>\d+),faceId="(?<id>\d*)",ext="(?<ext>[a-zA-Z0-9+/=]+)"\u200b?>$""", RegexOptions.Compiled);
 
     /// <inheritdoc />
     public string Id { get; }
@@ -19,7 +19,7 @@ public class Emote : IEmote
     /// <summary>
     ///     获取表情符号的类型。
     /// </summary>
-    public int Type { get; }
+    public EmojiType Type { get; }
 
     /// <inheritdoc />
     public string Name { get; }
@@ -30,11 +30,35 @@ public class Emote : IEmote
     /// <param name="type"> 表情符号的类型。 </param>
     /// <param name="id"> 表情符号的 ID。 </param>
     /// <param name="name"> 表情符号的显示名称。 </param>
-    public Emote(int type, string id, string name)
+    public Emote(EmojiType type, string id, string name)
     {
-        Id = id;
         Type = type;
+        Id = id;
         Name = name;
+    }
+
+    /// <summary>
+    ///     初始化一个 <see cref="Emote"/> 类的新实例。
+    /// </summary>
+    /// <param name="emote"> 系统表情符号。 </param>
+    /// <param name="name"> 表情符号名称。 </param>
+    public Emote(Emotes.System emote, string? name = null)
+    {
+        Type = EmojiType.System;
+        Id = ((int)emote).ToString();
+        Name = name ?? Emotes.SystemNames.GetValueRefOrNullRef(emote);
+    }
+
+    /// <summary>
+    ///     初始化一个 <see cref="Emote"/> 类的新实例。
+    /// </summary>
+    /// <param name="emote"> Emoji 表情符号。 </param>
+    /// <param name="name"> 表情符号名称。 </param>
+    public Emote(Emotes.Emoji emote, string? name = null)
+    {
+        Type = EmojiType.Emoji;
+        Id = ((int)emote).ToString();
+        Name = name ?? Emotes.EmojiNames.GetValueRefOrNullRef(emote);
     }
 
     /// <summary>
@@ -59,7 +83,7 @@ public class Emote : IEmote
         string json = Encoding.UTF8.GetString(Convert.FromBase64String(ext));
         JsonElement element = JsonSerializer.Deserialize<JsonElement>(json);
         string name = element.GetProperty("text").GetString() ?? string.Empty;
-        return new Emote(type, id, name);
+        return new Emote((EmojiType)type, id, name);
     }
 
     /// <summary>

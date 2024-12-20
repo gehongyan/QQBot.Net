@@ -645,8 +645,9 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(0, channelId);
+        string emojiTypeString = ((int)emojiType).ToString();
         await SendAsync(HttpMethod.Put,
-                () => $"channels/{channelId}/messages/{messageId}/reactions/{(int)emojiType}/{emojiId}", ids, ClientBucketType.SendEdit, options)
+                () => $"channels/{channelId}/messages/{messageId}/reactions/{emojiTypeString}/{emojiId}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 
@@ -658,8 +659,9 @@ internal class QQBotRestApiClient : IDisposable
         options = RequestOptions.CreateOrClone(options);
 
         BucketIds ids = new(0, channelId);
+        string emojiTypeString = ((int)emojiType).ToString();
         await SendAsync(HttpMethod.Delete,
-                () => $"channels/{channelId}/messages/{messageId}/reactions/{(int)emojiType}/{emojiId}", ids, ClientBucketType.SendEdit, options)
+                () => $"channels/{channelId}/messages/{messageId}/reactions/{emojiTypeString}/{emojiId}", ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 
@@ -677,8 +679,9 @@ internal class QQBotRestApiClient : IDisposable
             query += $"&cookie={args.Cookie}";
 
         BucketIds ids = new(0, channelId);
+        string emojiTypeString = ((int)emojiType).ToString();
         return await SendAsync<GetChannelMessageReactionUsersResponse>(HttpMethod.Get,
-                () => $"channels/{channelId}/messages/{messageId}/reactions/{(int)emojiType}/{emojiId}{query}", ids, ClientBucketType.SendEdit, false, options)
+                () => $"channels/{channelId}/messages/{messageId}/reactions/{emojiTypeString}/{emojiId}{query}", ids, ClientBucketType.SendEdit, false, options)
             .ConfigureAwait(false);
     }
 

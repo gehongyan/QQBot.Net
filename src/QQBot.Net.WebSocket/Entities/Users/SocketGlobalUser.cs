@@ -10,16 +10,24 @@ internal class SocketGlobalUser : SocketUser
     private ushort _references;
     private readonly UserScope _scope;
 
+    private string? _avatar;
+
     /// <inheritdoc />
     internal override SocketGlobalUser GlobalUser => this;
 
     /// <inheritdoc />
     public override string? Avatar
     {
-        get => Client.ApiClient.AppId.HasValue && OpenId.HasValue
+        get => GetAvatarUrl();
+        internal set => _avatar = value;
+    }
+
+    private string? GetAvatarUrl()
+    {
+        if (!string.IsNullOrEmpty(_avatar)) return _avatar;
+        return _avatar ?? (Client.ApiClient.AppId.HasValue && OpenId.HasValue
             ? UrlUtils.GetUserAvatarUrl(Client.ApiClient.AppId.Value, OpenId.Value)
-            : null;
-        internal set { }
+            : null);
     }
 
     internal Guid? OpenId { get; set; }

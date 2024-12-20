@@ -270,7 +270,10 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         _shards?.Select(t => t.GetUser(id)).OfType<SocketUser>().FirstOrDefault();
 
     /// <inheritdoc />
-    public override SocketGuildUser? GetGuildUser(string id) =>
+    public override SocketGuildUser? GetGuildUser(string id) => GetGuildUser(ulong.Parse(id));
+
+    /// <inheritdoc cref="QQBot.WebSocket.QQBotShardedClient.GetGuildUser(System.String)" />
+    public SocketGuildUser? GetGuildUser(ulong id) =>
         _shards?.Select(t => t.GetGuildUser(id)).OfType<SocketGuildUser>().FirstOrDefault();
 
     // /// <inheritdoc />

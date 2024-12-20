@@ -378,7 +378,10 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     public override SocketUser? GetUser(string id) => State.GetGlobalUser(id);
 
     /// <inheritdoc />
-    public override SocketGuildUser? GetGuildUser(string id) => State.GetGuildUser(id);
+    public override SocketGuildUser? GetGuildUser(string id) => GetGuildUser(ulong.Parse(id));
+
+    /// <inheritdoc cref="QQBot.WebSocket.QQBotSocketClient.GetGuildUser(System.String)" />
+    public SocketGuildUser? GetGuildUser(ulong id) => State.GetGuildUser(id);
 
     // /// <inheritdoc />
     // public override SocketUser? GetUser(string username, string identifyNumber) =>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics;
+using QQBot.API;
 
 namespace QQBot.Rest;
 
@@ -65,7 +66,7 @@ public abstract class RestMessage : RestEntity<string>, IMessage
 
     internal virtual void Update(API.ChannelMessage model)
     {
-        Content = model.Content;
+        Content = model.Content ?? string.Empty;
         Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(MessageHelper.CreateAttachment)];
@@ -86,6 +87,26 @@ public abstract class RestMessage : RestEntity<string>, IMessage
         _tags = MessageHelper.ParseTags(Content, Channel, guild, null, []);
     }
 
+    /// <inheritdoc cref="QQBot.IMessage.GetReactionUsersAsync(QQBot.IEmote,QQBot.RequestOptions)" />
+    public async IAsyncEnumerable<IReadOnlyCollection<RestGuildUser>> GetReactionUsersAsync(IEmote emote, RequestOptions? options = null)
+    {
+        IAsyncEnumerable<IReadOnlyCollection<User>> asyncEnumerable = MessageHelper
+            .GetReactionUsersAsync(this, Client, emote, null, options);
+        await foreach (IReadOnlyCollection<User> models in asyncEnumerable)
+        {
+            IReadOnlyCollection<RestGuildUser> users = [..models.Select(x => RestGuildUser.Create(Client, x))];
+            yield return users;
+        }
+    }
+
+    /// <inheritdoc />
+    public Task AddReactionAsync(IEmote emote, RequestOptions? options = null) =>
+        MessageHelper.AddReactionAsync(this, Client, emote, options);
+
+    /// <inheritdoc />
+    public Task RemoveReactionAsync(IEmote emote, RequestOptions? options = null) =>
+        MessageHelper.RemoveReactionAsync(this, Client, emote, options);
+
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{
         Attachments.Count switch
         {
@@ -101,6 +122,14 @@ public abstract class RestMessage : RestEntity<string>, IMessage
 
     /// <inheritdoc />
     IReadOnlyCollection<IEmbed> IMessage.Embeds => Embeds;
+
+    /// <inheritdoc />
+    async IAsyncEnumerable<IReadOnlyCollection<IGuildUser>> IMessage.GetReactionUsersAsync(IEmote emote, RequestOptions? options)
+    {
+        IAsyncEnumerable<IReadOnlyCollection<RestGuildUser>> asyncEnumerable = GetReactionUsersAsync(emote, options);
+        await foreach (IReadOnlyCollection<RestGuildUser> users in asyncEnumerable)
+            yield return users;
+    }
 
     #endregion
 }

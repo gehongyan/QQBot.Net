@@ -263,7 +263,6 @@ public partial class QQBotSocketClient
         SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
-        await Task.CompletedTask;
     }
 
     private async Task HandleGroupMessageCreatedAsync(object? payload, string dispatch)
@@ -281,7 +280,6 @@ public partial class QQBotSocketClient
         SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
-        await Task.CompletedTask;
     }
 
     private async Task HandleDirectMessageCreatedAsync(object? payload, string dispatch)

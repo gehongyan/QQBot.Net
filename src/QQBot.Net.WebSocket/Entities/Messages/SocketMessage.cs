@@ -61,7 +61,7 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
 
     internal virtual void Update(ClientState state, API.ChannelMessage model)
     {
-        Content = model.Content;
+        Content = model.Content ?? string.Empty;
         Timestamp = model.Timestamp;
         if (model.Attachments is { Length: > 0 } attachments)
             Attachments = [..attachments.Select(MessageHelper.CreateAttachment)];
@@ -83,6 +83,37 @@ public abstract class SocketMessage : SocketEntity<string>, IMessage
         IGuild? guild = (Channel as IGuildChannel)?.Guild;
         _tags = MessageHelper.ParseTags(model.Content, Channel, guild, (guild as SocketGuild)?.EveryoneRole, []);
     }
+
+    /// <inheritdoc />
+    public async IAsyncEnumerable<IReadOnlyCollection<IGuildUser>> GetReactionUsersAsync(IEmote emote, RequestOptions? options = null)
+    {
+        IAsyncEnumerable<IReadOnlyCollection<API.User>> asyncEnumerable = MessageHelper
+            .GetReactionUsersAsync(this, Client, emote, null, options);
+        SocketGuild? guild = (Channel as IGuildChannel)?.Guild as SocketGuild;
+        await foreach (IReadOnlyCollection<API.User> models in asyncEnumerable)
+        {
+            IReadOnlyCollection<IGuildUser> users = [..models.Select<API.User, IGuildUser>(x =>
+            {
+                if (guild?.AddOrUpdateUser(x, null) is { } guildMember)
+                    return guildMember;
+                if (Client.GetGuildUser(x.Id) is { } guildUser)
+                {
+                    guildUser.Update(Client.State, x);
+                    return guildUser;
+                }
+                return RestGuildUser.Create(Client, x);
+            })];
+            yield return users;
+        }
+    }
+
+    /// <inheritdoc />
+    public Task AddReactionAsync(IEmote emote, RequestOptions? options = null) =>
+        MessageHelper.AddReactionAsync(this, Client, emote, options);
+
+    /// <inheritdoc />
+    public Task RemoveReactionAsync(IEmote emote, RequestOptions? options = null) =>
+        MessageHelper.RemoveReactionAsync(this, Client, emote, options);
 
     private string DebuggerDisplay => $"{Author}: {Content} ({Id}{
         Attachments.Count switch

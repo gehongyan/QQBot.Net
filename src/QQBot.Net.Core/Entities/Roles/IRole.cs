@@ -45,7 +45,7 @@ public interface IRole : IEntity<uint>, IDeletable
     /// </summary>
     /// <param name="mode"> 指示当前方法是否应该仅从缓存中获取结果，还是可以通过 API 请求获取数据。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
-    /// <returns> 一个表示异步获取操作的任务。任务的结果包含所有拥有此身份组的用户。 </returns>
+    /// <returns> 一个表示异步操作的可枚举集合，结果包含所有拥有此身份组的用户。 </returns>
     IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     /// <summary>

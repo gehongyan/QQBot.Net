@@ -6,6 +6,11 @@ namespace QQBot;
 public interface IEmote : IEntity<string>
 {
     /// <summary>
+    ///     获取此表情符号的类型。
+    /// </summary>
+    EmojiType Type { get; }
+
+    /// <summary>
     ///     获取此表情符号的显示名称或 Unicode 表示。
     /// </summary>
     string Name { get; }

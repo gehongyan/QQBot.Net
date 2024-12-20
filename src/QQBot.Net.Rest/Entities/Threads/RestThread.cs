@@ -30,22 +30,25 @@ public class RestThread : RestEntity<string>, IThread
     public DateTimeOffset CreatedAt { get; private set; }
 
     /// <inheritdoc />
-    private RestThread(BaseQQBotClient client, string id,
-        IForumChannel channel, ulong authorId, string title, string content, DateTimeOffset createdAt)
+    private RestThread(BaseQQBotClient client, string id, IForumChannel channel, ulong authorId)
         : base(client, id)
     {
         Guild = channel.Guild;
         Channel = channel;
         AuthorId = authorId;
-        Title = title;
-        RawContent = content;
-        Content = ForumHelper.ParseContent(content);
-        CreatedAt = createdAt;
+        Title = string.Empty;
+        RawContent = string.Empty;
+        Content = RichText.Empty;
+        CreatedAt = DateTimeOffset.Now;
     }
 
     internal static RestThread Create(BaseQQBotClient client,
-        IForumChannel channel, ulong authorId, API.ThreadInfo model) =>
-        new(client, model.ThreadId, channel, authorId, model.Title, model.Content, model.DateTime);
+        IForumChannel channel, ulong authorId, API.ThreadInfo model)
+    {
+        RestThread thread = new(client, model.ThreadId, channel, authorId);
+        thread.Update(model);
+        return thread;
+    }
 
     internal void Update(API.ThreadInfo model)
     {

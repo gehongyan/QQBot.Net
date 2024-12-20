@@ -15,7 +15,7 @@ internal class ChannelMessage
     public required ulong GuildId { get; set; }
 
     [JsonPropertyName("content")]
-    public required string Content { get; set; }
+    public string? Content { get; set; }
 
     [JsonPropertyName("timestamp")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.ISO8601)]

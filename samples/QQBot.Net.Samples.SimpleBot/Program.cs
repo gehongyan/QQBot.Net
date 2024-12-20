@@ -22,7 +22,10 @@ client.MessageReceived += async message =>
     if (message.Source is not MessageSource.User) return;
     if (message.Channel is SocketTextChannel textChannel)
     {
-        IReadOnlyCollection<IThread> threads = await textChannel.Guild.ForumChannels.First().GetThreadsAsync();
+        await message.AddReactionAsync(new Emote(Emotes.System.Angry));
+        await Task.Delay(TimeSpan.FromSeconds(5));
+        IEnumerable<IGuildUser> flattenAsync = await message.GetReactionUsersAsync(new Emote(Emotes.System.Angry)).FlattenAsync();
+        await message.RemoveReactionAsync(new Emote(Emotes.System.Angry));
     }
 
 //      IUserMessage msg = await message.ReplyAsync(
