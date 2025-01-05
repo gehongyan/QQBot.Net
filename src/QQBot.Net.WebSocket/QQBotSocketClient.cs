@@ -581,6 +581,20 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
+            #region Channels
+
+            case "CHANNEL_CREATE":
+                await HandleChannelCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "CHANNEL_UPDATE":
+                await HandleChannelUpdatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "CHANNEL_DELETE":
+                await HandleChannelDeletedAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
+
 
 
             default:

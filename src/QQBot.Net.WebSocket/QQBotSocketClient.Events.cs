@@ -102,4 +102,68 @@ public partial class QQBotSocketClient
     internal readonly AsyncEvent<Func<SocketGuild, Task>> _guildUnavailableEvent = new();
 
     #endregion
+
+    #region Channels
+
+    /// <summary>
+    ///     当子频道被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是新创建的子频道。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGuildChannel, Task> ChannelCreated
+    {
+        add => _channelCreatedEvent.Add(value);
+        remove => _channelCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGuildChannel, Task>> _channelCreatedEvent = new();
+
+    /// <summary>
+    ///     当子频道被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是被删除的子频道。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是删除此子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGuildChannel, Cacheable<SocketGuildMember, ulong>, Task> ChannelDestroyed
+    {
+        add => _channelDestroyedEvent.Add(value);
+        remove => _channelDestroyedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGuildChannel, Cacheable<SocketGuildMember, ulong>, Task>> _channelDestroyedEvent = new();
+
+    /// <summary>
+    ///     当子频道信息被更新时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是更新前的子频道。 </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是更新后的子频道。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是删除此子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGuildChannel, SocketGuildChannel, Cacheable<SocketGuildMember, ulong>, Task> ChannelUpdated
+    {
+        add => _channelUpdatedEvent.Add(value);
+        remove => _channelUpdatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGuildChannel, SocketGuildChannel, Cacheable<SocketGuildMember, ulong>, Task>> _channelUpdatedEvent = new();
+
+    #endregion
 }

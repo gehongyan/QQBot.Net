@@ -315,6 +315,63 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Channels
+
+    private async Task HandleChannelCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<ChannelEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ChannelCreated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+
+        SocketGuildChannel channel = guild.AddChannel(State, data);
+        await TimedInvokeAsync(_channelCreatedEvent, nameof(ChannelCreated), channel).ConfigureAwait(false);
+    }
+
+    private async Task HandleChannelUpdatedAsync(object? payload)
+    {
+        if (DeserializePayload<ChannelEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ChannelCreated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetChannel(data.Id) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ChannelUpdated), data.Id, payload).ConfigureAwait(false);
+            return;
+        }
+
+        SocketGuildChannel before = channel.Clone();
+        channel.Update(State, data);
+        SocketGuildMember? user = channel.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_channelUpdatedEvent, nameof(ChannelUpdated), before, channel, cacheableUser).ConfigureAwait(false);
+    }
+
+    private async Task HandleChannelDeletedAsync(object? payload)
+    {
+        if (DeserializePayload<ChannelEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ChannelDestroyed), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.RemoveChannel(State, data.Id) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ChannelDestroyed), data.Id, payload).ConfigureAwait(false);
+            return;
+        }
+
+        SocketGuildMember? user = channel.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_channelDestroyedEvent, nameof(ChannelDestroyed), channel, cacheableUser).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Raising Events
 
     private async Task GuildAvailableAsync(SocketGuild guild)
@@ -339,6 +396,23 @@ public partial class QQBotSocketClient
 
     private async Task LogGatewayErrorAsync(string dispatch, string message, object? payload) =>
         await _gatewayLogger.WarningAsync($"{message} Event: {dispatch}. Payload: {SerializePayload(payload)}").ConfigureAwait(false);
+
+    #endregion
+
+    #region Cacheables
+
+    private Cacheable<SocketGuildMember, ulong> GetCacheableSocketGuildMember(SocketGuildMember? value,
+        ulong id, SocketGuild guild)
+    {
+        return new Cacheable<SocketGuildMember, ulong>(value, id, value is not null,
+            async () =>
+            {
+                Member model = await ApiClient.GetGuildMemberAsync(guild.Id, id).ConfigureAwait(false);
+                if (model.User is null) return null;
+                return guild.AddOrUpdateUser(model.User, model);
+            });
+    }
+
 
     #endregion
 

@@ -48,6 +48,9 @@ internal class ClientState
 
     internal void AddGuildChannel(SocketGuildChannel channel) => _channels[channel.Id] = channel;
 
+    internal SocketGuildChannel? RemoveGuildChannel(ulong id) =>
+        _channels.TryRemove(id, out SocketGuildChannel? channel) ? channel : null;
+
     #endregion
 
     #region UserChannel

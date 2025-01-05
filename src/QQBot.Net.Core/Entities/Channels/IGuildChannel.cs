@@ -36,7 +36,7 @@ public interface IGuildChannel : IChannel, IUpdateable, IDeletable, IEntity<ulon
     /// <remarks>
     ///     更小的数值表示更靠近列表顶部的位置。
     /// </remarks>
-    int Position { get; }
+    int? Position { get; }
 
     /// <summary>
     ///     获取创建此子频道的用户的 ID。

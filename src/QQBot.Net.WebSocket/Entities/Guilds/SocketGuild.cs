@@ -379,6 +379,19 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
         Action<CreateCategoryChannelProperties>? func = null, RequestOptions? options = null) =>
         GuildHelper.CreateCategoryChannelAsync(this, Client, name, func, options);
 
+    internal SocketGuildChannel AddChannel(ClientState state, ChannelModel model)
+    {
+        SocketGuildChannel channel = SocketGuildChannel.Create(this, state, model);
+        _channels.TryAdd(model.Id, channel);
+        state.AddGuildChannel(channel);
+        return channel;
+    }
+
+    internal SocketGuildChannel? RemoveChannel(ClientState state, ulong id) =>
+        _channels.TryRemove(id, out SocketGuildChannel? _)
+            ? state.RemoveGuildChannel(id) as SocketGuildChannel
+            : null;
+
     #endregion
 
     #region API Permissions

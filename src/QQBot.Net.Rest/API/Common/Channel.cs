@@ -21,7 +21,7 @@ internal class Channel
     public ChannelSubType? SubType { get; init; }
 
     [JsonPropertyName("position")]
-    public required int Position { get; init; }
+    public int? Position { get; init; }
 
     [JsonPropertyName("parent_id")]
     public ulong? ParentId { get; init; }

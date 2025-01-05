@@ -23,7 +23,7 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
     public ChannelType Type { get; internal set; }
 
     /// <inheritdoc />
-    public int Position { get; private set; }
+    public int? Position { get; private set; }
 
     /// <inheritdoc />
     public ulong? CreatorId { get; private set; }
@@ -75,6 +75,8 @@ public class SocketGuildChannel : SocketChannel, IGuildChannel
     public override string ToString() => Name;
 
     private string DebuggerDisplay => $"{Name} ({Id}, Guild)";
+
+    internal SocketGuildChannel Clone() => (SocketGuildChannel)MemberwiseClone();
 
     #region Users
 
