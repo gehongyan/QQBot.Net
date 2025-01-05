@@ -6,26 +6,26 @@ namespace QQBot.API.Gateway;
 internal class MessageCreatedEvent
 {
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required string Id { get; init; }
 
     [JsonPropertyName("author")]
-    public required Author Author { get; set; }
+    public required Author Author { get; init; }
 
     [JsonPropertyName("content")]
-    public required string Content { get; set; }
+    public required string Content { get; init; }
 
     [JsonPropertyName("group_id")]
     [GuidJsonConverter]
-    public Guid? GroupId { get; set; }
+    public Guid? GroupId { get; init; }
 
     [JsonPropertyName("group_openid")]
     [GuidJsonConverter]
-    public Guid? GroupOpenId { get; set; }
+    public Guid? GroupOpenId { get; init; }
 
     [JsonPropertyName("timestamp")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]
-    public required DateTimeOffset Timestamp { get; set; }
+    public required DateTimeOffset Timestamp { get; init; }
 
     [JsonPropertyName("attachments")]
-    public Attachment[]? Attachments { get; set; }
+    public Attachment[]? Attachments { get; init; }
 }

@@ -5,14 +5,14 @@ namespace QQBot.API;
 internal class QQBotError
 {
     [JsonPropertyName("code")]
-    public required QQBotErrorCode Code { get; set; }
+    public required QQBotErrorCode Code { get; init; }
 
     [JsonPropertyName("message")]
-    public required string Message { get; set; }
+    public required string Message { get; init; }
 
     [JsonPropertyName("err_code")]
-    public int? ErrorCode { get; set; }
+    public int? ErrorCode { get; init; }
 
     [JsonPropertyName("trace_id")]
-    public string? TraceId { get; set; }
+    public string? TraceId { get; init; }
 }

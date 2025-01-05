@@ -6,9 +6,9 @@ internal class ModifyMemberPermissionsParams
 {
     [JsonPropertyName("add")]
     [JsonNumberHandling(JsonNumberHandling.WriteAsString)]
-    public ulong? Add { get; set; }
+    public ulong? Add { get; init; }
 
     [JsonPropertyName("remove")]
     [JsonNumberHandling(JsonNumberHandling.WriteAsString)]
-    public ulong? Remove { get; set; }
+    public ulong? Remove { get; init; }
 }

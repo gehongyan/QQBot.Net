@@ -6,22 +6,22 @@ namespace QQBot.API;
 internal class Role
 {
     [JsonPropertyName("id")]
-    public required uint Id { get; set; }
+    public required uint Id { get; init; }
 
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [JsonPropertyName("color")]
     [JsonConverter(typeof(HexAlphaColorConverter))]
-    public required AlphaColor Color { get; set; }
+    public required AlphaColor Color { get; init; }
 
     [JsonPropertyName("hoist")]
     [JsonConverter(typeof(NumberBooleanConverter))]
-    public required bool Hoist { get; set; }
+    public required bool Hoist { get; init; }
 
     [JsonPropertyName("number")]
-    public required int Number { get; set; }
+    public required int Number { get; init; }
 
     [JsonPropertyName("member_limit")]
-    public required int MemberLimit { get; set; }
+    public required int MemberLimit { get; init; }
 }

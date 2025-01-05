@@ -5,5 +5,5 @@ namespace QQBot.API.Rest;
 internal class CountMediaChannelOnlineMembersResponse
 {
     [JsonPropertyName("online_nums")]
-    public int OnlineMembers { get; set; }
+    public int OnlineMembers { get; init; }
 }

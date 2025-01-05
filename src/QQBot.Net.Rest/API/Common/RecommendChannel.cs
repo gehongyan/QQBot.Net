@@ -5,8 +5,8 @@ namespace QQBot.API;
 internal class RecommendChannel
 {
     [JsonPropertyName("channel_id")]
-    public required ulong ChannelId { get; set; }
+    public required ulong ChannelId { get; init; }
 
     [JsonPropertyName("channel_introduce")]
-    public required string Introduce { get; set; }
+    public required string Introduce { get; init; }
 }

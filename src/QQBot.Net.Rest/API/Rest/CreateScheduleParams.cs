@@ -5,5 +5,5 @@ namespace QQBot.API.Rest;
 internal class CreateScheduleParams
 {
     [JsonPropertyName("schedule")]
-    public required ScheduleParams Schedule { get; set; }
+    public required ScheduleParams Schedule { get; init; }
 }

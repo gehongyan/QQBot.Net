@@ -5,11 +5,11 @@ namespace QQBot.API;
 internal class ImageElement
 {
     [JsonPropertyName("plat_image")]
-    public PlatformImage? PlatformImage { get; set; }
+    public PlatformImage? PlatformImage { get; init; }
 
     [JsonPropertyName("third_url")]
-    public string? Url { get; set; }
+    public string? Url { get; init; }
 
     [JsonPropertyName("width_percent")]
-    public required double Ratio { get; set; }
+    public required double Ratio { get; init; }
 }

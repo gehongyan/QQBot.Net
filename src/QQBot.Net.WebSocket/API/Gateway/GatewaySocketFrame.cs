@@ -5,17 +5,17 @@ namespace QQBot.API.Gateway;
 internal class GatewaySocketFrame
 {
     [JsonPropertyName("op")]
-    public GatewayOpCode OpCode { get; set; }
+    public GatewayOpCode OpCode { get; init; }
 
     [JsonPropertyName("s")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public int? Sequence { get; set; }
+    public int? Sequence { get; init; }
 
     [JsonPropertyName("t")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Type { get; set; }
+    public string? Type { get; init; }
 
     [JsonPropertyName("d")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? Payload { get; set; }
+    public object? Payload { get; init; }
 }

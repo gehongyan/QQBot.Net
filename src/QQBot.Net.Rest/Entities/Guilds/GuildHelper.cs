@@ -164,10 +164,9 @@ internal static class GuildHelper
             {
                 GetGuildMembersParams args = new()
                 {
-                    Limit = info.PageSize
+                    Limit = info.PageSize,
+                    AfterId = info.Position
                 };
-                if (info.Position != null)
-                    args.AfterId = info.Position.Value;
                 return [..await client.ApiClient.GetGuildMembersAsync(guild.Id, args, options).ConfigureAwait(false)];
             },
             nextPage: (info, lastPage) =>
@@ -191,10 +190,9 @@ internal static class GuildHelper
             {
                 GetGuildMembersParams args = new()
                 {
-                    Limit = info.PageSize
+                    Limit = info.PageSize,
+                    AfterId = info.Position
                 };
-                if (info.Position != null)
-                    args.AfterId = info.Position.Value;
                 IReadOnlyCollection<Member> models = await client.ApiClient
                     .GetGuildMembersAsync(guild.Id, args, options).ConfigureAwait(false);
                 return

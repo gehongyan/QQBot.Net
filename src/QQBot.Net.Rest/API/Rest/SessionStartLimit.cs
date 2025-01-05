@@ -5,14 +5,14 @@ namespace QQBot.API.Rest;
 internal class SessionStartLimit
 {
     [JsonPropertyName("total")]
-    public required int Total { get; set; }
+    public required int Total { get; init; }
 
     [JsonPropertyName("remaining")]
-    public required int Remaining { get; set; }
+    public required int Remaining { get; init; }
 
     [JsonPropertyName("reset_after")]
-    public required int ResetAfter { get; set; }
+    public required int ResetAfter { get; init; }
 
     [JsonPropertyName("max_concurrency")]
-    public required int MaxConcurrency { get; set; }
+    public required int MaxConcurrency { get; init; }
 }

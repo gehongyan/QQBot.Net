@@ -5,17 +5,17 @@ namespace QQBot.API;
 internal class Element
 {
     [JsonPropertyName("text")]
-    public TextElement? Text { get; set; }
+    public TextElement? Text { get; init; }
 
     [JsonPropertyName("image")]
-    public ImageElement? Image { get; set; }
+    public ImageElement? Image { get; init; }
 
     [JsonPropertyName("video")]
-    public VideoElement? Video { get; set; }
+    public VideoElement? Video { get; init; }
 
     [JsonPropertyName("url")]
-    public UrlElement? Url { get; set; }
+    public UrlElement? Url { get; init; }
 
     [JsonPropertyName("type")]
-    public ElementType? ElementType { get; set; }
+    public ElementType? ElementType { get; init; }
 }

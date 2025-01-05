@@ -14,10 +14,9 @@ internal static class SocketClientHelper
             {
                 GetGuildsParams args = new()
                 {
-                    Limit = info.PageSize
+                    Limit = info.PageSize,
+                    AfterId = info.Position
                 };
-                if (info.Position != null)
-                    args.AfterId = info.Position.Value;
                 return [..await client.ApiClient.GetGuildsAsync(args, options).ConfigureAwait(false)];
             },
             nextPage: (info, lastPage) =>

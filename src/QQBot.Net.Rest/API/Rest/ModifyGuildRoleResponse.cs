@@ -5,11 +5,11 @@ namespace QQBot.API.Rest;
 internal class ModifyGuildRoleResponse
 {
     [JsonPropertyName("guild_id")]
-    public required ulong GuildId { get; set; }
+    public required ulong GuildId { get; init; }
 
     [JsonPropertyName("role_id")]
-    public required uint RoleId { get; set; }
+    public required uint RoleId { get; init; }
 
     [JsonPropertyName("role")]
-    public required Role Role { get; set; }
+    public required Role Role { get; init; }
 }

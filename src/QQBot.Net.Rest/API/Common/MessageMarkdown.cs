@@ -5,20 +5,20 @@ namespace QQBot.API;
 internal class MessageMarkdown
 {
     [JsonPropertyName("content")]
-    public string? Content { get; set; }
+    public string? Content { get; init; }
 
     [JsonPropertyName("custom_template_id")]
-    public string? CustomTemplateId { get; set; }
+    public string? CustomTemplateId { get; init; }
 
     [JsonPropertyName("params")]
-    public MessageMarkdownParam[]? Params { get; set; }
+    public MessageMarkdownParam[]? Params { get; init; }
 }
 
 internal class MessageMarkdownParam
 {
     [JsonPropertyName("key")]
-    public required string Key { get; set; }
+    public required string Key { get; init; }
 
     [JsonPropertyName("values")]
-    public required string[] Values { get; set; }
+    public required string[] Values { get; init; }
 }

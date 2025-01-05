@@ -6,15 +6,15 @@ namespace QQBot.API;
 internal class Member
 {
     [JsonPropertyName("user")]
-    public User? User { get; set; }
+    public User? User { get; init; }
 
     [JsonPropertyName("nick")]
-    public string? Nickname { get; set; }
+    public string? Nickname { get; init; }
 
     [JsonPropertyName("roles")]
-    public uint[]? Roles { get; set; }
+    public uint[]? Roles { get; init; }
 
     [JsonPropertyName("joined_at")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]
-    public required DateTimeOffset JoinedAt { get; set; }
+    public required DateTimeOffset JoinedAt { get; init; }
 }

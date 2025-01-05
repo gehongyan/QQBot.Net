@@ -6,13 +6,13 @@ namespace QQBot.API.Rest;
 internal class ModifyGuildRoleParams
 {
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
     [JsonPropertyName("color")]
     [JsonConverter(typeof(HexAlphaColorConverter))]
-    public AlphaColor? Color { get; set; }
+    public AlphaColor? Color { get; init; }
 
     [JsonPropertyName("hoist")]
     [NumberBooleanConverter(WriteType = NumberBooleanConverter.EnumWriteType.Number)]
-    public bool? Hoist { get; set; }
+    public bool? Hoist { get; init; }
 }

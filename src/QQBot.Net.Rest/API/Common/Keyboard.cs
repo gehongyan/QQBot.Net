@@ -5,88 +5,88 @@ namespace QQBot.API;
 internal class Keyboard
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id { get; init; }
 
     [JsonPropertyName("content")]
-    public KeyboardContent? Content { get; set; }
+    public KeyboardContent? Content { get; init; }
 }
 
 internal class KeyboardContent
 {
     [JsonPropertyName("rows")]
-    public required KeyboardRow[] Rows { get; set; }
+    public required KeyboardRow[] Rows { get; init; }
 }
 
 internal class KeyboardRow
 {
     [JsonPropertyName("buttons")]
-    public required KeyboardButton[] Buttons { get; set; }
+    public required KeyboardButton[] Buttons { get; init; }
 }
 
 internal class KeyboardButton
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id { get; init; }
 
     [JsonPropertyName("render_data")]
-    public required KeyboardRenderData RenderData { get; set; }
+    public required KeyboardRenderData RenderData { get; init; }
 
     [JsonPropertyName("action")]
-    public required KeyboardAction Action { get; set; }
+    public required KeyboardAction Action { get; init; }
 }
 
 internal class KeyboardRenderData
 {
     [JsonPropertyName("label")]
-    public required string Label { get; set; }
+    public required string Label { get; init; }
 
     [JsonPropertyName("visited_label")]
-    public required string LabelVisited { get; set; }
+    public required string LabelVisited { get; init; }
 
     [JsonPropertyName("style")]
-    public required ButtonStyle Style { get; set; }
+    public required ButtonStyle Style { get; init; }
 }
 
 internal class KeyboardAction
 {
     [JsonPropertyName("type")]
-    public required ButtonAction Type { get; set; }
+    public required ButtonAction Type { get; init; }
 
     [JsonPropertyName("permission")]
-    public required KeyboardPermission Permission { get; set; }
+    public required KeyboardPermission Permission { get; init; }
 
     [JsonPropertyName("data")]
-    public required string Data { get; set; }
+    public required string Data { get; init; }
 
     [JsonPropertyName("reply")]
-    public bool? Reply { get; set; }
+    public bool? Reply { get; init; }
 
     [JsonPropertyName("enter")]
-    public bool? Enter { get; set; }
+    public bool? Enter { get; init; }
 
     [JsonPropertyName("anchor")]
-    public ButtonActionAnchor? Anchor { get; set; }
+    public ButtonActionAnchor? Anchor { get; init; }
 
     [Obsolete]
     [JsonPropertyName("click_limit")]
-    public int? ClickLimit { get; set; }
+    public int? ClickLimit { get; init; }
 
     [Obsolete]
     [JsonPropertyName("at_bot_show_channel_list")]
-    public bool? AtBotShowChannelList { get; set; }
+    public bool? AtBotShowChannelList { get; init; }
 
     [JsonPropertyName("unsupport_tips")]
-    public required string UnsupportedTips { get; set; }
+    public required string UnsupportedTips { get; init; }
 }
 
 internal class KeyboardPermission
 {
     [JsonPropertyName("type")]
-    public required ButtonPermission Type { get; set; }
+    public required ButtonPermission Type { get; init; }
 
     [JsonPropertyName("specify_user_ids")]
-    public string[]? SpecifyUserIds { get; set; }
+    public string[]? SpecifyUserIds { get; init; }
 
     [JsonPropertyName("specify_role_ids")]
-    public uint[]? SpecifyRoleIds { get; set; }
+    public uint[]? SpecifyRoleIds { get; init; }
 }

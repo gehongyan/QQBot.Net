@@ -5,20 +5,20 @@ namespace QQBot.API;
 internal class User
 {
     [JsonPropertyName("id")]
-    public required ulong Id { get; set; }
+    public required ulong Id { get; init; }
 
     [JsonPropertyName("username")]
-    public required string Username { get; set; }
+    public required string Username { get; init; }
 
     [JsonPropertyName("avatar")]
-    public string? Avatar { get; set; }
+    public string? Avatar { get; init; }
 
     [JsonPropertyName("bot")]
-    public bool? IsBot { get; set; }
+    public bool? IsBot { get; init; }
 
     [JsonPropertyName("union_openid")]
-    public string? UnionOpenId { get; set; }
+    public string? UnionOpenId { get; init; }
 
     [JsonPropertyName("union_user_account")]
-    public string? UnionUserAccount { get; set; }
+    public string? UnionUserAccount { get; init; }
 }

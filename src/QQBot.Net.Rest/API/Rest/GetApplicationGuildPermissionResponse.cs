@@ -5,5 +5,5 @@ namespace QQBot.API.Rest;
 internal class GetApplicationGuildPermissionResponse
 {
     [JsonPropertyName("apis")]
-    public required IReadOnlyCollection<ApiPermission> ApiPermissions { get; set; }
+    public required IReadOnlyCollection<ApiPermission> ApiPermissions { get; init; }
 }

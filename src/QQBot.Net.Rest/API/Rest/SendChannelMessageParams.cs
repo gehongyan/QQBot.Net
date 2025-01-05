@@ -7,31 +7,31 @@ namespace QQBot.API.Rest;
 internal class SendChannelMessageParams
 {
     [JsonPropertyName("content")]
-    public string? Content { get; set; }
+    public string? Content { get; init; }
 
     [JsonPropertyName("embed")]
-    public MessageEmbed? Embed { get; set; }
+    public MessageEmbed? Embed { get; init; }
 
     [JsonPropertyName("ark")]
-    public MessageArk? Ark { get; set; }
+    public MessageArk? Ark { get; init; }
 
     [JsonPropertyName("message_reference")]
-    public MessageReference? MessageReference { get; set; }
+    public MessageReference? MessageReference { get; init; }
 
     [JsonPropertyName("image")]
-    public string? Image { get; set; }
+    public string? Image { get; init; }
 
     [JsonIgnore]
-    public MultipartFile? FileImage { get; set; }
+    public MultipartFile? FileImage { get; init; }
 
     [JsonPropertyName("msg_id")]
-    public string? MessageId { get; set; }
+    public string? MessageId { get; init; }
 
     [JsonPropertyName("event_id")]
-    public string? EventId { get; set; }
+    public string? EventId { get; init; }
 
     [JsonPropertyName("markdown")]
-    public MessageMarkdown? Markdown { get; set; }
+    public MessageMarkdown? Markdown { get; init; }
 
     public IReadOnlyDictionary<string, object> ToDictionary(JsonSerializerOptions options)
     {

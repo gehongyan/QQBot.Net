@@ -6,9 +6,9 @@ namespace QQBot.API.Rest;
 internal class GetForumThreadsResponse
 {
     [JsonPropertyName("threads")]
-    public required Thread[] Threads { get; set; }
+    public required Thread[] Threads { get; init; }
 
     [JsonPropertyName("is_finish")]
     [JsonConverter(typeof(NumberBooleanConverter))]
-    public required bool IsFinish { get; set; }
+    public required bool IsFinish { get; init; }
 }

@@ -5,8 +5,8 @@ namespace QQBot.API;
 internal class Paragraph
 {
     [JsonPropertyName("elems")]
-    public required Element[] Elements { get; set; }
+    public required Element[] Elements { get; init; }
 
     [JsonPropertyName("props")]
-    public required ParagraphProperties Properties { get; set; }
+    public required ParagraphProperties Properties { get; init; }
 }

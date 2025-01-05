@@ -5,11 +5,11 @@ namespace QQBot.API;
 internal class AudioControl
 {
     [JsonPropertyName("audio_url")]
-    public string? AudioUrl { get; set; }
+    public string? AudioUrl { get; init; }
 
     [JsonPropertyName("text")]
-    public string? Text { get; set; }
+    public string? Text { get; init; }
 
     [JsonPropertyName("status")]
-    public required AudioStatus Status { get; set; }
+    public required AudioStatus Status { get; init; }
 }

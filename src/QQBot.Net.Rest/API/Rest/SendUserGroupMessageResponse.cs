@@ -6,9 +6,9 @@ namespace QQBot.API.Rest;
 internal class SendUserGroupMessageResponse
 {
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required string Id { get; init; }
 
     [JsonPropertyName("timestamp")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]
-    public required DateTimeOffset Timestamp { get; set; }
+    public required DateTimeOffset Timestamp { get; init; }
 }

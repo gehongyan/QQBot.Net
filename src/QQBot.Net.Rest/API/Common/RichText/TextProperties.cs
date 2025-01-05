@@ -5,11 +5,11 @@ namespace QQBot.API;
 internal class TextProperties
 {
     [JsonPropertyName("font_bold")]
-    public bool? Bold { get; set; }
+    public bool? Bold { get; init; }
 
     [JsonPropertyName("italic")]
-    public bool? Italic { get; set; }
+    public bool? Italic { get; init; }
 
     [JsonPropertyName("underline")]
-    public bool? Underline { get; set; }
+    public bool? Underline { get; init; }
 }

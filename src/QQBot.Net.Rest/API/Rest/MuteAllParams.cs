@@ -7,9 +7,9 @@ internal class MuteAllParams
 {
     [JsonPropertyName("mute_end_timestamp")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.Seconds)]
-    public DateTimeOffset? MuteEndTimestamp { get; set; }
+    public DateTimeOffset? MuteEndTimestamp { get; init; }
 
     [JsonPropertyName("mute_seconds")]
     [TimeSpanNumberJsonConverter(Unit = TimeSpanNumberJsonConverter.TimeSpanUnit.Seconds)]
-    public TimeSpan? MuteSeconds { get; set; }
+    public TimeSpan? MuteSeconds { get; init; }
 }

@@ -5,8 +5,8 @@ namespace QQBot.API;
 internal class UrlElement
 {
     [JsonPropertyName("url")]
-    public required string Url { get; set; }
+    public required string Url { get; init; }
 
     [JsonPropertyName("desc")]
-    public required string Description { get; set; }
+    public required string Description { get; init; }
 }

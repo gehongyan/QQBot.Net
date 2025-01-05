@@ -6,39 +6,39 @@ namespace QQBot.API;
 internal class Channel
 {
     [JsonPropertyName("id")]
-    public required ulong Id { get; set; }
+    public required ulong Id { get; init; }
 
     [JsonPropertyName("guild_id")]
-    public required ulong GuildId { get; set; }
+    public required ulong GuildId { get; init; }
 
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [JsonPropertyName("type")]
-    public required ChannelType Type { get; set; }
+    public required ChannelType Type { get; init; }
 
     [JsonPropertyName("sub_type")]
-    public ChannelSubType? SubType { get; set; }
+    public ChannelSubType? SubType { get; init; }
 
     [JsonPropertyName("position")]
-    public required int Position { get; set; }
+    public required int Position { get; init; }
 
     [JsonPropertyName("parent_id")]
-    public ulong? ParentId { get; set; }
+    public ulong? ParentId { get; init; }
 
     [JsonPropertyName("owner_id")]
-    public required ulong OwnerId { get; set; }
+    public required ulong OwnerId { get; init; }
 
     [JsonPropertyName("private_type")]
-    public PrivateType? PrivateType { get; set; }
+    public PrivateType? PrivateType { get; init; }
 
     [JsonPropertyName("speak_permission")]
-    public SpeakPermission? SpeakPermission { get; set; }
+    public SpeakPermission? SpeakPermission { get; init; }
 
     [JsonPropertyName("application_id")]
     [JsonConverter(typeof(ChannelApplicationJsonConverter))]
-    public ChannelApplication? ApplicationId { get; set; }
+    public ChannelApplication? ApplicationId { get; init; }
 
     [JsonPropertyName("permissions")]
-    public string? Permissions { get; set; }
+    public string? Permissions { get; init; }
 }

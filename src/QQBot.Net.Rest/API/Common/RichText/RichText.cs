@@ -5,5 +5,5 @@ namespace QQBot.API;
 internal class RichText
 {
     [JsonPropertyName("paragraphs")]
-    public required Paragraph[] Paragraphs { get; set; }
+    public required Paragraph[] Paragraphs { get; init; }
 }
