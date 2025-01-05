@@ -372,6 +372,126 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Guild Members
+
+    private async Task HandleGuildMemberAddedAsync(object? payload)
+    {
+        if (DeserializePayload<GuildMemberEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(UserJoined), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (data.User is null)
+        {
+            await UnknownUserAsync(nameof(UserJoined), payload).ConfigureAwait(false);
+            return;
+        }
+
+        SocketGuildMember user = guild.AddOrUpdateUser(data.User, data);
+        guild.MemberCount++;
+        SocketGuildMember? operatorUser = guild.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableOperatorUser = GetCacheableSocketGuildMember(operatorUser, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_userJoinedEvent, nameof(UserJoined), user, cacheableOperatorUser).ConfigureAwait(false);
+    }
+
+    private async Task HandleGuildMemberRemovedAsync(object? payload)
+    {
+        if (DeserializePayload<GuildMemberEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(UserLeft), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (data.User is null)
+        {
+            await UnknownUserAsync(nameof(UserJoined), payload).ConfigureAwait(false);
+            return;
+        }
+        SocketGuildUser user = guild.RemoveUser(data.User.Id)
+            ?? State.GetGuildUser(data.User.Id)
+            ?? State.GetOrAddGuildUser(data.User.Id, _ => SocketGuildUser.Create(this, State, data.User));
+        guild.MemberCount--;
+
+        SocketGuildMember? operatorUser = guild.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableOperatorUser = GetCacheableSocketGuildMember(operatorUser, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_userLeftEvent, nameof(UserLeft), guild, user, cacheableOperatorUser).ConfigureAwait(false);
+    }
+
+    private async Task HandleGuildMemberUpdatedAsync(object? payload)
+    {
+        if (DeserializePayload<GuildMemberEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(GuildMemberUpdated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (data.User is null)
+        {
+            await UnknownUserAsync(nameof(GuildMemberUpdated), payload).ConfigureAwait(false);
+            return;
+        }
+
+        SocketGuildMember? operatorUser = guild.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableOperatorUser = GetCacheableSocketGuildMember(operatorUser, data.OperatorUserId, guild);
+
+        if (guild.GetUser(data.User.Id) is { } user)
+        {
+            SocketGuildMember before = user.Clone();
+            user.Update(State, data.User, data);
+            Cacheable<SocketGuildMember, ulong> cacheableBefore = new(before, user.Id, true, () => Task.FromResult<SocketGuildMember?>(null));
+            await TimedInvokeAsync(_guildMemberUpdatedEvent, nameof(GuildMemberUpdated), cacheableBefore, user, cacheableOperatorUser).ConfigureAwait(false);
+        }
+        else
+        {
+            user = guild.AddOrUpdateUser(data.User, data);
+            Cacheable<SocketGuildMember, ulong> cacheableBefore = new(null, user.Id, false, () => Task.FromResult<SocketGuildMember?>(null));
+            await TimedInvokeAsync(_guildMemberUpdatedEvent, nameof(GuildMemberUpdated), cacheableBefore, user, cacheableOperatorUser).ConfigureAwait(false);
+        }
+    }
+
+    #endregion
+
+    #region Voices
+
+    private async Task HandleAudioOrLiveChannelMemberEnterAsync(object? payload)
+    {
+        if (DeserializePayload<AudioOrLiveChannelMemberEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(UserConnected), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(UserConnected), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketGuildMember? user = guild.GetUser(data.UserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.UserId, guild);
+        await TimedInvokeAsync(_userConnectedEvent, nameof(UserConnected), cacheableUser, channel).ConfigureAwait(false);
+    }
+
+    private async Task HandleAudioOrLiveChannelMemberExitAsync(object? payload)
+    {
+        if (DeserializePayload<AudioOrLiveChannelMemberEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(UserDisconnected), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(UserDisconnected), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketGuildMember? user = guild.GetUser(data.UserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.UserId, guild);
+        await TimedInvokeAsync(_userDisconnectedEvent, nameof(UserDisconnected), cacheableUser, channel).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Raising Events
 
     private async Task GuildAvailableAsync(SocketGuild guild)
@@ -393,6 +513,9 @@ public partial class QQBotSocketClient
 
     private async Task UnknownChannelAsync(string dispatch, ulong channelId, object? payload) =>
         await LogGatewayErrorAsync(dispatch, $"Unknown ChannelId: {channelId}.", payload).ConfigureAwait(false);
+
+    private async Task UnknownUserAsync(string dispatch, object? payload) =>
+        await LogGatewayErrorAsync(dispatch, $"No User in payload.", payload).ConfigureAwait(false);
 
     private async Task LogGatewayErrorAsync(string dispatch, string message, object? payload) =>
         await _gatewayLogger.WarningAsync($"{message} Event: {dispatch}. Payload: {SerializePayload(payload)}").ConfigureAwait(false);

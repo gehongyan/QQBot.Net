@@ -27,7 +27,7 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     public bool IsOwner { get; private set; }
 
     /// <inheritdoc />
-    public int MemberCount { get; private set; }
+    public int MemberCount { get; internal set; }
 
     /// <inheritdoc />
     public int MaxMembers { get; private set; }
@@ -253,6 +253,14 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
         SocketGuildMember member = SocketGuildMember.Create(this, Client.State, userModel, memberModel);
         member.GlobalUser.AddRef();
         _members[member.Id] = member;
+        return member;
+    }
+
+    internal SocketGuildMember? RemoveUser(ulong id)
+    {
+        if (!_members.TryRemove(id, out SocketGuildMember? member))
+            return null;
+        member.GlobalUser.RemoveRef(Client);
         return member;
     }
 

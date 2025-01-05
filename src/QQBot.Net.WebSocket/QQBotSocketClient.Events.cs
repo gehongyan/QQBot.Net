@@ -152,7 +152,7 @@ public partial class QQBotSocketClient
     ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是更新前的子频道。 </item>
     ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是更新后的子频道。 </item>
     ///     <item>
-    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是删除此子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是更新此子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
     ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
     ///     </item>
     ///     </list>
@@ -166,4 +166,131 @@ public partial class QQBotSocketClient
     internal readonly AsyncEvent<Func<SocketGuildChannel, SocketGuildChannel, Cacheable<SocketGuildMember, ulong>, Task>> _channelUpdatedEvent = new();
 
     #endregion
+
+    #region Guild Members
+
+    /// <summary>
+    ///     当用户加入频道时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildMember"/> 参数是加入频道的频道用户。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是进行此操作的子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGuildMember, Cacheable<SocketGuildMember, ulong>, Task> UserJoined
+    {
+        add => _userJoinedEvent.Add(value);
+        remove => _userJoinedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGuildMember, Cacheable<SocketGuildMember, ulong>, Task>> _userJoinedEvent = new();
+
+    /// <summary>
+    ///     当用户离开频道时引发。
+    /// </summary>
+    /// <remarks>
+    ///     <note type="warning">
+    ///         有消息称，那么此事件不会在其成员数量超过 2000 人的频道内被触发。
+    ///     </note>
+    ///     <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuild"/> 参数是用户离开的频道。 </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildUser"/> 参数是离开频道的频道用户。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是进行此操作的子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGuild, SocketGuildUser, Cacheable<SocketGuildMember, ulong>, Task> UserLeft
+    {
+        add => _userLeftEvent.Add(value);
+        remove => _userLeftEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGuild, SocketGuildUser, Cacheable<SocketGuildMember, ulong>, Task>> _userLeftEvent = new();
+
+    /// <summary>
+    ///     当频道用户信息被更新时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是可缓存用户被更新前的状态。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 用户被更新前的状态；否则，包含 <see cref="System.UInt64"/> 用户 ID。
+    ///         <br />
+    ///         <note type="important">
+    ///             用户被更新前的状态无法通过 <see cref="QQBot.Cacheable{TEntity,TId}.DownloadAsync"/> 方法下载。
+    ///         </note>
+    ///     </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildUser"/> 参数是更新后的频道用户。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是进行此操作的子频道的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<Cacheable<SocketGuildMember, ulong>, SocketGuildMember, Cacheable<SocketGuildMember, ulong>, Task> GuildMemberUpdated
+    {
+        add => _guildMemberUpdatedEvent.Add(value);
+        remove => _guildMemberUpdatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<Cacheable<SocketGuildMember, ulong>, SocketGuildMember, Cacheable<SocketGuildMember, ulong>, Task>> _guildMemberUpdatedEvent = new();
+
+    #endregion
+
+    #region Voices
+
+    /// <summary>
+    ///     当频道用户连接到语音子频道或直播子频道时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是连接到语音子频道或直播子频道的可缓存频道用户。如果缓存中存在此频道用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是用户连接到的语音子频道或直播子频道。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<Cacheable<SocketGuildMember, ulong>, SocketGuildChannel, Task> UserConnected
+    {
+        add => _userConnectedEvent.Add(value);
+        remove => _userConnectedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<Cacheable<SocketGuildMember, ulong>, SocketGuildChannel, Task>> _userConnectedEvent = new();
+
+    /// <summary>
+    ///     当频道用户从语音子频道或直播子频道断开连接时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是从语音子频道或直播子频道断开连接的可缓存频道用户。如果缓存中存在此频道用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketGuildMember"/> 频道用户；否则，包含 <see cref="System.UInt64"/> 用户 ID，以供按需下载实体。
+    ///     </item>
+    ///     <item> <see cref="QQBot.WebSocket.SocketGuildChannel"/> 参数是用户断开连接的语音子频道或直播子频道。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<Cacheable<SocketGuildMember, ulong>, SocketGuildChannel, Task> UserDisconnected
+    {
+        add => _userDisconnectedEvent.Add(value);
+        remove => _userDisconnectedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<Cacheable<SocketGuildMember, ulong>, SocketGuildChannel, Task>> _userDisconnectedEvent = new();
+
+    #endregion
+
 }

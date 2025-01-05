@@ -123,6 +123,13 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
     private string DebuggerDisplay =>
         $"{Nickname ?? Username} ({(Nickname is not null ? $"{Username}, " : string.Empty)}{Id}{(IsBot ?? false ? ", Bot" : "")}, GuildMember)";
 
+    internal SocketGuildMember Clone()
+    {
+        SocketGuildMember clone = (SocketGuildMember)MemberwiseClone();
+        clone._globalUser = GlobalUser.Clone();
+        return clone;
+    }
+
     #region IGuild
 
     /// <inheritdoc />

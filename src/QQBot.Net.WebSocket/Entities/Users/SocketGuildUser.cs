@@ -9,8 +9,10 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketGuildUser : SocketUser, IGuildUser
 {
+    internal SocketGlobalUser _globalUser;
+
     /// <inheritdoc />
-    internal override SocketGlobalUser GlobalUser { get; }
+    internal override SocketGlobalUser GlobalUser => _globalUser;
 
     /// <inheritdoc />
     public override string? Avatar
@@ -38,7 +40,7 @@ public class SocketGuildUser : SocketUser, IGuildUser
     internal SocketGuildUser(QQBotSocketClient client, SocketGlobalUser globalUser)
         : base(client, globalUser.Id)
     {
-        GlobalUser = globalUser;
+        _globalUser = globalUser;
         Username = string.Empty;
     }
 

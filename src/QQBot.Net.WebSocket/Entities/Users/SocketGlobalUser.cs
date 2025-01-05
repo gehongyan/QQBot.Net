@@ -80,4 +80,6 @@ internal class SocketGlobalUser : SocketUser
     }
 
     private string DebuggerDisplay => $"Unknown ({Id} Global)";
+
+    internal SocketGlobalUser Clone() => (SocketGlobalUser)MemberwiseClone();
 }

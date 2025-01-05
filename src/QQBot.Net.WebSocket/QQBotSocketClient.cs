@@ -595,7 +595,105 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
+            #region Guild Members
 
+            case "GUILD_MEMBER_ADD":
+                await HandleGuildMemberAddedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GUILD_MEMBER_UPDATE":
+                await HandleGuildMemberUpdatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GUILD_MEMBER_REMOVE":
+                await HandleGuildMemberRemovedAsync(payload).ConfigureAwait(false);
+                break;
+            case "AUDIO_OR_LIVE_CHANNEL_MEMBER_ENTER":
+                await HandleAudioOrLiveChannelMemberEnterAsync(payload).ConfigureAwait(false);
+                break;
+            case "AUDIO_OR_LIVE_CHANNEL_MEMBER_EXIT":
+                await HandleAudioOrLiveChannelMemberExitAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
+
+            // #region Forums
+            //
+            // case "FORUM_THREAD_CREATE":
+            //     await HandleForumThreadCreatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_THREAD_UPDATE":
+            //     await HandleForumThreadUpdatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_THREAD_DELETE":
+            //     await HandleForumThreadDeletedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_POST_CREATE":
+            //     await HandleForumPostCreatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_POST_DELETE":
+            //     await HandleForumPostDeletedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_REPLY_CREATE":
+            //     await HandleForumReplyCreatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_REPLY_DELETE":
+            //     await HandleForumReplyDeletedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FORUM_PUBLISH_AUDIT_RESULT":
+            //     await HandleForumPublishAuditResultAsync(payload).ConfigureAwait(false);
+            //     break;
+            //
+            // case "OPEN_FORUM_THREAD_CREATE":
+            //     await HandleOpenForumThreadCreatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "OPEN_FORUM_THREAD_UPDATE":
+            //     await HandleOpenForumThreadUpdatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "OPEN_FORUM_THREAD_DELETE":
+            //     await HandleOpenForumThreadDeletedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "OPEN_FORUM_POST_CREATE":
+            //     await HandleOpenForumPostCreatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "OPEN_FORUM_POST_DELETE":
+            //     await HandleOpenForumPostDeletedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "OPEN_FORUM_REPLY_CREATE":
+            //     await HandleOpenForumReplyCreatedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "OPEN_FORUM_REPLY_DELETE":
+            //     await HandleOpenForumReplyDeletedAsync(payload).ConfigureAwait(false);
+            //     break;
+            //
+            // #endregion
+            //
+            // #region Groups
+            //
+            // case "GROUP_ADD_ROBOT":
+            //     await HandleGroupRobotAddedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "GROUP_DEL_ROBOT":
+            //     await HandleGroupRobotRemovedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "GROUP_MSG_REJECT":
+            //     await HandleGroupMessageRejectedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "GROUP_MSG_RECEIVE":
+            //     await HandleGroupMessageReceivedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FRIEND_ADD":
+            //     await HandleFriendAddedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "FRIEND_DEL":
+            //     await HandleFriendRemovedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "C2C_MSG_REJECT":
+            //     await HandleUserMessageRejectedAsync(payload).ConfigureAwait(false);
+            //     break;
+            // case "C2C_MSG_RECEIVE":
+            //     await HandleUserMessageReceivedAsync(payload).ConfigureAwait(false);
+            //     break;
+            //
+            // #endregion
 
             default:
                 if (!SuppressUnknownDispatchWarnings)
