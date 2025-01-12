@@ -492,6 +492,229 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Forums
+
+    private async Task HandleForumThreadCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumThreadEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumThreadCreated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumThreadCreated), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketThread thread = SocketThread.Create(this, channel, data.AuthorId, data.ThreadInfo);
+        await TimedInvokeAsync(_forumThreadCreatedEvent, nameof(ForumThreadCreated), thread).ConfigureAwait(false);
+    }
+
+    private async Task HandleForumThreadUpdatedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumThreadEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumThreadUpdated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumThreadUpdated), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketThread thread = SocketThread.Create(this, channel, data.AuthorId, data.ThreadInfo);
+        await TimedInvokeAsync(_forumThreadUpdatedEvent, nameof(ForumThreadUpdated), thread).ConfigureAwait(false);
+    }
+
+    private async Task HandleForumThreadDeletedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumThreadEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumThreadDeleted), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumThreadDeleted), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketThread thread = SocketThread.Create(this, channel, data.AuthorId, data.ThreadInfo);
+        await TimedInvokeAsync(_forumThreadDeletedEvent, nameof(ForumThreadDeleted), thread).ConfigureAwait(false);
+    }
+
+    private async Task HandleForumPostCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumPostEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumPostCreated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumPostCreated), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketPost post = SocketPost.Create(this, channel, data.AuthorId, data.PostInfo);
+        await TimedInvokeAsync(_forumPostCreatedEvent, nameof(ForumPostCreated), post).ConfigureAwait(false);
+    }
+
+    private async Task HandleForumPostDeletedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumPostEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumPostDeleted), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumPostDeleted), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketPost post = SocketPost.Create(this, channel, data.AuthorId, data.PostInfo);
+        await TimedInvokeAsync(_forumPostDeletedEvent, nameof(ForumPostDeleted), post).ConfigureAwait(false);
+    }
+
+    private async Task HandleForumReplyCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumReplyEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumReplyCreated), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumReplyCreated), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketReply reply = SocketReply.Create(this, channel, data.AuthorId, data.ReplyInfo);
+        await TimedInvokeAsync(_forumReplyCreatedEvent, nameof(ForumReplyCreated), reply).ConfigureAwait(false);
+    }
+
+    private async Task HandleForumReplyDeletedAsync(object? payload)
+    {
+        if (DeserializePayload<ForumReplyEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumReplyDeleted), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumReplyDeleted), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketReply reply = SocketReply.Create(this, channel, data.AuthorId, data.ReplyInfo);
+        await TimedInvokeAsync(_forumReplyDeletedEvent, nameof(ForumReplyDeleted), reply).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Groups
+
+    private async Task HandleGroupRobotAddedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateGroupChannel(State, data.GroupOpenid) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(JoinedGroup), data.GroupOpenid, payload).ConfigureAwait(false);
+            return;
+        }
+        Cacheable<SocketUser, string> user = new(null, data.OpMemberOpenId, false, () => Task.FromResult<SocketUser?>(null));
+        await TimedInvokeAsync(_joinedGroupEvent, nameof(JoinedGroup), channel, user).ConfigureAwait(false);
+    }
+
+    private async Task HandleGroupRobotRemovedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateGroupChannel(State, data.GroupOpenid) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(LeftGroup), data.GroupOpenid, payload).ConfigureAwait(false);
+            return;
+        }
+        Cacheable<SocketUser, string> user = new(null, data.OpMemberOpenId, false, () => Task.FromResult<SocketUser?>(null));
+        await TimedInvokeAsync(_leftGroupEvent, nameof(LeftGroup), channel, user).ConfigureAwait(false);
+    }
+
+    private async Task HandleGroupMessageRejectedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateGroupChannel(State, data.GroupOpenid) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(GroupActiveMessageRejected), data.GroupOpenid, payload).ConfigureAwait(false);
+            return;
+        }
+        Cacheable<SocketUser, string> user = new(null, data.OpMemberOpenId, false, () => Task.FromResult<SocketUser?>(null));
+        await TimedInvokeAsync(_groupActiveMessageRejectedEvent, nameof(GroupActiveMessageRejected), channel, user).ConfigureAwait(false);
+    }
+
+    private async Task HandleGroupMessageReceivedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateGroupChannel(State, data.GroupOpenid) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(GroupActiveMessageAllowed), data.GroupOpenid, payload).ConfigureAwait(false);
+            return;
+        }
+        Cacheable<SocketUser, string> user = new(null, data.OpMemberOpenId, false, () => Task.FromResult<SocketUser?>(null));
+        await TimedInvokeAsync(_groupActiveMessageAllowedEvent, nameof(GroupActiveMessageAllowed), channel, user).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Users
+
+    private async Task HandleFriendAddedAsync(object? payload)
+    {
+        if (DeserializePayload<UserBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateUserChannel(State, data.OpenId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(UserAdded), data.OpenId, payload).ConfigureAwait(false);
+            return;
+        }
+        await TimedInvokeAsync(_userAddedEvent, nameof(UserAdded), channel).ConfigureAwait(false);
+    }
+
+    private async Task HandleFriendRemovedAsync(object? payload)
+    {
+        if (DeserializePayload<UserBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateUserChannel(State, data.OpenId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(UserRemoved), data.OpenId, payload).ConfigureAwait(false);
+            return;
+        }
+        await TimedInvokeAsync(_userRemovedEvent, nameof(UserRemoved), channel).ConfigureAwait(false);
+    }
+
+    private async Task HandleUserMessageRejectedAsync(object? payload)
+    {
+        if (DeserializePayload<UserBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateUserChannel(State, data.OpenId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(UserRemoved), data.OpenId, payload).ConfigureAwait(false);
+            return;
+        }
+        await TimedInvokeAsync(_userActiveMessageRejectedEvent, nameof(UserActiveMessageRejected), channel).ConfigureAwait(false);
+    }
+
+    private async Task HandleUserMessageReceivedAsync(object? payload)
+    {
+        if (DeserializePayload<UserBotEvent>(payload) is not { } data) return;
+        if (GetOrCreateUserChannel(State, data.OpenId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(UserRemoved), data.OpenId, payload).ConfigureAwait(false);
+            return;
+        }
+        await TimedInvokeAsync(_userActiveMessageAllowedEvent, nameof(UserActiveMessageAllowed), channel).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Raising Events
 
     private async Task GuildAvailableAsync(SocketGuild guild)
@@ -501,7 +724,7 @@ public partial class QQBotSocketClient
         await TimedInvokeAsync(_guildAvailableEvent, nameof(GuildAvailable), guild).ConfigureAwait(false);
     }
 
-    internal async Task GuildUnavailableAsync(SocketGuild guild)
+    private async Task GuildUnavailableAsync(SocketGuild guild)
     {
         if (!guild.IsConnected) return;
         guild.IsConnected = false;
@@ -513,6 +736,9 @@ public partial class QQBotSocketClient
 
     private async Task UnknownChannelAsync(string dispatch, ulong channelId, object? payload) =>
         await LogGatewayErrorAsync(dispatch, $"Unknown ChannelId: {channelId}.", payload).ConfigureAwait(false);
+
+    private async Task UnknownChannelAsync(string dispatch, Guid channelId, object? payload) =>
+        await LogGatewayErrorAsync(dispatch, $"Unknown Group ChannelId: {channelId.ToIdString()}.", payload).ConfigureAwait(false);
 
     private async Task UnknownUserAsync(string dispatch, object? payload) =>
         await LogGatewayErrorAsync(dispatch, $"No User in payload.", payload).ConfigureAwait(false);

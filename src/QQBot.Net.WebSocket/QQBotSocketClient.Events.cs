@@ -293,4 +293,294 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Forums
+
+    /// <summary>
+    ///     当论坛主题被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketThread"/> 参数是新创建的论坛主题。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketThread, Task> ForumThreadCreated
+    {
+        add => _forumThreadCreatedEvent.Add(value);
+        remove => _forumThreadCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketThread, Task>> _forumThreadCreatedEvent = new();
+
+    /// <summary>
+    ///     当论坛主题被修改时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketThread"/> 参数是修改后的论坛主题。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketThread, Task> ForumThreadUpdated
+    {
+        add => _forumThreadUpdatedEvent.Add(value);
+        remove => _forumThreadUpdatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketThread, Task>> _forumThreadUpdatedEvent = new();
+
+    /// <summary>
+    ///     当论坛主题被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketThread"/> 参数是被删除的论坛主题。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketThread, Task> ForumThreadDeleted
+    {
+        add => _forumThreadDeletedEvent.Add(value);
+        remove => _forumThreadDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketThread, Task>> _forumThreadDeletedEvent = new();
+
+    /// <summary>
+    ///     当论坛主题评论被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketPost"/> 参数是新创建的论坛主题评论。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketPost, Task> ForumPostCreated
+    {
+        add => _forumPostCreatedEvent.Add(value);
+        remove => _forumPostCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketPost, Task>> _forumPostCreatedEvent = new();
+
+    /// <summary>
+    ///     当论坛主题评论被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketPost"/> 参数是被删除的论坛主题评论。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketPost, Task> ForumPostDeleted
+    {
+        add => _forumPostDeletedEvent.Add(value);
+        remove => _forumPostDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketPost, Task>> _forumPostDeletedEvent = new();
+
+    /// <summary>
+    ///     当论坛主题评论回复被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketReply"/> 参数是新创建的论坛主题评论回复。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketReply, Task> ForumReplyCreated
+    {
+        add => _forumReplyCreatedEvent.Add(value);
+        remove => _forumReplyCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketReply, Task>> _forumReplyCreatedEvent = new();
+
+    /// <summary>
+    ///     当论坛主题评论回复被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketReply"/> 参数是被删除的论坛主题评论回复。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketReply, Task> ForumReplyDeleted
+    {
+        add => _forumReplyDeletedEvent.Add(value);
+        remove => _forumReplyDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketReply, Task>> _forumReplyDeletedEvent = new();
+
+    #endregion
+
+    #region Groups
+
+    /// <summary>
+    ///     当群组添加当前用户时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是添加当前用户的群组。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是添加当前用户的群组的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task> JoinedGroup
+    {
+        add => _joinedGroupEvent.Add(value);
+        remove => _joinedGroupEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task>> _joinedGroupEvent = new();
+
+    /// <summary>
+    ///     当群组移除当前用户时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是移除当前用户的群组。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是添加当前用户的群组的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task> LeftGroup
+    {
+        add => _leftGroupEvent.Add(value);
+        remove => _leftGroupEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task>> _leftGroupEvent = new();
+
+    /// <summary>
+    ///     当群组接受当前用户的主动消息时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是接受当前用户主动消息的群组。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是添加当前用户的群组的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task> GroupActiveMessageAllowed
+    {
+        add => _groupActiveMessageAllowedEvent.Add(value);
+        remove => _groupActiveMessageAllowedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task>> _groupActiveMessageAllowedEvent = new();
+
+    /// <summary>
+    ///     当群组接受当前用户的主动消息时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是接受当前用户主动消息的群组。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是添加当前用户的群组的用户。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task> GroupActiveMessageRejected
+    {
+        add => _groupActiveMessageRejectedEvent.Add(value);
+        remove => _groupActiveMessageRejectedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task>> _groupActiveMessageRejectedEvent = new();
+
+    #endregion
+
+    #region Users
+
+    /// <summary>
+    ///     当用户添加当前用户时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketUserChannel"/> 参数是添加当前用户的用户频道。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketUserChannel, Task> UserAdded
+    {
+        add => _userAddedEvent.Add(value);
+        remove => _userAddedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketUserChannel, Task>> _userAddedEvent = new();
+
+    /// <summary>
+    ///     当用户移除当前用户时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketUserChannel"/> 参数是移除当前用户的用户频道。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketUserChannel, Task> UserRemoved
+    {
+        add => _userRemovedEvent.Add(value);
+        remove => _userRemovedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketUserChannel, Task>> _userRemovedEvent = new();
+
+    /// <summary>
+    ///     当用户接受当前用户的主动消息时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketUserChannel"/> 参数是接受当前用户主动消息的用户。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketUserChannel, Task> UserActiveMessageAllowed
+    {
+        add => _userActiveMessageAllowedEvent.Add(value);
+        remove => _userActiveMessageAllowedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketUserChannel, Task>> _userActiveMessageAllowedEvent = new();
+
+    /// <summary>
+    ///     当用户接受当前用户的主动消息时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketUserChannel"/> 参数是接受当前用户主动消息的用户。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketUserChannel, Task> UserActiveMessageRejected
+    {
+        add => _userActiveMessageRejectedEvent.Add(value);
+        remove => _userActiveMessageRejectedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketUserChannel, Task>> _userActiveMessageRejectedEvent = new();
+
+    #endregion
 }

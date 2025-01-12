@@ -13,20 +13,20 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
     public new Guid Id { get; }
 
     /// <inheritdoc cref="QQBot.IDMChannel.Recipient" />
-    public SocketUser Recipient { get; }
+    public SocketUser? Recipient { get; }
 
     /// <inheritdoc />
     public IReadOnlyCollection<SocketMessage> CachedMessages => [];
 
     /// <inheritdoc />
-    internal SocketUserChannel(QQBotSocketClient client, Guid id, SocketUser recipient)
+    internal SocketUserChannel(QQBotSocketClient client, Guid id, SocketUser? recipient)
         : base(client, id.ToIdString())
     {
         Id = id;
         Recipient = recipient;
     }
 
-    internal static SocketUserChannel Create(QQBotSocketClient client, ClientState state, Guid id, SocketUser recipient)
+    internal static SocketUserChannel Create(QQBotSocketClient client, ClientState state, Guid id, SocketUser? recipient)
     {
         SocketUserChannel channel = new(client, id, recipient);
         return channel;
@@ -51,7 +51,7 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
     /// <inheritdoc />
     protected override SocketUser? GetUserInternal(string id)
     {
-        if (id == Recipient.Id) return Recipient;
+        if (id == Recipient?.Id) return Recipient;
         return id == Client.CurrentUser?.Id.ToIdString() ? Client.CurrentUser : null;
     }
 
@@ -60,14 +60,14 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
     #region ISocketPrivateChannel
 
     /// <inheritdoc />
-    IReadOnlyCollection<SocketUser> ISocketPrivateChannel.Recipients => [Recipient];
+    IReadOnlyCollection<SocketUser> ISocketPrivateChannel.Recipients => Recipient is not null ? [Recipient] : [];
 
     #endregion
 
     #region IPrivateChannel
 
     /// <inheritdoc />
-    IReadOnlyCollection<IUser> IPrivateChannel.Recipients => [Recipient];
+    IReadOnlyCollection<IUser> IPrivateChannel.Recipients => Recipient is not null ? [Recipient] : [];
 
     #endregion
 

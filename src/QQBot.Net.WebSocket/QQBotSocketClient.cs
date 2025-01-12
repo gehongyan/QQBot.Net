@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using QQBot.API;
 using QQBot.API.Gateway;
-using QQBot.API.Rest;
 using QQBot.Logging;
 using QQBot.Net.Queue;
 using QQBot.Net.WebSockets;
@@ -273,7 +272,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         return channel;
     }
 
-    internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id, SocketUser recipient) =>
+    internal SocketUserChannel GetOrCreateUserChannel(ClientState state, Guid id, SocketUser? recipient = null) =>
         state.GetOrAddUserChannel(id, _ => SocketUserChannel.Create(this, state, id, recipient));
 
     internal SocketDMChannel GetOrCreateDMChannel(ClientState state, ulong id, SocketGuildUser recipient) =>
@@ -615,33 +614,33 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
-            // #region Forums
-            //
-            // case "FORUM_THREAD_CREATE":
-            //     await HandleForumThreadCreatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FORUM_THREAD_UPDATE":
-            //     await HandleForumThreadUpdatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FORUM_THREAD_DELETE":
-            //     await HandleForumThreadDeletedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FORUM_POST_CREATE":
-            //     await HandleForumPostCreatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FORUM_POST_DELETE":
-            //     await HandleForumPostDeletedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FORUM_REPLY_CREATE":
-            //     await HandleForumReplyCreatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FORUM_REPLY_DELETE":
-            //     await HandleForumReplyDeletedAsync(payload).ConfigureAwait(false);
-            //     break;
+            #region Forums
+
+            case "FORUM_THREAD_CREATE":
+                await HandleForumThreadCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FORUM_THREAD_UPDATE":
+                await HandleForumThreadUpdatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FORUM_THREAD_DELETE":
+                await HandleForumThreadDeletedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FORUM_POST_CREATE":
+                await HandleForumPostCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FORUM_POST_DELETE":
+                await HandleForumPostDeletedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FORUM_REPLY_CREATE":
+                await HandleForumReplyCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FORUM_REPLY_DELETE":
+                await HandleForumReplyDeletedAsync(payload).ConfigureAwait(false);
+                break;
             // case "FORUM_PUBLISH_AUDIT_RESULT":
             //     await HandleForumPublishAuditResultAsync(payload).ConfigureAwait(false);
             //     break;
-            //
+
             // case "OPEN_FORUM_THREAD_CREATE":
             //     await HandleOpenForumThreadCreatedAsync(payload).ConfigureAwait(false);
             //     break;
@@ -663,37 +662,42 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             // case "OPEN_FORUM_REPLY_DELETE":
             //     await HandleOpenForumReplyDeletedAsync(payload).ConfigureAwait(false);
             //     break;
-            //
-            // #endregion
-            //
-            // #region Groups
-            //
-            // case "GROUP_ADD_ROBOT":
-            //     await HandleGroupRobotAddedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "GROUP_DEL_ROBOT":
-            //     await HandleGroupRobotRemovedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "GROUP_MSG_REJECT":
-            //     await HandleGroupMessageRejectedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "GROUP_MSG_RECEIVE":
-            //     await HandleGroupMessageReceivedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FRIEND_ADD":
-            //     await HandleFriendAddedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "FRIEND_DEL":
-            //     await HandleFriendRemovedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "C2C_MSG_REJECT":
-            //     await HandleUserMessageRejectedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "C2C_MSG_RECEIVE":
-            //     await HandleUserMessageReceivedAsync(payload).ConfigureAwait(false);
-            //     break;
-            //
-            // #endregion
+
+            #endregion
+
+            #region Groups
+
+            case "GROUP_ADD_ROBOT":
+                await HandleGroupRobotAddedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GROUP_DEL_ROBOT":
+                await HandleGroupRobotRemovedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GROUP_MSG_REJECT":
+                await HandleGroupMessageRejectedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GROUP_MSG_RECEIVE":
+                await HandleGroupMessageReceivedAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
+
+            #region Users
+
+            case "FRIEND_ADD":
+                await HandleFriendAddedAsync(payload).ConfigureAwait(false);
+                break;
+            case "FRIEND_DEL":
+                await HandleFriendRemovedAsync(payload).ConfigureAwait(false);
+                break;
+            case "C2C_MSG_REJECT":
+                await HandleUserMessageRejectedAsync(payload).ConfigureAwait(false);
+                break;
+            case "C2C_MSG_RECEIVE":
+                await HandleUserMessageReceivedAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
 
             default:
                 if (!SuppressUnknownDispatchWarnings)
