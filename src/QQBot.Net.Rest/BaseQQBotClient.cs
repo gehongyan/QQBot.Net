@@ -88,6 +88,8 @@ public abstract class BaseQQBotClient : IQQBotClient
     /// <inheritdoc />
     public TokenType TokenType => ApiClient.AuthTokenType;
 
+    internal MessageSequenceGenerationParameters MessageSequenceGenerationParameters { get; }
+
     internal BaseQQBotClient(QQBotRestConfig config, API.QQBotRestApiClient client)
     {
         ApiClient = client;
@@ -97,6 +99,7 @@ public abstract class BaseQQBotClient : IQQBotClient
         _stateLock = new SemaphoreSlim(1, 1);
         _restLogger = LogManager.CreateLogger("Rest");
         _isFirstLogin = config.DisplayInitialLog;
+        MessageSequenceGenerationParameters = config.MessageSequenceGenerationParameters;
 
         ApiClient.RequestQueue.RateLimitTriggered += async (id, info, endpoint) =>
         {

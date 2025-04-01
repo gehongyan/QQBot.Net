@@ -6,7 +6,7 @@ namespace QQBot;
 ///     表示一个消息引用。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class MessageReference
+public record MessageReference
 {
     /// <summary>
     ///     使用指定的消息 ID 创建一个新的 <see cref="MessageReference"/> 实例。

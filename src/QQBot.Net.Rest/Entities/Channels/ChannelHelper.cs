@@ -1,4 +1,5 @@
-﻿using System.Text.Encodings.Web;
+﻿using System.Security.Cryptography;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using QQBot.API;
@@ -15,6 +16,8 @@ internal static class ChannelHelper
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
+
+    private static int _messageSequenceIncrement;
 
     #region Channels
 
@@ -165,6 +168,8 @@ internal static class ChannelHelper
         MediaFileInfo? mediaFileInfo = attachment.HasValue
             ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
             : null;
+        int messageSequence = CreateMessageSequence(client.MessageSequenceGenerationParameters,
+            content, markdown, mediaFileInfo, embed, ark, keyboard, messageReference, passiveSource);
         SendUserGroupMessageParams args = new()
         {
             Content = content,
@@ -178,7 +183,7 @@ internal static class ChannelHelper
             MessageReference = messageReference?.ToModel(),
             EventId = null, // Using MessageId to identify the event is enough
             MessageId = passiveSource?.Id,
-            MessageSequence = CreateMessageSequence(content, embed, messageReference, passiveSource)
+            MessageSequence = messageSequence
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendUserMessageAsync(channel.Id, args, options).ConfigureAwait(false);
@@ -193,6 +198,8 @@ internal static class ChannelHelper
         MediaFileInfo? mediaFileInfo = attachment.HasValue
             ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
             : null;
+        int messageSequence = CreateMessageSequence(client.MessageSequenceGenerationParameters,
+            content, markdown, mediaFileInfo, embed, ark, keyboard, messageReference, passiveSource);
         SendUserGroupMessageParams args = new()
         {
             Content = content,
@@ -206,7 +213,7 @@ internal static class ChannelHelper
             MessageReference = messageReference?.ToModel(),
             EventId = null, // Using MessageId to identify the event is enough
             MessageId = passiveSource?.Id,
-            MessageSequence = CreateMessageSequence(content, embed, messageReference, passiveSource)
+            MessageSequence = messageSequence
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendGroupMessageAsync(channel.Id, args, options).ConfigureAwait(false);
@@ -283,9 +290,36 @@ internal static class ChannelHelper
         throw new InvalidOperationException("No message content is provided.");
     }
 
-    private static int CreateMessageSequence(string? content, Embed? embed,
-        MessageReference? messageReference, IUserMessage? passiveSource) =>
-        HashCode.Combine(content, embed, messageReference, passiveSource?.Id) & int.MaxValue;
+    private static int CreateMessageSequence(MessageSequenceGenerationParameters generationParameters,
+        string? content, IMarkdown? markdown, MediaFileInfo? mediaFileInfo,
+        Embed? embed, Ark? ark, IKeyboard? keyboard, MessageReference? messageReference, IUserMessage? passiveSource)
+    {
+        int increment = Interlocked.Increment(ref _messageSequenceIncrement);
+        int value = 1;
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.AutoIncrement))
+            value = increment;
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Timestamp))
+            value = HashCode.Combine(value, DateTimeOffset.Now.ToUnixTimeMilliseconds());
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Random))
+            value = HashCode.Combine(value, RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue));
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Content))
+            value = HashCode.Combine(value, content);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Markdown))
+            value = HashCode.Combine(value, markdown);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.FileAttachment))
+            value = HashCode.Combine(value, mediaFileInfo);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Embed))
+            value = HashCode.Combine(value, embed);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Ark))
+            value = HashCode.Combine(value, ark);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Keyboard))
+            value = HashCode.Combine(value, keyboard);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.MessageReference))
+            value = HashCode.Combine(value, messageReference);
+        if (generationParameters.HasFlag(MessageSequenceGenerationParameters.PassiveSource))
+            value = HashCode.Combine(value, passiveSource);
+        return value;
+    }
 
     private static RestUserMessage CreateMessageEntity(BaseQQBotClient client, IMessageChannel channel,
         SendUserGroupMessageParams args, SendUserGroupMessageResponse model)

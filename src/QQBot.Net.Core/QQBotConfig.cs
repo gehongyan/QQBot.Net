@@ -97,4 +97,9 @@ public class QQBotConfig
     ///     This factor is used to reduce the interval and ensure that Discord will get the heartbeat within the estimated interval.
     /// </remarks>
     internal const double HeartbeatIntervalFactor = 0.9;
+
+    /// <summary>
+    ///     消息序号盐值类型。
+    /// </summary>
+    public MessageSequenceGenerationParameters MessageSequenceGenerationParameters { get; set; }
 }
