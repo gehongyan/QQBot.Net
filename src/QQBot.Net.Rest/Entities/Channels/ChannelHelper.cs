@@ -233,10 +233,16 @@ internal static class ChannelHelper
             EventId = null, // Using MessageId to identify the event is enough
             MessageId = passiveSource?.Id,
         };
-        ChannelMessage response = await client.ApiClient
-            .SendChannelMessageAsync(channel.Id, args, options).ConfigureAwait(false);
-        if (needDispose && multipartFile.HasValue)
-            await multipartFile.Value.Stream.DisposeAsync();
+        ChannelMessage response;
+        try
+        {
+            response = await client.ApiClient.SendChannelMessageAsync(channel.Id, args, options).ConfigureAwait(false);
+        }
+        finally
+        {
+            if (needDispose && multipartFile.HasValue)
+                await multipartFile.Value.Stream.DisposeAsync();
+        }
         return CreateMessageEntity(client, channel, response);
     }
 
