@@ -343,19 +343,19 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Gateway
 
-    public async Task<GetGatewayResponse> GetGatewayAsync(RequestOptions? options = null)
-    {
-        options = RequestOptions.CreateOrClone(options);
-        return await SendAsync<GetGatewayResponse>(HttpMethod.Get,
-                () => "gateway", new BucketIds(), options: options)
-            .ConfigureAwait(false);
-    }
-
     public async Task<GetBotGatewayResponse> GetBotGatewayAsync(RequestOptions? options = null)
     {
         options = RequestOptions.CreateOrClone(options);
         return await SendAsync<GetBotGatewayResponse>(HttpMethod.Get,
                 () => "gateway", new BucketIds(), options: options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<GetBotShardedGatewayResponse> GetBotShardedGatewayAsync(RequestOptions? options = null)
+    {
+        options = RequestOptions.CreateOrClone(options);
+        return await SendAsync<GetBotShardedGatewayResponse>(HttpMethod.Get,
+                () => "gateway/bot", new BucketIds(), options: options)
             .ConfigureAwait(false);
     }
 

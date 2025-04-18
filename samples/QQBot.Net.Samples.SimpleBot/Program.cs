@@ -1,7 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using QQBot;
-using QQBot.Rest;
 using QQBot.WebSocket;
 
 QQBotSocketClient client = new(new QQBotSocketConfig
@@ -23,18 +22,19 @@ client.MessageReceived += async message =>
     if (message.Channel is SocketTextChannel textChannel)
     {
         await message.AddReactionAsync(new Emote(Emotes.System.Angry));
-        await Task.Delay(TimeSpan.FromSeconds(5));
-        IEnumerable<IGuildUser> flattenAsync = await message.GetReactionUsersAsync(new Emote(Emotes.System.Angry)).FlattenAsync();
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        IEnumerable<IGuildUser> flattenAsync =
+            await message.GetReactionUsersAsync(new Emote(Emotes.System.Angry)).FlattenAsync();
         await message.RemoveReactionAsync(new Emote(Emotes.System.Angry));
     }
 
-//      IUserMessage msg = await message.ReplyAsync(
-//          $"""
-//          [Content] {message.Content}
-//          [Content] {Format.Escape(message.Content)}
-//          [Content] {Format.Sanitize(message.Content)}
-//          [Attachments] {message.Attachments.Count}
-//          """);
+    IUserMessage msg = await message.ReplyAsync(
+        $"""
+        [Content] {message.Content}
+        [Content] {Format.Escape(message.Content)}
+        [Content] {Format.Sanitize(message.Content)}
+        [Attachments] {message.Attachments.Count}
+        """);
 };
 await client.LoginAsync(0, TokenType.BotToken, "");
 await client.StartAsync();

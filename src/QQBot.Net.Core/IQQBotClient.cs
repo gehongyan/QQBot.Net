@@ -72,6 +72,13 @@ public interface IQQBotClient : IDisposable
     /// <returns> 一个表示异步获取操作的任务，其结果包含与机器人相关的网关信息。 </returns>
     Task<BotGateway> GetBotGatewayAsync(RequestOptions? options = null);
 
+    /// <summary>
+    ///     获取与机器人相关带分片信息的网关信息。
+    /// </summary>
+    /// <param name="options"> 请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务，其结果包含与机器人相关的带分片信息的网关信息。 </returns>
+    Task<BotShardedGateway> GetBotShardedGatewayAsync(RequestOptions? options = null);
+
     #region Guilds
 
     /// <summary>

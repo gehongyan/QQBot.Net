@@ -151,7 +151,7 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
 
     internal override async Task OnLoginAsync(int appId, TokenType tokenType, string token)
     {
-        BotGateway botGateway = await GetBotGatewayAsync().ConfigureAwait(false);
+        BotShardedGateway botGateway = await GetBotShardedGatewayAsync().ConfigureAwait(false);
         if (AutomaticShards)
         {
             _shardIds = Enumerable.Range(0, botGateway.Shards).ToArray();
@@ -338,9 +338,43 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         client.SentRequest += (method, endpoint, millis) => _sentRequest.InvokeAsync(method, endpoint, millis);
 
         client.Connected += () => _shardConnectedEvent.InvokeAsync(client);
-        client.Disconnected += (exception) => _shardDisconnectedEvent.InvokeAsync(exception, client);
+        client.Disconnected += exception => _shardDisconnectedEvent.InvokeAsync(exception, client);
         client.Ready += () => _shardReadyEvent.InvokeAsync(client);
         client.LatencyUpdated += (oldLatency, newLatency) => _shardLatencyUpdatedEvent.InvokeAsync(oldLatency, newLatency, client);
+
+        client.GuildAvailable += guild => _guildAvailableEvent.InvokeAsync(guild);
+        client.GuildUnavailable += guild => _guildUnavailableEvent.InvokeAsync(guild);
+
+        client.ChannelCreated += channel => _channelCreatedEvent.InvokeAsync(channel);
+        client.ChannelDestroyed += (channel, user) => _channelDestroyedEvent.InvokeAsync(channel, user);
+        client.ChannelUpdated += (oldChannel, newChannel, user) => _channelUpdatedEvent.InvokeAsync(oldChannel, newChannel, user);
+
+        client.UserJoined += (guild, user) => _userJoinedEvent.InvokeAsync(guild, user);
+        client.UserLeft += (guild, user, @operator) => _userLeftEvent.InvokeAsync(guild, user, @operator);
+        client.GuildMemberUpdated += (guild, oldUser, newUser) => _guildMemberUpdatedEvent.InvokeAsync(guild, oldUser, newUser);
+
+        client.MessageReceived += message => _messageReceivedEvent.InvokeAsync(message);
+
+        client.UserConnected += (guild, user) => _userConnectedEvent.InvokeAsync(guild, user);
+        client.UserDisconnected += (guild, user) => _userDisconnectedEvent.InvokeAsync(guild, user);
+
+        client.ForumThreadCreated += thread => _forumThreadCreatedEvent.InvokeAsync(thread);
+        client.ForumThreadUpdated += thread => _forumThreadUpdatedEvent.InvokeAsync(thread);
+        client.ForumThreadDeleted += thread => _forumThreadDeletedEvent.InvokeAsync(thread);
+        client.ForumPostCreated += post => _forumPostCreatedEvent.InvokeAsync(post);
+        client.ForumPostDeleted += post => _forumPostDeletedEvent.InvokeAsync(post);
+        client.ForumReplyCreated += reply => _forumReplyCreatedEvent.InvokeAsync(reply);
+        client.ForumReplyDeleted += reply => _forumReplyDeletedEvent.InvokeAsync(reply);
+
+        client.JoinedGroup += (group, user) => _joinedGroupEvent.InvokeAsync(group, user);
+        client.LeftGroup += (group, user) => _leftGroupEvent.InvokeAsync(group, user);
+        client.GroupActiveMessageAllowed += (group, user) => _groupActiveMessageAllowedEvent.InvokeAsync(group, user);
+        client.GroupActiveMessageRejected += (group, user) => _groupActiveMessageRejectedEvent.InvokeAsync(group, user);
+
+        client.UserAdded += user => _userAddedEvent.InvokeAsync(user);
+        client.UserRemoved += user => _userRemovedEvent.InvokeAsync(user);
+        client.UserActiveMessageAllowed += user => _userActiveMessageAllowedEvent.InvokeAsync(user);
+        client.UserActiveMessageRejected += user => _userActiveMessageRejectedEvent.InvokeAsync(user);
     }
 
     #endregion

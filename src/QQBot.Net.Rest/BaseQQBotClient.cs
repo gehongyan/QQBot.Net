@@ -216,8 +216,12 @@ public abstract class BaseQQBotClient : IQQBotClient
     public virtual ConnectionState ConnectionState => ConnectionState.Disconnected;
 
     /// <inheritdoc />
-    public Task<BotGateway> GetBotGatewayAsync(RequestOptions? options = null)
-        => ClientHelper.GetBotGatewayAsync(this, options);
+    public Task<BotGateway> GetBotGatewayAsync(RequestOptions? options = null) =>
+        ClientHelper.GetBotGatewayAsync(this, options);
+
+    /// <inheritdoc />
+    public Task<BotShardedGateway> GetBotShardedGatewayAsync(RequestOptions? options = null) =>
+        ClientHelper.GetBotShardedGatewayAsync(this, options);
 
     #endregion
 

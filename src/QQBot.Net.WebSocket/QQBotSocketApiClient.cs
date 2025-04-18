@@ -195,7 +195,7 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
 
             if (!_isExplicitUrl || _gatewayUrl == null)
             {
-                GetGatewayResponse gatewayResponse = await GetGatewayAsync().ConfigureAwait(false);
+                GetBotGatewayResponse gatewayResponse = await GetBotGatewayAsync().ConfigureAwait(false);
                 _gatewayUrl = gatewayResponse.Url;
             }
 #if DEBUG_PACKETS

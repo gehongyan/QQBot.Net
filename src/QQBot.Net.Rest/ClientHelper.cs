@@ -8,6 +8,12 @@ internal static class ClientHelper
     public static async Task<BotGateway> GetBotGatewayAsync(BaseQQBotClient client, RequestOptions? options)
     {
         GetBotGatewayResponse response = await client.ApiClient.GetBotGatewayAsync(options).ConfigureAwait(false);
+        return new BotGateway(response.Url);
+    }
+
+    public static async Task<BotShardedGateway> GetBotShardedGatewayAsync(BaseQQBotClient client, RequestOptions? options)
+    {
+        GetBotShardedGatewayResponse response = await client.ApiClient.GetBotShardedGatewayAsync(options).ConfigureAwait(false);
         SessionStartLimit sessionStartLimit = new()
         {
             Total = response.SessionStartLimit.Total,
@@ -15,7 +21,7 @@ internal static class ClientHelper
             ResetAfter = response.SessionStartLimit.ResetAfter,
             MaxConcurrency = response.SessionStartLimit.MaxConcurrency
         };
-        return new BotGateway(response.Url, response.Shards, sessionStartLimit);
+        return new BotShardedGateway(response.Url, response.Shards, sessionStartLimit);
     }
 
     public static IAsyncEnumerable<IReadOnlyCollection<API.Guild>> GetGuildsAsync(BaseQQBotClient client, int? limit, RequestOptions? options)
