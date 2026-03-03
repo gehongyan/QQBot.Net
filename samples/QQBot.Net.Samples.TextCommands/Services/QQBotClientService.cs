@@ -30,7 +30,7 @@ public class QQBotClientService : IHostedService
         // 这样可以避免将敏感信息直接暴露在代码中，以防止令牌被滥用或泄露
         string token = Environment.GetEnvironmentVariable("QQBotDebugToken", EnvironmentVariableTarget.User)
             ?? throw new InvalidOperationException("Token not found");
-        await _client.LoginAsync(0, TokenType.BotToken, token);
+        await _client.LoginAsync(0, TokenType.AppSecret, token);
         await _client.StartAsync();
         await _commandHandlingService.InitializeAsync();
     }

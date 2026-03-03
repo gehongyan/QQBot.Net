@@ -36,7 +36,7 @@ client.MessageReceived += async message =>
         [Attachments] {message.Attachments.Count}
         """);
 };
-await client.LoginAsync(0, TokenType.BotToken, "");
+await client.LoginAsync(0, TokenType.AppSecret, "");
 await client.StartAsync();
 await Task.Delay(TimeSpan.FromSeconds(10));
 await Task.Delay(Timeout.Infinite);
