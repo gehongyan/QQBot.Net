@@ -14,10 +14,9 @@
 
 ---
 
-**QQBot.Net** 是一个为 QQ 机器人 API [v1] 及 [v2] 提供的非官方 C# .NET SDK 实现。
+**QQBot.Net** 是一个为 [QQ 机器人 API] 提供的非官方 C# .NET SDK 实现。
 
-[v1]: https://bot.q.qq.com/wiki/develop/api/
-[v2]: https://bot.q.qq.com/wiki/develop/api-v2/
+[QQ 机器人 API]: https://bot.q.qq.com/wiki/develop/api-v2/
 
 ---
 
@@ -31,12 +30,12 @@
 
 ## 目标框架
 
+- [.NET 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 > [!TIP]
-> .NET 9 之外的目标框架尚未完全测试。
+> .NET 10 之外的目标框架尚未完全测试。
 
 ---
 

@@ -14,10 +14,9 @@
 
 ---
 
-**QQBot.Net** is an unofficial C# .NET implementation for QQ Bot API [v1] and [v2].
+**QQBot.Net** is an unofficial C# .NET implementation for [QQ Bot API].
 
-[v1]: https://bot.q.qq.com/wiki/develop/api/
-[v2]: https://bot.q.qq.com/wiki/develop/api-v2/
+[QQ Bot API]: https://bot.q.qq.com/wiki/develop/api-v2/
 
 ---
 
@@ -31,12 +30,12 @@ Documents are available on [qqbotnet.dev](https://qqbotnet.dev). (Simplified Chi
 
 ## Targets
 
+- [.NET 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 > [!TIP]
-> Targets other than .NET 9.0 have not been fully tested.
+> Targets other than .NET 10.0 have not been fully tested.
 
 ---
 

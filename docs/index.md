@@ -18,17 +18,16 @@ _layout: landing
 
 ## 什么是 QQBot.Net？
 
-QQBot.Net 是一个对 QQ 机器人 API [v1] 及 [v2] 进行功能封装的类库，以 C# 编写，编译所采用的目标框架包括
+QQBot.Net 是一个对 [QQ 机器人 API] 进行功能封装的类库，以 C# 编写，编译所采用的目标框架包括
 
+- [.NET 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 > [!TIP]
-> 除 .NET 9.0 外的其他目标框架未经完全测试。
+> 除 .NET 10.0 外的其他目标框架未经完全测试。
 
-[v1]: https://bot.q.qq.com/wiki/develop/api/
-[v2]: https://bot.q.qq.com/wiki/develop/api-v2/
+[QQ 机器人 API]: https://bot.q.qq.com/wiki/develop/api-v2/
 
 ## 我应该从哪里开始？
 
