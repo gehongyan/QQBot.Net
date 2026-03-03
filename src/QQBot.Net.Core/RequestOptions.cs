@@ -45,6 +45,7 @@ public class RequestOptions
     public Func<IRateLimitInfo, Task>? RatelimitCallback { get; set; }
 
     internal bool IgnoreState { get; set; }
+    internal bool IsLoginRequest { get; set; }
     internal BucketId? BucketId { get; set; }
     internal bool IsClientBucket { get; set; }
     internal bool IsGatewayBucket { get; set; }

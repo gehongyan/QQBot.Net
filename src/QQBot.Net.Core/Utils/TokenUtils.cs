@@ -61,10 +61,7 @@ public static class TokenUtils
 
         switch (tokenType)
         {
-            case TokenType.BearerToken:
-                // no validation is performed on Bearer tokens
-                break;
-            case TokenType.BotToken or TokenType.AppSecret:
+            case TokenType.AppSecret:
                 // bot tokens are assumed to be at least 32 characters in length
                 // this value was determined by referencing examples in the QQBot documentation, and by comparing with
                 // pre-existing tokens

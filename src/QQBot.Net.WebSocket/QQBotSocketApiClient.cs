@@ -260,8 +260,8 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
     public Task SendIdentifyAsync(int shardId = 0, int totalShards = 1,
         GatewayIntents gatewayIntents = GatewayIntents.All, RequestOptions? options = null)
     {
-        ArgumentNullException.ThrowIfNull(AuthToken, nameof(AuthToken));
-        ArgumentNullException.ThrowIfNull(AppId, nameof(AppId));
+        ArgumentNullException.ThrowIfNull(AccessToken);
+        ArgumentNullException.ThrowIfNull(AppId);
         RequestOptions requestOptions = RequestOptions.CreateOrClone(options);
         Dictionary<string, string> props = new()
         {
@@ -271,7 +271,7 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
         };
         IdentifyParams identifyParams = new()
         {
-            Token = GetPrefixedToken(AuthTokenType, AppId.Value, AuthToken),
+            Token = GetPrefixedToken(AuthTokenType, AppId.Value, AccessToken),
             Intents = (int)gatewayIntents,
             ShardingParams = [shardId, totalShards],
             Properties = props

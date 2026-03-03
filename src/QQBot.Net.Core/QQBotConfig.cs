@@ -37,6 +37,16 @@ public class QQBotConfig
     public const string SandboxAPIUrl = "https://sandbox.api.sgroup.qq.com/";
 
     /// <summary>
+    ///     获取 QQ Bot 沙箱环境 API 请求的根 URL。
+    /// </summary>
+    public const string AccessTokenAPIUrl = "https://bots.qq.com/";
+
+    /// <summary>
+    ///     获取 QQ Bot 的 AccessToken 令牌刷新缓冲时长。
+    /// </summary>
+    public static readonly TimeSpan AccessTokenRefreshBuffer = TimeSpan.FromSeconds(60);
+
+    /// <summary>
     ///     获取或设置 QQBot.Net 使用的接入环境。
     /// </summary>
     public AccessEnvironment AccessEnvironment { get; set; } = AccessEnvironment.Production;

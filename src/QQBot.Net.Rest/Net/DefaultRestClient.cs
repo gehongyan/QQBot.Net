@@ -75,7 +75,10 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         string? reason = null,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders = null)
     {
-        string uri = Path.Combine(_baseUrl, endpoint);
+        string uri = Uri.IsWellFormedUriString(endpoint, UriKind.Absolute)
+            ? endpoint
+            : Path.Combine(_baseUrl, endpoint);
+
         using (HttpRequestMessage restRequest = new(method, uri))
         {
             if (reason != null)
@@ -93,7 +96,10 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         CancellationToken cancellationToken, string? reason = null,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders = null)
     {
-        string uri = Path.Combine(_baseUrl, endpoint);
+        string uri = Uri.IsWellFormedUriString(endpoint, UriKind.Absolute)
+            ? endpoint
+            : Path.Combine(_baseUrl, endpoint);
+
         using HttpRequestMessage restRequest = new(method, uri);
         if (reason != null)
             restRequest.Headers.Add("X-Audit-Log-Reason", Uri.EscapeDataString(reason));
@@ -111,7 +117,9 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         CancellationToken cancellationToken, string? reason = null,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders = null)
     {
-        string uri = Path.Combine(_baseUrl, endpoint);
+        string uri = Uri.IsWellFormedUriString(endpoint, UriKind.Absolute)
+            ? endpoint
+            : Path.Combine(_baseUrl, endpoint);
 
         // HttpRequestMessage implements IDisposable but we do not need to dispose it as it merely disposes of its Content property,
         // which we can do as needed. And regarding that, we do not want to take responsibility for disposing of content provided by

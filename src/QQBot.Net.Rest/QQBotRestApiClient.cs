@@ -46,6 +46,8 @@ internal class QQBotRestApiClient : IDisposable
     public int? AppId { get; private set; }
     public TokenType AuthTokenType { get; private set; }
     internal string? AuthToken { get; private set; }
+    internal string? AccessToken { get; private set; }
+    internal DateTimeOffset? AccessTokenExpiresAt { get; private set; }
     internal IRestClient RestClient { get; private set; }
     internal ulong? CurrentUserId { get; set; }
     internal Func<IRateLimitInfo, Task>? DefaultRatelimitCallback { get; set; }
@@ -92,8 +94,6 @@ internal class QQBotRestApiClient : IDisposable
     internal static string GetPrefixedToken(TokenType tokenType, int appId, string token) =>
         tokenType switch
         {
-            TokenType.BotToken => $"Bot {appId}.{token}",
-            TokenType.BearerToken => $"Bearer {token}",
             TokenType.AppSecret => $"QQBot {token}",
             _ => throw new ArgumentException("Unknown token type.", nameof(tokenType))
         };
@@ -138,7 +138,11 @@ internal class QQBotRestApiClient : IDisposable
             AppId = appId;
             AuthTokenType = tokenType;
             AuthToken = token.TrimEnd();
-            RestClient.SetHeader("Authorization", GetPrefixedToken(AuthTokenType, appId, AuthToken));
+
+            if (tokenType == TokenType.AppSecret)
+                await RefreshAppSecretIfExpiresAsync();
+            else
+                throw new NotSupportedException($"Token type {tokenType} not supported.");
 
             LoginState = LoginState.LoggedIn;
         }
@@ -147,6 +151,27 @@ internal class QQBotRestApiClient : IDisposable
             await LogoutInternalAsync().ConfigureAwait(false);
             throw;
         }
+    }
+
+    private async Task RefreshAppSecretIfExpiresAsync()
+    {
+        if (!AppId.HasValue)
+            throw new InvalidOperationException("AppId must be set before logging in with an app secret.");
+        if (string.IsNullOrEmpty(AuthToken))
+            throw new InvalidOperationException("AuthToken must be set before logging in with an app secret.");
+        if (AccessTokenExpiresAt.HasValue
+            && DateTimeOffset.Now.Add(QQBotConfig.AccessTokenRefreshBuffer) < AccessTokenExpiresAt.Value)
+            return;
+
+        GetAccessTokenParams args = new()
+        {
+            AppId = AppId.Value,
+            ClientSecret = AuthToken
+        };
+        GetAccessTokenResponse response = await GetAccessTokenAsync(args).ConfigureAwait(false);
+        AccessToken = response.AccessToken;
+        AccessTokenExpiresAt = DateTimeOffset.Now.AddSeconds(response.ExpiresIn);
+        RestClient.SetHeader("Authorization", GetPrefixedToken(AuthTokenType, AppId.Value, response.AccessToken));
     }
 
     public async Task LogoutAsync()
@@ -323,8 +348,11 @@ internal class QQBotRestApiClient : IDisposable
 
     private async Task<Stream> SendInternalAsync(HttpMethod method, string endpoint, RestRequest request)
     {
-        if (!request.Options.IgnoreState)
+        if (!request.Options.IgnoreState && !request.Options.IsLoginRequest)
             CheckState();
+
+        if (!request.Options.IsLoginRequest)
+            await RefreshAppSecretIfExpiresAsync();
 
         request.Options.RetryMode ??= DefaultRetryMode;
         request.Options.RatelimitCallback ??= DefaultRatelimitCallback;
@@ -337,6 +365,24 @@ internal class QQBotRestApiClient : IDisposable
         await _sentRequestEvent.InvokeAsync(method, endpoint, milliseconds).ConfigureAwait(false);
 
         return responseStream;
+    }
+
+    #endregion
+
+    #region Access Token
+
+    public async Task<GetAccessTokenResponse> GetAccessTokenAsync(GetAccessTokenParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNull(args, nameof(args));
+        Preconditions.NotNull(args.AppId, nameof(args.AppId));
+        Preconditions.NotNullOrEmpty(args.ClientSecret, nameof(args.ClientSecret));
+        options = RequestOptions.CreateOrClone(options);
+        options.IsLoginRequest = true;
+
+        BucketIds ids = new();
+        return await SendJsonAsync<GetAccessTokenResponse>(HttpMethod.Post,
+                () => $"{QQBotConfig.AccessTokenAPIUrl}app/getAppAccessToken", args, ids, ClientBucketType.Unbucketed, false, options)
+            .ConfigureAwait(false);
     }
 
     #endregion
