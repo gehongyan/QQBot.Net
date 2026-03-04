@@ -1,5 +1,6 @@
 using QQBot.API;
 using System.Diagnostics.CodeAnalysis;
+using QQBot.Rest;
 
 namespace QQBot.WebSocket;
 
@@ -383,6 +384,10 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
 
     /// <inheritdoc />
     ISelfUser? IQQBotClient.CurrentUser => CurrentUser;
+
+    /// <inheritdoc />
+    public Task<Uri> GenerateProfileUrl(string? callbackData = null, RequestOptions? options = null) =>
+        ClientHelper.GenerateProfileUrlAsync(this, callbackData, options);
 
     // /// <inheritdoc />
     // async Task<IApplication> IQQBotClient.GetApplicationInfoAsync(RequestOptions options)
