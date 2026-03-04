@@ -99,4 +99,12 @@ public interface IQQBotClient : IDisposable
     Task<IGuild?> GetGuildAsync(ulong id, CacheMode mode = CacheMode.AllowDownload, RequestOptions? options = null);
 
     #endregion
+
+    /// <summary>
+    ///     获取当前 Bot 资料页的分享链接。
+    /// </summary>
+    /// <param name="callbackData"> 要在用户添加当前 Bot 为好友时通过网关发送给 Bot 的回调数据。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务，其结果为包含当前 Bot 资料页的分享链接的 <see cref="Uri"/> 对象。 </returns>
+    Task<Uri> GenerateProfileUrl(string? callbackData = null, RequestOptions? options = null);
 }

@@ -484,15 +484,17 @@ public abstract partial class BaseSocketClient
     ///     事件参数：
     ///     <list type="number">
     ///     <item> <see cref="QQBot.WebSocket.SocketUserChannel"/> 参数是添加当前用户的用户频道。 </item>
+    ///     <item> <see cref="QQBot.UserChannelSource"/> 参数是添加当前用户的来源场景。 </item>
+    ///     <item> <see cref="string"/> 参数是开发者自定义的回调数据，参见 <see cref="QQBot.IQQBotClient.GenerateProfileUrl(System.String,QQBot.RequestOptions)"/>。 </item>
     ///     </list>
     /// </remarks>
-    public event Func<SocketUserChannel, Task> UserAdded
+    public event Func<SocketUserChannel, UserChannelSource, string?, Task> UserAdded
     {
         add => _userAddedEvent.Add(value);
         remove => _userAddedEvent.Remove(value);
     }
 
-    internal readonly AsyncEvent<Func<SocketUserChannel, Task>> _userAddedEvent = new();
+    internal readonly AsyncEvent<Func<SocketUserChannel, UserChannelSource, string?, Task>> _userAddedEvent = new();
 
     /// <summary>
     ///     当用户移除当前用户时引发。

@@ -371,7 +371,7 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         client.GroupActiveMessageAllowed += (group, user) => _groupActiveMessageAllowedEvent.InvokeAsync(group, user);
         client.GroupActiveMessageRejected += (group, user) => _groupActiveMessageRejectedEvent.InvokeAsync(group, user);
 
-        client.UserAdded += user => _userAddedEvent.InvokeAsync(user);
+        client.UserAdded += (user, source, callbackData) => _userAddedEvent.InvokeAsync(user, source, callbackData);
         client.UserRemoved += user => _userRemovedEvent.InvokeAsync(user);
         client.UserActiveMessageAllowed += user => _userActiveMessageAllowedEvent.InvokeAsync(user);
         client.UserActiveMessageRejected += user => _userActiveMessageRejectedEvent.InvokeAsync(user);

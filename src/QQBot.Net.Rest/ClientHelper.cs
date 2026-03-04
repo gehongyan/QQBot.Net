@@ -54,4 +54,14 @@ internal static class ClientHelper
         Guild model= await client.ApiClient.GetGuildAsync(id, options);
         return RestGuild.Create(client, model);
     }
+
+    public static async Task<Uri> GenerateProfileUrlAsync(BaseQQBotClient client, string? callbackData,
+        RequestOptions? options)
+    {
+        GenerateUrlLinkParams args = new()
+        {
+            CallbackData = callbackData
+        };
+        return await client.ApiClient.GenerateUrlLinkAsync(args, options).ConfigureAwait(false);
+    }
 }

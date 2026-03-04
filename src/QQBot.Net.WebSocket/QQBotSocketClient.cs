@@ -315,6 +315,10 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         }
     }
 
+    /// <inheritdoc />
+    public Task<Uri> GenerateProfileUrl(string? callbackData = null, RequestOptions? options = null) =>
+        ClientHelper.GenerateProfileUrlAsync(this, callbackData, options);
+
     // /// <inheritdoc />
     // public override SocketGuild? GetGuild(ulong id) => State.GetGuild(id);
     //
