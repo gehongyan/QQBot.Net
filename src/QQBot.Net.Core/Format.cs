@@ -225,7 +225,7 @@ public static class Format
     /// </summary>
     /// <param name="text"> 用户点击后直接发送的文本。 </param>
     /// <returns> 获取格式化后的命令。 </returns>
-    public static string Command(string text) => $"""<qqbot-cmd-enter text="{text}" />""";
+    public static string Command(string text) => $"""<qqbot-cmd-enter text="{Uri.EscapeDataString(text)}" />""";
 
     /// <summary>
     ///     获取一个格式化的命令。
@@ -235,7 +235,7 @@ public static class Format
     /// <param name="reference"> 插入输入框时是否带消息原文回复引用。 </param>
     /// <returns> 获取格式化后的命令。 </returns>
     public static string Command(string text, string displayText, bool reference) =>
-        $"""<qqbot-cmd-enter text="{text}" show="{displayText}" reference="{reference}" />""";
+        $"""<qqbot-cmd-enter text="{Uri.EscapeDataString(text)}" show="{Uri.EscapeDataString(displayText)}" reference="{reference}" />""";
 
     /// <summary>
     ///     获取一个格式化的表情符号。
