@@ -187,6 +187,37 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <inheritdoc />
     public Task UpdateAsync(RequestOptions? options = null) => SocketGuildHelper.UpdateAsync(this, Client, options);
 
+    internal void PurgeChannelCache(ClientState state)
+    {
+        foreach (KeyValuePair<ulong, SocketGuildChannel> channelId in _channels)
+            state.RemoveGuildChannel(channelId.Key);
+        _channels.Clear();
+    }
+
+    /// <summary>
+    ///     清除此服务器的用户缓存。
+    /// </summary>
+    public void PurgeUserCache() => PurgeUserCache(_ => true);
+
+    /// <summary>
+    ///     清除此服务器的用户缓存。
+    /// </summary>
+    /// <param name="predicate"> 要清除的用户的筛选条件。 </param>
+    public void PurgeUserCache(Predicate<SocketGuildMember> predicate)
+    {
+        IEnumerable<SocketGuildMember> membersToPurge = Users
+            .Where(x => predicate.Invoke(x) && x.Id != Client.CurrentUser?.Id);
+        IEnumerable<SocketGuildMember> membersToKeep = Users
+            .Where(x => !predicate.Invoke(x) || x.Id == Client.CurrentUser?.Id);
+        foreach (SocketGuildMember member in membersToPurge)
+        {
+            if (_members.TryRemove(member.Id, out _))
+                member.GlobalUser.RemoveRef(Client);
+        }
+        foreach (SocketGuildMember member in membersToKeep)
+            _members.TryAdd(member.Id, member);
+    }
+
     /// <inheritdoc cref="QQBot.WebSocket.SocketGuild.Name" />
     public override string ToString() => Name;
 

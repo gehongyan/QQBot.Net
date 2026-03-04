@@ -40,6 +40,15 @@ internal class ClientState
 
     internal void AddGuild(SocketGuild guild) => _guilds[guild.Id] = guild;
 
+    internal SocketGuild? RemoveGuild(ulong id)
+    {
+        if (!_guilds.TryRemove(id, out SocketGuild? guild))
+            return null;
+        guild.PurgeChannelCache(this);
+        guild.PurgeUserCache();
+        return guild;
+    }
+
     #endregion
 
     #region GuildChannel

@@ -315,6 +315,60 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Guilds
+
+    private async Task HandleGuildCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<GuildEvent>(payload) is not { } data) return;
+        SocketGuild guild = AddGuild(data, State);
+        if (StartupCacheFetchMode is StartupCacheFetchMode.Lazy)
+        {
+            if (guild.IsAvailable)
+                await GuildAvailableAsync(guild).ConfigureAwait(false);
+            else
+                await GuildUnavailableAsync(guild).ConfigureAwait(false);
+        }
+        SocketGuildMember? user = guild.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_joinedGuildEvent, nameof(JoinedGuild), guild, cacheableUser).ConfigureAwait(false);
+    }
+
+    private async Task HandleGuildUpdatedAsync(object? payload)
+    {
+        if (DeserializePayload<GuildEvent>(payload) is not { } data) return;
+        if (GetGuild(data.Id) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(GuildUpdated), data.Id, payload)
+                .ConfigureAwait(false);
+            return;
+        }
+
+        SocketGuild before = guild.Clone();
+        guild.Update(State, data);
+
+        SocketGuildMember? user = guild.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_guildUpdatedEvent, nameof(GuildUpdated), before, guild, cacheableUser).ConfigureAwait(false);
+    }
+
+    private async Task HandleGuildDeletedAsync(object? payload)
+    {
+        if (DeserializePayload<GuildEvent>(payload) is not { } data) return;
+        if (State.RemoveGuild(data.Id) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(LeftGuild), data.Id, payload)
+                .ConfigureAwait(false);
+            return;
+        }
+
+        await GuildUnavailableAsync(guild).ConfigureAwait(false);
+        SocketGuildMember? user = guild.GetUser(data.OperatorUserId);
+        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
+        await TimedInvokeAsync(_leftGuildEvent, nameof(LeftGuild), guild, cacheableUser).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Channels
 
     private async Task HandleChannelCreatedAsync(object? payload)
