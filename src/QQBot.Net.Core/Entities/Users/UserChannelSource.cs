@@ -46,12 +46,12 @@ public enum UserChannelSource
     /// <summary>
     ///     开发者生成的分享链接（站内）。
     /// </summary>
-    /// <seealso cref="QQBot.IQQBotClient.GenerateProfileUrl(System.String,QQBot.RequestOptions)"/>
+    /// <seealso cref="QQBot.IQQBotClient.GenerateProfileUrlAsync(System.String,QQBot.RequestOptions)"/>
     InternalDeveloperShareUrl = 2003,
 
     /// <summary>
     ///     开发者生成的分享链接（站外）。
     /// </summary>
-    /// <seealso cref="QQBot.IQQBotClient.GenerateProfileUrl(System.String,QQBot.RequestOptions)"/>
+    /// <seealso cref="QQBot.IQQBotClient.GenerateProfileUrlAsync(System.String,QQBot.RequestOptions)"/>
     ExternalDeveloperShareUrl = 2004
 }

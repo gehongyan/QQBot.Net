@@ -115,7 +115,7 @@ public class QQBotRestClient : BaseQQBotClient, IQQBotClient
         ClientHelper.GetGuildAsync(this, id, options);
 
     /// <inheritdoc />
-    public Task<Uri> GenerateProfileUrl(string? callbackData = null, RequestOptions? options = null) =>
+    public Task<Uri> GenerateProfileUrlAsync(string? callbackData = null, RequestOptions? options = null) =>
         ClientHelper.GenerateProfileUrlAsync(this, callbackData, options);
 
     #endregion

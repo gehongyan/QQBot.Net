@@ -5,8 +5,8 @@ namespace QQBot.API.Gateway;
 internal class UserBotAddingEvent : UserBotEvent
 {
     [JsonPropertyName("scene")]
-    public required UserChannelSource Scheme { get; set; }
+    public required UserChannelSource Scene { get; set; }
 
     [JsonPropertyName("scene_param")]
-    public string? SchemeParam { get; set; }
+    public string? SceneParam { get; set; }
 }

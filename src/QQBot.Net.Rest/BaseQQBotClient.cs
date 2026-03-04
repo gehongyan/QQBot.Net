@@ -245,7 +245,7 @@ public abstract class BaseQQBotClient : IQQBotClient
         => Task.FromResult<IGuild?>(null);
 
     /// <inheritdoc />
-    Task<Uri> IQQBotClient.GenerateProfileUrl(string? callbackData, RequestOptions? options) =>
+    Task<Uri> IQQBotClient.GenerateProfileUrlAsync(string? callbackData, RequestOptions? options) =>
         Task.FromResult<Uri>(null!);
 
     #endregion

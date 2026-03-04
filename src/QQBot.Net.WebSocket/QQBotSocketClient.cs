@@ -316,7 +316,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     }
 
     /// <inheritdoc />
-    public Task<Uri> GenerateProfileUrl(string? callbackData = null, RequestOptions? options = null) =>
+    public Task<Uri> GenerateProfileUrlAsync(string? callbackData = null, RequestOptions? options = null) =>
         ClientHelper.GenerateProfileUrlAsync(this, callbackData, options);
 
     // /// <inheritdoc />

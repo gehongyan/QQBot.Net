@@ -169,6 +169,6 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     //     Task.FromResult<IUser?>(GetUser(username, identifyNumber));
 
     /// <inheritdoc />
-    Task<Uri> IQQBotClient.GenerateProfileUrl(string? callbackData, RequestOptions? options) =>
+    Task<Uri> IQQBotClient.GenerateProfileUrlAsync(string? callbackData, RequestOptions? options) =>
         Task.FromResult<Uri>(null!);
 }
