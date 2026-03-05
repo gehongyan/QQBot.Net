@@ -518,6 +518,23 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<Uri> GenerateUrlLinkAsync(GenerateUrlLinkParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNull(args, nameof(args));
+        Preconditions.AtMost(args.CallbackData?.Length, 32, nameof(args.CallbackData));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        GenerateUrlLinkResponse response = await SendJsonAsync<GenerateUrlLinkResponse>(HttpMethod.Post,
+                () => "v2/generate_url_link", args, ids, ClientBucketType.Unbucketed, false, options)
+            .ConfigureAwait(false);
+        if (response.ReturnCode != 0)
+            throw new InvalidOperationException($"[{response.ReturnCode}] {response.Message}");
+        if (!Uri.TryCreate(response.Data?.Url, UriKind.Absolute, out Uri? uri))
+            throw new InvalidOperationException($"Received invalid URL from API: {response.Data?.Url}");
+        return uri;
+    }
+
     #endregion
 
     #region Messages

@@ -671,13 +671,13 @@ public partial class QQBotSocketClient
 
     private async Task HandleFriendAddedAsync(object? payload)
     {
-        if (DeserializePayload<UserBotEvent>(payload) is not { } data) return;
+        if (DeserializePayload<UserBotAddingEvent>(payload) is not { } data) return;
         if (GetOrCreateUserChannel(State, data.OpenId) is not { } channel)
         {
             await UnknownChannelAsync(nameof(UserAdded), data.OpenId, payload).ConfigureAwait(false);
             return;
         }
-        await TimedInvokeAsync(_userAddedEvent, nameof(UserAdded), channel).ConfigureAwait(false);
+        await TimedInvokeAsync(_userAddedEvent, nameof(UserAdded), channel, data.Scene, data.SceneParam).ConfigureAwait(false);
     }
 
     private async Task HandleFriendRemovedAsync(object? payload)

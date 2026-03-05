@@ -1,5 +1,6 @@
 using QQBot.API;
 using System.Diagnostics.CodeAnalysis;
+using QQBot.Rest;
 
 namespace QQBot.WebSocket;
 
@@ -371,7 +372,7 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         client.GroupActiveMessageAllowed += (group, user) => _groupActiveMessageAllowedEvent.InvokeAsync(group, user);
         client.GroupActiveMessageRejected += (group, user) => _groupActiveMessageRejectedEvent.InvokeAsync(group, user);
 
-        client.UserAdded += user => _userAddedEvent.InvokeAsync(user);
+        client.UserAdded += (user, source, callbackData) => _userAddedEvent.InvokeAsync(user, source, callbackData);
         client.UserRemoved += user => _userRemovedEvent.InvokeAsync(user);
         client.UserActiveMessageAllowed += user => _userActiveMessageAllowedEvent.InvokeAsync(user);
         client.UserActiveMessageRejected += user => _userActiveMessageRejectedEvent.InvokeAsync(user);
@@ -383,6 +384,10 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
 
     /// <inheritdoc />
     ISelfUser? IQQBotClient.CurrentUser => CurrentUser;
+
+    /// <inheritdoc />
+    public Task<Uri> GenerateProfileUrlAsync(string? callbackData = null, RequestOptions? options = null) =>
+        ClientHelper.GenerateProfileUrlAsync(this, callbackData, options);
 
     // /// <inheritdoc />
     // async Task<IApplication> IQQBotClient.GetApplicationInfoAsync(RequestOptions options)
