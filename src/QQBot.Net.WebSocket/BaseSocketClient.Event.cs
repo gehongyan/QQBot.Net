@@ -485,7 +485,7 @@ public abstract partial class BaseSocketClient
     ///     <list type="number">
     ///     <item> <see cref="QQBot.WebSocket.SocketUserChannel"/> 参数是添加当前用户的用户频道。 </item>
     ///     <item> <see cref="QQBot.UserChannelSource"/> 参数是添加当前用户的来源场景。 </item>
-    ///     <item> <see cref="string"/> 参数是开发者自定义的回调数据，参见 <see cref="QQBot.IQQBotClient.GenerateProfileUrl(System.String,QQBot.RequestOptions)"/>。 </item>
+    ///     <item> <see cref="string"/> 参数是开发者自定义的回调数据，参见 <see cref="QQBot.IQQBotClient.GenerateProfileUrlAsync(System.String,QQBot.RequestOptions)"/>。 </item>
     ///     </list>
     /// </remarks>
     public event Func<SocketUserChannel, UserChannelSource, string?, Task> UserAdded
