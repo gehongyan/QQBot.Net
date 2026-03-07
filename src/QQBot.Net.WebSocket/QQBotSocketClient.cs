@@ -545,7 +545,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         catch (Exception ex)
         {
             await _gatewayLogger
-                .ErrorAsync($"Error handling {opCode}. Payload: {SerializePayload(payload)}", ex)
+                .ErrorAsync($"Error handling {opCode}. Type: {type}. Payload: {SerializePayload(payload)}", ex)
                 .ConfigureAwait(false);
         }
     }
