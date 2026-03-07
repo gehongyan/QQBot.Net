@@ -1,9 +1,6 @@
 using System.IO.Compression;
 using System.Text;
-#if DEBUG_PACKETS
-using System.Diagnostics;
 using System.Text.Encodings.Web;
-#endif
 using System.Text.Json;
 using QQBot.API.Gateway;
 using QQBot.API.Rest;
@@ -44,13 +41,11 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
     private CancellationTokenSource? _connectCancellationToken;
     private string? _gatewayUrl;
 
-#if DEBUG_PACKETS
     private readonly JsonSerializerOptions _debugJsonSerializerOptions = new()
     {
         WriteIndented = true,
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
-#endif
 
     public ConnectionState ConnectionState { get; private set; }
 
@@ -91,9 +86,8 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
         WebSocketClient.BinaryMessage += OnBinaryMessage;
         WebSocketClient.Closed += async ex =>
         {
-#if DEBUG_PACKETS
-            Debug.WriteLine(ex);
-#endif
+            if (QQBotDebugger.IsDebuggingPacket)
+                QQBotDebugger.DebugPacket(ex.ToString());
             await DisconnectAsync().ConfigureAwait(false);
             await _disconnectedEvent.InvokeAsync(ex).ConfigureAwait(false);
         };
@@ -113,17 +107,18 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
             .Deserialize<GatewaySocketFrame>(decompressed, _serializerOptions);
         if (gatewaySocketFrame is not null)
         {
-#if DEBUG_PACKETS
-            string raw = Encoding.Default.GetString(decompressed.ToArray()).TrimEnd('\n');
-            string parsed = JsonSerializer
-                .Serialize(gatewaySocketFrame.Payload, _debugJsonSerializerOptions)
-                .TrimEnd('\n');
-            Debug.WriteLine($"""
-                [{DateTimeOffset.Now:HH:mm:ss}] <- [{gatewaySocketFrame.OpCode}] : #{gatewaySocketFrame.Sequence}
-                [Raw] {raw}
-                [Parsed] {parsed}
-                """);
-#endif
+            if (QQBotDebugger.IsDebuggingPacket)
+            {
+                string raw = Encoding.Default.GetString(decompressed.ToArray()).TrimEnd('\n');
+                string parsed = JsonSerializer
+                    .Serialize(gatewaySocketFrame.Payload, _debugJsonSerializerOptions)
+                    .TrimEnd('\n');
+                QQBotDebugger.DebugPacket($"""
+                    [{DateTimeOffset.Now:HH:mm:ss}] <- [{gatewaySocketFrame.OpCode}] : #{gatewaySocketFrame.Sequence}
+                    [Raw] {raw}
+                    [Parsed] {parsed}
+                    """);
+            }
             await _receivedGatewayEvent
                 .InvokeAsync(gatewaySocketFrame.OpCode, gatewaySocketFrame.Sequence, gatewaySocketFrame.Type, gatewaySocketFrame.Payload)
                 .ConfigureAwait(false);
@@ -135,16 +130,17 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
         GatewaySocketFrame? gatewaySocketFrame = JsonSerializer.Deserialize<GatewaySocketFrame>(message, _serializerOptions);
         if (gatewaySocketFrame is null)
             return;
-#if DEBUG_PACKETS
-        string parsed = JsonSerializer
-            .Serialize(gatewaySocketFrame.Payload, _debugJsonSerializerOptions)
-            .TrimEnd('\n');
-        Debug.WriteLine($"""
-            [{DateTimeOffset.Now:HH:mm:ss}] <- [{gatewaySocketFrame.OpCode}] : #{gatewaySocketFrame.Sequence}
-            [Raw] {message}
-            [Parsed] {parsed}
-            """);
-#endif
+        if (QQBotDebugger.IsDebuggingPacket)
+        {
+            string parsed = JsonSerializer
+                .Serialize(gatewaySocketFrame.Payload, _debugJsonSerializerOptions)
+                .TrimEnd('\n');
+            QQBotDebugger.DebugPacket($"""
+                [{DateTimeOffset.Now:HH:mm:ss}] <- [{gatewaySocketFrame.OpCode}] : #{gatewaySocketFrame.Sequence}
+                [Raw] {message}
+                [Parsed] {parsed}
+                """);
+        }
         await _receivedGatewayEvent
             .InvokeAsync(gatewaySocketFrame.OpCode, gatewaySocketFrame.Sequence, gatewaySocketFrame.Type, gatewaySocketFrame.Payload)
             .ConfigureAwait(false);
@@ -198,9 +194,7 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
                 GetBotGatewayResponse gatewayResponse = await GetBotGatewayAsync().ConfigureAwait(false);
                 _gatewayUrl = gatewayResponse.Url;
             }
-#if DEBUG_PACKETS
-            Debug.WriteLine("Connecting to gateway: " + _gatewayUrl);
-#endif
+            QQBotDebugger.DebugPacket("Connecting to gateway: " + _gatewayUrl);
             await WebSocketClient.ConnectAsync(_gatewayUrl).ConfigureAwait(false);
             ConnectionState = ConnectionState.Connected;
         }
@@ -315,10 +309,11 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
             .SendAsync(new WebSocketRequest(WebSocketClient, bytes, true, ignoreLimit, options))
             .ConfigureAwait(false);
         await _sentGatewayMessageEvent.InvokeAsync(opCode).ConfigureAwait(false);
-
-#if DEBUG_PACKETS
-        string payloadString = JsonSerializer.Serialize(payload, _debugJsonSerializerOptions);
-        Debug.WriteLine($"[{DateTimeOffset.Now:HH:mm:ss}] -> [{opCode}] {payloadString}".TrimEnd('\n'));
-#endif
+        if (QQBotDebugger.IsDebuggingPacket)
+        {
+            string payloadString = JsonSerializer.Serialize(payload, _debugJsonSerializerOptions);
+            QQBotDebugger.DebugPacket(
+                $"[{DateTimeOffset.Now:HH:mm:ss}] -> [{opCode}] \n{payloadString}".TrimEnd('\n'));
+        }
     }
 }

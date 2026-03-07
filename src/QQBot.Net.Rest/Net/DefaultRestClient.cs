@@ -4,13 +4,9 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
-using System.Text.Json;
-
-#if DEBUG
-using System.Diagnostics;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.Json.Serialization;
-#endif
 
 namespace QQBot.Net.Rest;
 
@@ -21,10 +17,8 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
     private CancellationToken _cancellationToken;
     private bool _isDisposed;
 
-#if DEBUG_REST
     private readonly JsonSerializerOptions _serializerOptions;
     private static int _nextId;
-#endif
 
     public DefaultRestClient(string baseUrl, bool useProxy = false)
     {
@@ -39,14 +33,12 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
 
         _cancellationToken = CancellationToken.None;
 
-#if DEBUG_REST
         _serializerOptions = new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
-#endif
     }
 
     private void Dispose(bool disposing)
@@ -184,17 +176,12 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
 
     private async Task<RestResponse> SendInternalAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-#if DEBUG_REST
         int id = Interlocked.Increment(ref _nextId);
-#endif
         using CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationToken, cancellationToken);
-#if DEBUG_REST
-        Debug.WriteLine($"[REST] [{id}] {request.Method} {request.RequestUri} {request.Content?.Headers.ContentType?.MediaType}");
+        QQBotDebugger.DebugRest($"[REST] [{id}] {request.Method} {request.RequestUri} {request.Content?.Headers.ContentType?.MediaType}");
         if (request.Content?.Headers.ContentType?.MediaType == "application/json")
-            Debug.WriteLine($"[REST] [{id}] {await request.Content.ReadAsStringAsync().ConfigureAwait(false)}");
-#endif
-        cancellationToken = cancellationTokenSource.Token;
-        HttpResponseMessage response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            QQBotDebugger.DebugRest($"[REST] [{id}] {await request.Content.ReadAsStringAsync().ConfigureAwait(false)}");
+        HttpResponseMessage response = await _client.SendAsync(request, cancellationTokenSource.Token).ConfigureAwait(false);
 
         Dictionary<string, string?> headers = [];
         foreach (KeyValuePair<string, IEnumerable<string>> kvp in response.Headers)
@@ -205,11 +192,15 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         // ReSharper disable once MethodSupportsCancellation
         Stream stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-#if DEBUG_REST
-        Debug.WriteLine($"[REST] [{id}] {response.StatusCode} {response.ReasonPhrase}");
-        if (response.Content?.Headers.ContentType?.MediaType == "application/json")
-            Debug.WriteLine($"[REST] [{id}] {await response.Content.ReadAsStringAsync().ConfigureAwait(false)}");
-#endif
+        if (QQBotDebugger.IsDebuggingRest)
+        {
+            QQBotDebugger.DebugRest($"[REST] [{id}] {response.StatusCode} {response.ReasonPhrase}");
+            if (response.Content?.Headers.ContentType?.MediaType == "application/json")
+            {
+                string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                QQBotDebugger.DebugRest($"[REST] [{id}] {body}");
+            }
+        }
         return new RestResponse(response.StatusCode, headers, stream, response.Content?.Headers.ContentType);
     }
 
