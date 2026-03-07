@@ -140,10 +140,10 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             await _gatewayLogger.DebugAsync($"Sent {socketFrameType}").ConfigureAwait(false);
         ApiClient.ReceivedGatewayEvent += ProcessMessageAsync;
 
-        // LeftGuild += async g => await _gatewayLogger.InfoAsync($"Left {g.Name}").ConfigureAwait(false);
-        // JoinedGuild += async g => await _gatewayLogger.InfoAsync($"Joined {g.Name}").ConfigureAwait(false);
-        // GuildAvailable += async g => await _gatewayLogger.VerboseAsync($"Connected to {g.Name}").ConfigureAwait(false);
-        // GuildUnavailable += async g => await _gatewayLogger.VerboseAsync($"Disconnected from {g.Name}").ConfigureAwait(false);
+        LeftGuild += async (g, u) => await _gatewayLogger.InfoAsync($"Left {g.Name}").ConfigureAwait(false);
+        JoinedGuild += async (g, u) => await _gatewayLogger.InfoAsync($"Joined {g.Name}").ConfigureAwait(false);
+        GuildAvailable += async g => await _gatewayLogger.VerboseAsync($"Connected to {g.Name}").ConfigureAwait(false);
+        GuildUnavailable += async g => await _gatewayLogger.VerboseAsync($"Disconnected from {g.Name}").ConfigureAwait(false);
         LatencyUpdated += async (_, val) => await _gatewayLogger.DebugAsync($"Latency = {val} ms").ConfigureAwait(false);
 
         // GuildAvailable += g =>
@@ -584,6 +584,20 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
+            #region Guilds
+
+            case "GUILD_CREATE":
+                await HandleGuildCreatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GUILD_UPDATE":
+                await HandleGuildUpdatedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GUILD_DELETE":
+                await HandleGuildDeletedAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
+
             #region Channels
 
             case "CHANNEL_CREATE":
@@ -785,6 +799,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         return guild;
     }
 
+    internal SocketGuild? RemoveGuild(ulong id) => State.RemoveGuild(id);
+
     internal void EnsureGatewayIntent(GatewayIntents intents)
     {
         if (_gatewayIntents.HasFlag(intents)) return;
@@ -801,16 +817,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     //     state.AddGuild(guild);
     //     return guild;
     // }
-    //
-    // internal SocketGuild? RemoveGuild(ulong id) => State.RemoveGuild(id);
-    //
-    // internal SocketDMChannel AddDMChannel(UserChat model, ClientState state)
-    // {
-    //     SocketDMChannel channel = SocketDMChannel.Create(this, state, model.Code, model.Recipient);
-    //     state.AddDMChannel(channel);
-    //     return channel;
-    // }
-    //
+
     // internal SocketDMChannel AddDMChannel(Guid chatCode, User model, ClientState state)
     // {
     //     SocketDMChannel channel = SocketDMChannel.Create(this, state, chatCode, model);

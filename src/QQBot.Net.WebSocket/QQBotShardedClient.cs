@@ -343,6 +343,9 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         client.Ready += () => _shardReadyEvent.InvokeAsync(client);
         client.LatencyUpdated += (oldLatency, newLatency) => _shardLatencyUpdatedEvent.InvokeAsync(oldLatency, newLatency, client);
 
+        client.JoinedGuild += (guild, user) => _joinedGuildEvent.InvokeAsync(guild, user);
+        client.LeftGuild += (guild, user) => _leftGuildEvent.InvokeAsync(guild, user);
+        client.GuildUpdated += (before, after, user) => _guildUpdatedEvent.InvokeAsync(before, after, user);
         client.GuildAvailable += guild => _guildAvailableEvent.InvokeAsync(guild);
         client.GuildUnavailable += guild => _guildUnavailableEvent.InvokeAsync(guild);
 
