@@ -16,6 +16,7 @@ public record MessageReference
     public MessageReference(string messageId, bool? failIfNotExists = null)
     {
         MessageId = messageId;
+        FailIfNotExists = failIfNotExists;
     }
 
     /// <summary>
