@@ -1,7 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
 using QQBot;
 using QQBot.WebSocket;
+
+QQBotDebugger.SetDebuggers(true, true, true, (source, x) => Debug.WriteLine(x));
 
 QQBotSocketClient client = new(new QQBotSocketConfig
 {
