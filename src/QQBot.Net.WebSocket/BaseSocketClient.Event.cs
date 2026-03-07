@@ -26,7 +26,7 @@ public abstract partial class BaseSocketClient
     internal readonly AsyncEvent<Func<SocketGuild, Cacheable<SocketGuildMember, ulong>, Task>> _joinedGuildEvent = new();
 
     /// <summary>
-    ///     当当前用户离开频道或频道被结算时引发。
+    ///     当当前用户离开频道或频道被解散时引发。
     /// </summary>
     /// <remarks>
     ///     事件参数：
