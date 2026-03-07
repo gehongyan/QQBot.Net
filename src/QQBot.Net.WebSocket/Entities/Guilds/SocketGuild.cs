@@ -150,8 +150,6 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
         MaxMembers = model.MaxMembers;
         Description = model.Description;
         JoinedAt = model.JoinedAt;
-
-        IsAvailable = false;
     }
 
     internal void Update(ClientState state, IReadOnlyCollection<ChannelModel> models)
@@ -195,27 +193,24 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     }
 
     /// <summary>
-    ///     清除此服务器的用户缓存。
+    ///     清除此服务器的用户缓存（不包括当前用户）。
     /// </summary>
     public void PurgeUserCache() => PurgeUserCache(_ => true);
 
     /// <summary>
-    ///     清除此服务器的用户缓存。
+    ///     按条件清除此服务器的用户缓存（不包括当前用户）。
     /// </summary>
-    /// <param name="predicate"> 要清除的用户的筛选条件。 </param>
+    /// <param name="predicate"> 要清除的用户的筛选条件（当前用户即使符合条件也不会被清除）。 </param>
     public void PurgeUserCache(Predicate<SocketGuildMember> predicate)
     {
-        IEnumerable<SocketGuildMember> membersToPurge = Users
-            .Where(x => predicate.Invoke(x) && x.Id != Client.CurrentUser?.Id);
-        IEnumerable<SocketGuildMember> membersToKeep = Users
-            .Where(x => !predicate.Invoke(x) || x.Id == Client.CurrentUser?.Id);
-        foreach (SocketGuildMember member in membersToPurge)
+        ulong? currentUserId = Client.CurrentUser?.Id;
+        foreach (SocketGuildMember member in Users.ToArray())
         {
-            if (_members.TryRemove(member.Id, out _))
+            if (member.Id == currentUserId)
+                continue;
+            if (predicate(member) && _members.TryRemove(member.Id, out _))
                 member.GlobalUser.RemoveRef(Client);
         }
-        foreach (SocketGuildMember member in membersToKeep)
-            _members.TryAdd(member.Id, member);
     }
 
     /// <inheritdoc cref="QQBot.WebSocket.SocketGuild.Name" />

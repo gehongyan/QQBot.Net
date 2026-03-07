@@ -140,8 +140,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             await _gatewayLogger.DebugAsync($"Sent {socketFrameType}").ConfigureAwait(false);
         ApiClient.ReceivedGatewayEvent += ProcessMessageAsync;
 
-        LeftGuild += async (g, u) => await _gatewayLogger.InfoAsync($"Left {g.Name}").ConfigureAwait(false);
-        JoinedGuild += async (g, u) => await _gatewayLogger.InfoAsync($"Joined {g.Name}").ConfigureAwait(false);
+        LeftGuild += async (g, _) => await _gatewayLogger.InfoAsync($"Left {g.Name}").ConfigureAwait(false);
+        JoinedGuild += async (g, _) => await _gatewayLogger.InfoAsync($"Joined {g.Name}").ConfigureAwait(false);
         GuildAvailable += async g => await _gatewayLogger.VerboseAsync($"Connected to {g.Name}").ConfigureAwait(false);
         GuildUnavailable += async g => await _gatewayLogger.VerboseAsync($"Disconnected from {g.Name}").ConfigureAwait(false);
         LatencyUpdated += async (_, val) => await _gatewayLogger.DebugAsync($"Latency = {val} ms").ConfigureAwait(false);

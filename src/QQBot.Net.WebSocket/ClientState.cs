@@ -45,6 +45,9 @@ internal class ClientState
         if (!_guilds.TryRemove(id, out SocketGuild? guild))
             return null;
         guild.PurgeChannelCache(this);
+        // NOTE: PurgeUserCache intentionally retains the Client.CurrentUser entry.
+        // When removing a guild we accept that a member entry for the current user
+        // may remain cached; this is expected and handled by higher-level logic.
         guild.PurgeUserCache();
         return guild;
     }

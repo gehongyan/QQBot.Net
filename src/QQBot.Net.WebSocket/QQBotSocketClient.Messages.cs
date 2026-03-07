@@ -327,6 +327,13 @@ public partial class QQBotSocketClient
             : Task.CompletedTask;
         if (StartupCacheFetchMode is StartupCacheFetchMode.Synchronous)
             await guildDownloadTask.ConfigureAwait(false);
+        else
+        {
+            if (guild.IsAvailable)
+                await GuildAvailableAsync(guild).ConfigureAwait(false);
+            else
+                await GuildUnavailableAsync(guild).ConfigureAwait(false);
+        }
 
         SocketGuildMember? user = guild.GetUser(data.OperatorUserId);
         Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
@@ -354,17 +361,28 @@ public partial class QQBotSocketClient
     private async Task HandleGuildDeletedAsync(object? payload)
     {
         if (DeserializePayload<GuildEvent>(payload) is not { } data) return;
-        if (State.RemoveGuild(data.Id) is not { } guild)
+        if (GetGuild(data.Id) is not { } guild)
         {
             await UnknownGuildAsync(nameof(LeftGuild), data.Id, payload)
                 .ConfigureAwait(false);
             return;
         }
 
-        await GuildUnavailableAsync(guild).ConfigureAwait(false);
         SocketGuildMember? user = guild.GetUser(data.OperatorUserId);
-        Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
-        await TimedInvokeAsync(_leftGuildEvent, nameof(LeftGuild), guild, cacheableUser).ConfigureAwait(false);
+        // Use a non-downloading Cacheable: after leaving/guild deletion REST calls for guild members
+        // will fail, so we intentionally do not provide a download factory.
+        Cacheable<SocketGuildMember, ulong> cacheableUser = new(user, data.OperatorUserId, user is not null,
+            () => Task.FromResult<SocketGuildMember?>(null));
+
+        if (State.RemoveGuild(data.Id) is not { } removedGuild)
+        {
+            await UnknownGuildAsync(nameof(LeftGuild), data.Id, payload)
+                .ConfigureAwait(false);
+            return;
+        }
+
+        await GuildUnavailableAsync(removedGuild).ConfigureAwait(false);
+        await TimedInvokeAsync(_leftGuildEvent, nameof(LeftGuild), removedGuild, cacheableUser).ConfigureAwait(false);
     }
 
     #endregion
