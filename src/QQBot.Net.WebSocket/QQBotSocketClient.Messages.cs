@@ -321,13 +321,13 @@ public partial class QQBotSocketClient
     {
         if (DeserializePayload<GuildEvent>(payload) is not { } data) return;
         SocketGuild guild = AddGuild(data, State);
-        if (StartupCacheFetchMode is StartupCacheFetchMode.Lazy)
-        {
-            if (guild.IsAvailable)
-                await GuildAvailableAsync(guild).ConfigureAwait(false);
-            else
-                await GuildUnavailableAsync(guild).ConfigureAwait(false);
-        }
+
+        Task guildDownloadTask = StartupCacheFetchMode is not StartupCacheFetchMode.Lazy
+            ? DownloadGuildDataAsync([guild], Connection.CancellationToken)
+            : Task.CompletedTask;
+        if (StartupCacheFetchMode is StartupCacheFetchMode.Synchronous)
+            await guildDownloadTask.ConfigureAwait(false);
+
         SocketGuildMember? user = guild.GetUser(data.OperatorUserId);
         Cacheable<SocketGuildMember, ulong> cacheableUser = GetCacheableSocketGuildMember(user, data.OperatorUserId, guild);
         await TimedInvokeAsync(_joinedGuildEvent, nameof(JoinedGuild), guild, cacheableUser).ConfigureAwait(false);
