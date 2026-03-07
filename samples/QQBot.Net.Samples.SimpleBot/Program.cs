@@ -8,7 +8,8 @@ QQBotSocketClient client = new(new QQBotSocketConfig
     LogLevel = LogSeverity.Debug,
     AccessEnvironment = AccessEnvironment.Sandbox,
     GatewayIntents = GatewayIntents.All,
-    StartupCacheFetchData = StartupCacheFetchData.All
+    StartupCacheFetchData = StartupCacheFetchData.All,
+    MessageSequenceGenerationParameters = MessageSequenceGenerationParameters.All
 });
 client.Log += x => Task.Run(() => Console.WriteLine(x));
 client.Ready += async () =>

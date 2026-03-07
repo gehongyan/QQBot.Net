@@ -111,5 +111,18 @@ public class QQBotConfig
     /// <summary>
     ///     消息序号盐值类型。
     /// </summary>
-    public MessageSequenceGenerationParameters MessageSequenceGenerationParameters { get; set; }
+    /// <remarks>
+    ///     此属性决定了消息序号盐值的生成方式，进而影响消息序号的生成。 <br />
+    ///     发送消息时，当此属性值不为 <see cref="QQBot.MessageSequenceGenerationParameters.None"/> 时，
+    ///     则会将各个标志所对应的数据来源使用 <see cref="System.HashCode.Combine{T1,T2}(T1,T2)"/>
+    ///     依次组合成一个整数作为消息序号盐值。 <br />
+    ///     默认值为 <see cref="QQBot.MessageSequenceGenerationParameters.MessageParameters"/>，
+    ///     表示每次发送消息时，都所要发送的消息的所有参数都会参与计算，所有参数均相同的消息将具有相同的消息序号盐值，相同的消息会被 QQ Bot
+    ///     服务端忽略。设置了 <see cref="QQBot.MessageSequenceGenerationParameters.AutoIncrement"/>、
+    ///     <see cref="QQBot.MessageSequenceGenerationParameters.Timestamp"/> 或
+    ///     <see cref="QQBot.MessageSequenceGenerationParameters.Random"/>
+    ///     时，会使每条消息的消息序号盐值都包含一个不同的值，从而使每条消息的消息序号都不同，即使消息内容完全相同也不会被 QQ Bot 服务端忽略。
+    /// </remarks>
+    public MessageSequenceGenerationParameters MessageSequenceGenerationParameters { get; set; } =
+        MessageSequenceGenerationParameters.MessageParameters;
 }

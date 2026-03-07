@@ -294,10 +294,9 @@ internal static class ChannelHelper
         string? content, IMarkdown? markdown, MediaFileInfo? mediaFileInfo,
         Embed? embed, Ark? ark, IKeyboard? keyboard, MessageReference? messageReference, IUserMessage? passiveSource)
     {
-        int increment = Interlocked.Increment(ref _messageSequenceIncrement);
         int value = 1;
         if (generationParameters.HasFlag(MessageSequenceGenerationParameters.AutoIncrement))
-            value = increment;
+            value = Interlocked.Increment(ref _messageSequenceIncrement);
         if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Timestamp))
             value = HashCode.Combine(value, DateTimeOffset.Now.ToUnixTimeMilliseconds());
         if (generationParameters.HasFlag(MessageSequenceGenerationParameters.Random))
