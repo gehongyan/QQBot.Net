@@ -9,10 +9,6 @@
     <Description>The REST API implementation for QQBot.Net.</Description>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>DEBUG_REST</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj" />
   </ItemGroup>

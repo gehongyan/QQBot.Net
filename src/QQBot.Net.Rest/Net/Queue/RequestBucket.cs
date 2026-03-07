@@ -121,9 +121,7 @@ internal class RequestBucket
             //catch (HttpException) { throw; } //Pass through
             catch (TimeoutException)
             {
-#if DEBUG_LIMITS
-                Debug.WriteLine($"[{id}] Timeout");
-#endif
+                QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] Timeout");
                 if ((request.Options.RetryMode & RetryMode.RetryTimeouts) == 0)
                     throw;
 
@@ -132,9 +130,7 @@ internal class RequestBucket
             }
             /*catch (Exception)
             {
-#if DEBUG_LIMITS
-                Debug.WriteLine($"[{id}] Error");
-#endif
+                QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] Error");
                 if ((request.Options.RetryMode & RetryMode.RetryErrors) == 0)
                     throw;
 
@@ -167,9 +163,7 @@ internal class RequestBucket
             }
             catch (TimeoutException)
             {
-#if DEBUG_LIMITS
-                Debug.WriteLine($"[{id}] Timeout");
-#endif
+                QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] Timeout");
                 if ((request.Options.RetryMode & RetryMode.RetryTimeouts) == 0)
                     throw;
 
@@ -178,9 +172,7 @@ internal class RequestBucket
             }
             /*catch (Exception)
             {
-#if DEBUG_LIMITS
-                Debug.WriteLine($"[{id}] Error");
-#endif
+                QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] Error");
                 if ((request.Options.RetryMode & RetryMode.RetryErrors) == 0)
                     throw;
 
@@ -357,9 +349,7 @@ internal class RequestBucket
             //                 {
             //                     //RetryAfter is more accurate than Reset, where available
             //                     resetTick = DateTimeOffset.UtcNow.AddSeconds(info.RetryAfter.Value);
-            // #if DEBUG_LIMITS
-            //                     Debug.WriteLine($"[{id}] Retry-After: {info.RetryAfter.Value} ({info.RetryAfter.Value} ms)");
-            // #endif
+            //                     QQBotDebugger.DebugRatelimit($"[{id}] Retry-After: {info.RetryAfter.Value} ({info.RetryAfter.Value} ms)");
             //                 }
             else if (info.ResetAfter.HasValue) // && (request.Options.UseSystemClock.HasValue && !request.Options.UseSystemClock.Value)
             {
@@ -376,9 +366,7 @@ internal class RequestBucket
             // 					*/
             //
             //                     int diff = (int)(resetTick.Value - DateTimeOffset.UtcNow).TotalMilliseconds;
-            // #if DEBUG_LIMITS
-            //                     Debug.WriteLine($"[{id}] X-Rate-Limit-Reset: {info.Reset.Value.ToUnixTimeSeconds()} ({diff} ms, {info.Lag?.TotalMilliseconds} ms lag)");
-            // #endif
+            //                     QQBotDebugger.DebugRatelimit($"[{id}] X-Rate-Limit-Reset: {info.Reset.Value.ToUnixTimeSeconds()} ({diff} ms, {info.Lag?.TotalMilliseconds} ms lag)");
             //                 }
             else if (request.Options.IsClientBucket && Id != null)
             {
