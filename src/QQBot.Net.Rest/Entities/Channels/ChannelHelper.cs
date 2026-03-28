@@ -317,7 +317,7 @@ internal static class ChannelHelper
             value = HashCode.Combine(value, messageReference);
         if (generationParameters.HasFlag(MessageSequenceGenerationParameters.PassiveSource))
             value = HashCode.Combine(value, passiveSource);
-        return value;
+        return Math.Abs(value);
     }
 
     private static RestUserMessage CreateMessageEntity(BaseQQBotClient client, IMessageChannel channel,
