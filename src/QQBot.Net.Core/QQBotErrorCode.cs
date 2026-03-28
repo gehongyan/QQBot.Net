@@ -364,10 +364,11 @@ public enum QQBotErrorCode
 
     #endregion
 
-
     #region Message Editing Errors (3XXXXXX)
 
-    SecurityHitMessageEditing = 3300006
+    SecurityHitMessageEditing = 3300006,
 
     #endregion
+
+    GroupMessageCmdEnterNotAllowed = 40034106
 }
