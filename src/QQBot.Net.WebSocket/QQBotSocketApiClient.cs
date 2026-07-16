@@ -21,13 +21,13 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
 
     internal readonly AsyncEvent<Func<GatewayOpCode, Task>> _sentGatewayMessageEvent = new();
 
-    public event Func<GatewayOpCode, int?, string?, object?, Task> ReceivedGatewayEvent
+    public event Func<GatewayOpCode, int?, string?, string?, object?, Task> ReceivedGatewayEvent
     {
         add => _receivedGatewayEvent.Add(value);
         remove => _receivedGatewayEvent.Remove(value);
     }
 
-    internal readonly AsyncEvent<Func<GatewayOpCode, int?, string?, object?, Task>> _receivedGatewayEvent = new();
+    internal readonly AsyncEvent<Func<GatewayOpCode, int?, string?, string?, object?, Task>> _receivedGatewayEvent = new();
 
     public event Func<Exception, Task> Disconnected
     {
@@ -120,7 +120,8 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
                     """);
             }
             await _receivedGatewayEvent
-                .InvokeAsync(gatewaySocketFrame.OpCode, gatewaySocketFrame.Sequence, gatewaySocketFrame.Type, gatewaySocketFrame.Payload)
+                .InvokeAsync(gatewaySocketFrame.OpCode, gatewaySocketFrame.Sequence, gatewaySocketFrame.Type,
+                    gatewaySocketFrame.EventId, gatewaySocketFrame.Payload)
                 .ConfigureAwait(false);
         }
     }
@@ -142,7 +143,8 @@ internal class QQBotSocketApiClient : QQBotRestApiClient
                 """);
         }
         await _receivedGatewayEvent
-            .InvokeAsync(gatewaySocketFrame.OpCode, gatewaySocketFrame.Sequence, gatewaySocketFrame.Type, gatewaySocketFrame.Payload)
+            .InvokeAsync(gatewaySocketFrame.OpCode, gatewaySocketFrame.Sequence, gatewaySocketFrame.Type,
+                gatewaySocketFrame.EventId, gatewaySocketFrame.Payload)
             .ConfigureAwait(false);
     }
 

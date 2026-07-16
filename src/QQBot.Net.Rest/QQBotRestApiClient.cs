@@ -752,14 +752,16 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Interactions
 
-    public async Task RespondInteractionAsync(ulong interactionId, RequestOptions? options = null)
+    public async Task RespondInteractionAsync(string interactionId, InteractionResponseCode responseCode,
+        RequestOptions? options = null)
     {
-        Preconditions.NotEqual(interactionId, 0, nameof(interactionId));
+        Preconditions.NotNullOrWhiteSpace(interactionId, nameof(interactionId));
         options = RequestOptions.CreateOrClone(options);
 
+        RespondInteractionParams args = new() { Code = responseCode };
         BucketIds ids = new();
-        await SendAsync(HttpMethod.Put,
-                () => $"interactions/{interactionId}", ids, ClientBucketType.SendEdit, options)
+        await SendJsonAsync(HttpMethod.Put,
+                () => $"interactions/{interactionId}", args, ids, ClientBucketType.SendEdit, options)
             .ConfigureAwait(false);
     }
 

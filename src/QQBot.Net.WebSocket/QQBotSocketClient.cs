@@ -69,6 +69,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
     internal int? HandlerTimeout { get; private set; }
     internal bool LogGatewayIntentWarnings { get; private set; }
     internal bool SuppressUnknownDispatchWarnings { get; private set; }
+    internal bool AutoAcknowledgeInteractions { get; private set; }
+    internal int InteractionAutoAcknowledgeDelay { get; private set; }
     internal new QQBotSocketApiClient ApiClient => base.ApiClient;
 
     /// <inheritdoc />
@@ -109,6 +111,10 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
         StartupCacheFetchMode = config.StartupCacheFetchMode;
         StartupCacheFetchData = config.StartupCacheFetchData;
         HandlerTimeout = config.HandlerTimeout;
+        if (config.InteractionAutoAcknowledgeDelay < 0)
+            throw new ArgumentOutOfRangeException(nameof(config.InteractionAutoAcknowledgeDelay));
+        AutoAcknowledgeInteractions = config.AutoAcknowledgeInteractions;
+        InteractionAutoAcknowledgeDelay = config.InteractionAutoAcknowledgeDelay;
         State = new ClientState(0);
         Rest = new QQBotSocketRestClient(config, ApiClient);
         _heartbeatInterval = QQBotSocketConfig.HeartbeatIntervalMilliseconds;
@@ -496,7 +502,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
     #region ProcessMessageAsync
 
-    internal virtual async Task ProcessMessageAsync(GatewayOpCode opCode, int? sequence, string? type, object? payload)
+    internal virtual async Task ProcessMessageAsync(GatewayOpCode opCode, int? sequence, string? type,
+        string? eventId, object? payload)
     {
         if (sequence.HasValue)
         {
@@ -513,7 +520,7 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             switch (opCode)
             {
                 case GatewayOpCode.Dispatch:
-                    await HandleGatewayDispatchAsync(sequence, type, payload).ConfigureAwait(false);
+                    await HandleGatewayDispatchAsync(sequence, type, eventId, payload).ConfigureAwait(false);
                     break;
                 case GatewayOpCode.Heartbeat:
                     await HandleGatewayHeartbeatAsync().ConfigureAwait(false);
@@ -552,6 +559,13 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
     internal async Task ProcessGatewayEventAsync(int sequence, string type, object payload)
     {
+        string? eventId = null;
+        if (payload is GatewayDispatchPayload dispatchPayload)
+        {
+            eventId = dispatchPayload.EventId;
+            payload = dispatchPayload.Payload;
+        }
+
         await _gatewayLogger.DebugAsync($"Received Dispatch ({type})").ConfigureAwait(false);
         switch (type)
         {
@@ -581,6 +595,14 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "AT_MESSAGE_CREATE":
             case "MESSAGE_CREATE":
                 await HandleChannelMessageCreatedAsync(payload, type).ConfigureAwait(false);
+                break;
+
+            #endregion
+
+            #region Interactions
+
+            case "INTERACTION_CREATE":
+                await HandleInteractionCreatedAsync(payload, eventId).ConfigureAwait(false);
                 break;
 
             #endregion

@@ -19,6 +19,9 @@ internal class SendUserGroupMessageParams
     [JsonPropertyName("ark")]
     public MessageArk? Ark { get; init; }
 
+    [JsonPropertyName("embed")]
+    public MessageEmbed? Embed { get; init; }
+
     [JsonPropertyName("media")]
     public MediaFileInfo? MediaFileInfo { get; init; }
 

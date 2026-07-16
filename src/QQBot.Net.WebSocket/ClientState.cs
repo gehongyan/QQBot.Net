@@ -82,6 +82,8 @@ internal class ClientState
 
     #region GroupChannel
 
+    internal SocketGroupChannel? GetGroupChannel(Guid id) => _groupChannels.GetValueOrDefault(id);
+
     internal SocketGroupChannel GetOrAddGroupChannel(Guid id, Func<Guid, SocketGroupChannel> channelFactory) =>
         _groupChannels.GetOrAdd(id, channelFactory);
 

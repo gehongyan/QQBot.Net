@@ -10,7 +10,7 @@ public partial class QQBotSocketClient
 {
     #region Gateway
 
-    private async Task HandleGatewayDispatchAsync(int? sequence, string? type, object? payload)
+    private async Task HandleGatewayDispatchAsync(int? sequence, string? type, string? eventId, object? payload)
     {
         if (type is null)
         {
@@ -22,7 +22,8 @@ public partial class QQBotSocketClient
             await _gatewayLogger.WarningAsync($"Received Dispatch with no payload ({type})").ConfigureAwait(false);
             return;
         }
-        await MessageQueue.EnqueueAsync(sequence ?? _lastSeq ?? 0, type, payload).ConfigureAwait(false);
+        await MessageQueue.EnqueueAsync(sequence ?? _lastSeq ?? 0, type,
+            new GatewayDispatchPayload(eventId, payload)).ConfigureAwait(false);
     }
 
     private async Task HandleGatewayHeartbeatAsync()
@@ -311,6 +312,50 @@ public partial class QQBotSocketClient
         SocketUserMessage message = SocketUserMessage.Create(this, State, channel, author, data, dispatch);
         SocketChannelHelper.AddMessage(channel, this, message);
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
+    }
+
+    #endregion
+
+    #region Interactions
+
+    private async Task HandleInteractionCreatedAsync(object? payload, string? eventId)
+    {
+        if (DeserializePayload<InteractionEvent>(payload) is not { } data) return;
+        SocketInteraction interaction = SocketInteraction.Create(this, data, eventId);
+        if (AutoAcknowledgeInteractions)
+            _ = AutoAcknowledgeInteractionAsync(interaction);
+
+        await TimedInvokeAsync(_interactionCreatedEvent, nameof(InteractionCreated), interaction).ConfigureAwait(false);
+        if (interaction.Type is InteractionType.MessageButton)
+            await TimedInvokeAsync(_buttonExecutedEvent, nameof(ButtonExecuted), interaction).ConfigureAwait(false);
+        if (InteractionService is not null)
+            await TimeoutWrap(nameof(InteractionService), () => InteractionService.ExecuteAsync(interaction))
+                .ConfigureAwait(false);
+    }
+
+    private async Task AutoAcknowledgeInteractionAsync(SocketInteraction interaction)
+    {
+        try
+        {
+            await Task.Delay(InteractionAutoAcknowledgeDelay, Connection.CancellationToken).ConfigureAwait(false);
+            await TryAutoAcknowledgeInteractionAsync(interaction).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private async Task TryAutoAcknowledgeInteractionAsync(SocketInteraction interaction)
+    {
+        try
+        {
+            await interaction.TryAcknowledgeAsync(InteractionResponseCode.Success).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            await _gatewayLogger.WarningAsync($"Failed to automatically acknowledge interaction {interaction.Id}", ex)
+                .ConfigureAwait(false);
+        }
     }
 
     #endregion

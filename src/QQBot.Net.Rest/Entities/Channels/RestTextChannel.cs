@@ -92,7 +92,8 @@ public class RestTextChannel : RestGuildChannel, ITextChannel
     public Task<IUserMessage> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
-        ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, messageReference, passiveSource, options);
+        ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark,
+            messageReference, passiveSource, null, options);
 
     /// <summary>
     ///     从此消息子频道获取一条消息。
