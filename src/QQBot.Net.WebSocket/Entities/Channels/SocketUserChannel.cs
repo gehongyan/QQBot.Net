@@ -42,7 +42,8 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
     public Task<IUserMessage> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
         MessageReference? messageReference = null, IUserMessage? passiveSource = null, RequestOptions? options = null) =>
-        ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, keyboard, messageReference, passiveSource, options);
+        ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, keyboard,
+            messageReference, passiveSource, null, options);
 
     #endregion
 

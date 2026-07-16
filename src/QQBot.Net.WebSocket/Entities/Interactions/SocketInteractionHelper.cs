@@ -15,13 +15,13 @@ internal static class SocketInteractionHelper
         {
             InteractionScene.C2C when interaction.UserOpenId.HasValue =>
                 await ChannelHelper.SendMessageAsync(GetUserChannel(interaction), interaction.Client,
-                        content, markdown, attachment, embed, ark, keyboard, messageReference, null, options,
-                        interaction.EventId)
+                        content, markdown, attachment, embed, ark, keyboard, messageReference, null,
+                        interaction.EventId, options)
                     .ConfigureAwait(false),
             InteractionScene.Group when interaction.GroupOpenId.HasValue =>
                 await ChannelHelper.SendMessageAsync(GetGroupChannel(interaction), interaction.Client,
-                        content, markdown, attachment, embed, ark, keyboard, messageReference, null, options,
-                        interaction.EventId)
+                        content, markdown, attachment, embed, ark, keyboard, messageReference, null,
+                        interaction.EventId, options)
                     .ConfigureAwait(false),
             InteractionScene.Guild when interaction.GuildId.HasValue && interaction.ChannelId.HasValue =>
                 await SendGuildMessageAsync(interaction, content, markdown, attachment, embed, ark, keyboard,
@@ -51,7 +51,7 @@ internal static class SocketInteractionHelper
             new RestTextChannel(interaction.Client, interaction.ChannelId!.Value,
                 interaction.Guild ?? new SocketGuild(interaction.Client, interaction.GuildId!.Value));
         return await ChannelHelper.SendMessageAsync(channel, interaction.Client, content, markdown,
-                attachment, embed, ark, messageReference, null, options, interaction.EventId)
+                attachment, embed, ark, messageReference, null, interaction.EventId, options)
             .ConfigureAwait(false);
     }
 }

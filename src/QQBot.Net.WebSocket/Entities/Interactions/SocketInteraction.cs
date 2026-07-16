@@ -240,7 +240,7 @@ public class SocketInteraction : SocketEntity<string>
         catch
         {
             Volatile.Write(ref _responseState, 0);
-            throw;
+            return false;
         }
     }
 
