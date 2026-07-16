@@ -331,9 +331,6 @@ public partial class QQBotSocketClient
         if (InteractionService is not null)
             await TimeoutWrap(nameof(InteractionService), () => InteractionService.ExecuteAsync(interaction))
                 .ConfigureAwait(false);
-
-        if (AutoAcknowledgeInteractions)
-            await TryAutoAcknowledgeInteractionAsync(interaction).ConfigureAwait(false);
     }
 
     private async Task AutoAcknowledgeInteractionAsync(SocketInteraction interaction)

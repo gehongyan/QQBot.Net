@@ -21,10 +21,10 @@ internal class InteractionEvent
     public DateTimeOffset? Timestamp { get; init; }
 
     [JsonPropertyName("guild_id")]
-    public string? GuildId { get; init; }
+    public ulong? GuildId { get; init; }
 
     [JsonPropertyName("channel_id")]
-    public string? ChannelId { get; init; }
+    public ulong? ChannelId { get; init; }
 
     [JsonPropertyName("user_openid")]
     [GuidJsonConverter]

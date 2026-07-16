@@ -40,12 +40,12 @@ public class SocketInteraction : SocketEntity<string>
     /// <summary>
     ///     获取互动发生的频道 ID；仅频道场景提供。
     /// </summary>
-    public string? GuildId { get; }
+    public ulong? GuildId { get; }
 
     /// <summary>
     ///     获取互动发生的文字子频道 ID；仅频道场景提供。
     /// </summary>
-    public string? ChannelId { get; }
+    public ulong? ChannelId { get; }
 
     /// <summary>
     ///     获取触发互动的用户 OpenID；仅单聊场景提供。

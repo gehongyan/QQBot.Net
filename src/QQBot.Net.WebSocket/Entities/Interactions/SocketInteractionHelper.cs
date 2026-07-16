@@ -9,7 +9,7 @@ internal static class SocketInteractionHelper
     {
         Preconditions.NotNullOrWhiteSpace(content, nameof(content));
         if (string.IsNullOrWhiteSpace(interaction.EventId))
-            throw new InvalidOperationException("The interaction does not contain a gateway event ID.");
+            throw new NotSupportedException("The interaction does not contain a gateway event ID.");
 
         switch (interaction.Scene)
         {
@@ -23,13 +23,13 @@ internal static class SocketInteractionHelper
                         interaction.GroupOpenId.Value, CreateUserGroupMessageParams(interaction, content), options)
                     .ConfigureAwait(false);
                 break;
-            case InteractionScene.Guild when ulong.TryParse(interaction.ChannelId, out ulong channelId):
+            case InteractionScene.Guild when interaction.ChannelId.HasValue:
                 SendChannelMessageParams args = new()
                 {
                     Content = content,
                     EventId = interaction.EventId
                 };
-                await interaction.Client.ApiClient.SendChannelMessageAsync(channelId, args, options)
+                await interaction.Client.ApiClient.SendChannelMessageAsync(interaction.ChannelId.Value, args, options)
                     .ConfigureAwait(false);
                 break;
             default:
