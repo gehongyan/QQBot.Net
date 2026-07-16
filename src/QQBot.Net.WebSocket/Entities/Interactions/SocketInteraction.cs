@@ -63,14 +63,29 @@ public class SocketInteraction : SocketEntity<string>
     public Guid? GroupMemberOpenId { get; }
 
     /// <summary>
+    ///     获取缓存中的互动频道；如果频道不在缓存中，则为 <see langword="null"/>。
+    /// </summary>
+    public SocketGuild? Guild { get; }
+
+    /// <summary>
+    ///     获取缓存中的互动子频道；如果子频道不在缓存中，则为 <see langword="null"/>。
+    /// </summary>
+    public ISocketMessageChannel? Channel { get; }
+
+    /// <summary>
+    ///     获取缓存中的互动用户；如果用户不在缓存中，则为 <see langword="null"/>。
+    /// </summary>
+    public SocketUser? User { get; }
+
+    /// <summary>
+    ///     获取缓存中的互动消息；如果消息不在缓存中，则为 <see langword="null"/>。
+    /// </summary>
+    public SocketMessage? Message { get; }
+
+    /// <summary>
     ///     获取互动携带的数据。
     /// </summary>
     public SocketInteractionData Data { get; }
-
-    /// <summary>
-    ///     获取事件协议版本。
-    /// </summary>
-    public int? Version { get; }
 
     /// <summary>
     ///     获取被点击按钮的 ID。
@@ -105,9 +120,14 @@ public class SocketInteraction : SocketEntity<string>
         UserOpenId = model.UserOpenId;
         GroupOpenId = model.GroupOpenId;
         GroupMemberOpenId = model.GroupMemberOpenId;
+        Guild = model.GuildId.HasValue ? client.State.GetGuild(model.GuildId.Value) : null;
+        Channel = ResolveChannel(client, model, Scene);
+        User = ResolveUser(client, model, Scene, Guild, Channel);
+        Message = model.Data?.Resolved?.MessageId is { } messageId
+            ? Channel?.GetCachedMessage(messageId)
+            : null;
         int dataType = model.Data?.Type ?? 0;
         Data = new SocketInteractionData(dataType != 0 ? dataType : model.Type, model.Data?.Resolved);
-        Version = model.Version;
         EventId = eventId;
     }
 
@@ -226,6 +246,30 @@ public class SocketInteraction : SocketEntity<string>
             (int)InteractionChatType.Guild => InteractionScene.Guild,
             _ => InteractionScene.Unknown
         }
+    };
+
+    private static ISocketMessageChannel? ResolveChannel(QQBotSocketClient client, Model model,
+        InteractionScene scene) => scene switch
+    {
+        InteractionScene.Guild when model.ChannelId.HasValue =>
+            client.State.GetGuildChannel(model.ChannelId.Value) as ISocketMessageChannel,
+        InteractionScene.Group when model.GroupOpenId.HasValue =>
+            client.State.GetGroupChannel(model.GroupOpenId.Value),
+        InteractionScene.C2C when model.UserOpenId.HasValue =>
+            client.State.GetUserChannel(model.UserOpenId.Value),
+        _ => null
+    };
+
+    private static SocketUser? ResolveUser(QQBotSocketClient client, Model model, InteractionScene scene,
+        SocketGuild? guild, ISocketMessageChannel? channel) => scene switch
+    {
+        InteractionScene.Guild when ulong.TryParse(model.Data?.Resolved?.UserId, out ulong userId) =>
+            guild?.GetUser(userId) ?? client.GetGuildUser(userId),
+        InteractionScene.Group when model.GroupMemberOpenId.HasValue =>
+            client.GetUser(model.GroupMemberOpenId.Value.ToIdString()),
+        InteractionScene.C2C when model.UserOpenId.HasValue =>
+            client.GetUser(model.UserOpenId.Value.ToIdString()) ?? (channel as SocketUserChannel)?.Recipient,
+        _ => null
     };
 
     private string DebuggerDisplay => $"{Type} ({Id}, {Scene})";
