@@ -10,6 +10,8 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketInteraction : SocketEntity<string>
 {
+    private int _responseState;
+
     /// <summary>
     ///     获取互动类型。
     /// </summary>
@@ -80,7 +82,17 @@ public class SocketInteraction : SocketEntity<string>
     /// </summary>
     public string? ButtonData => Data.Resolved.ButtonData;
 
-    internal SocketInteraction(QQBotSocketClient client, Model model)
+    /// <summary>
+    ///     获取用于发送被动消息的网关事件 ID。
+    /// </summary>
+    public string? EventId { get; }
+
+    /// <summary>
+    ///     获取此互动是否已回应。
+    /// </summary>
+    public bool HasResponded => Volatile.Read(ref _responseState) == 2;
+
+    internal SocketInteraction(QQBotSocketClient client, Model model, string? eventId)
         : base(client, model.Id)
     {
         Type = (InteractionType)model.Type;
@@ -96,9 +108,111 @@ public class SocketInteraction : SocketEntity<string>
         int dataType = model.Data?.Type ?? 0;
         Data = new SocketInteractionData(dataType != 0 ? dataType : model.Type, model.Data?.Resolved);
         Version = model.Version;
+        EventId = eventId;
     }
 
-    internal static SocketInteraction Create(QQBotSocketClient client, Model model) => new(client, model);
+    internal static SocketInteraction Create(QQBotSocketClient client, Model model, string? eventId) =>
+        new(client, model, eventId);
+
+    /// <summary>
+    ///     向 QQ Bot API 回应此互动事件。
+    /// </summary>
+    /// <param name="responseCode"> 互动事件的处理结果。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <exception cref="InvalidOperationException"> 此互动已经回应或正在回应。 </exception>
+    public Task RespondAsync(InteractionResponseCode responseCode = InteractionResponseCode.Success,
+        RequestOptions? options = null) =>
+        AcknowledgeAsync(responseCode, options);
+
+    /// <summary>
+    ///     向 QQ Bot API 成功回应此互动事件，并向互动发生的聊天上下文发送一条消息。
+    /// </summary>
+    /// <param name="content"> 要发送的消息内容。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <exception cref="InvalidOperationException"> 此互动已经回应或正在回应。 </exception>
+    /// <exception cref="NotSupportedException"> 此互动没有提供可用于发送消息的聊天上下文。 </exception>
+    public async Task RespondAsync(string content, RequestOptions? options = null)
+    {
+        if (!TryBeginResponse())
+            throw new InvalidOperationException("This interaction has already been acknowledged.");
+
+        try
+        {
+            await SendMessageAsync(content, options).ConfigureAwait(false);
+            await FinishResponseAsync(InteractionResponseCode.Success, options).ConfigureAwait(false);
+        }
+        catch
+        {
+            try
+            {
+                await FinishResponseAsync(InteractionResponseCode.Failed, options).ConfigureAwait(false);
+            }
+            catch
+            {
+                Volatile.Write(ref _responseState, 0);
+                // Preserve the original message response exception.
+            }
+            throw;
+        }
+    }
+
+    /// <summary>
+    ///     向 QQ Bot API 确认此互动事件。
+    /// </summary>
+    /// <param name="responseCode"> 互动事件的处理结果。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <exception cref="InvalidOperationException"> 此互动已经回应或正在回应。 </exception>
+    public async Task AcknowledgeAsync(InteractionResponseCode responseCode = InteractionResponseCode.Success,
+        RequestOptions? options = null)
+    {
+        if (!TryBeginResponse())
+            throw new InvalidOperationException("This interaction has already been acknowledged.");
+
+        try
+        {
+            await FinishResponseAsync(responseCode, options).ConfigureAwait(false);
+        }
+        catch
+        {
+            Volatile.Write(ref _responseState, 0);
+            throw;
+        }
+    }
+
+    /// <summary>
+    ///     向互动发生的聊天上下文发送一条消息。
+    /// </summary>
+    /// <param name="content"> 要发送的消息内容。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <exception cref="NotSupportedException"> 此互动没有提供可用于发送消息的聊天上下文。 </exception>
+    public Task SendMessageAsync(string content, RequestOptions? options = null) =>
+        SocketInteractionHelper.SendMessageAsync(this, content, options);
+
+    internal async Task<bool> TryAcknowledgeAsync(InteractionResponseCode responseCode,
+        RequestOptions? options = null)
+    {
+        if (!TryBeginResponse())
+            return false;
+
+        try
+        {
+            await FinishResponseAsync(responseCode, options).ConfigureAwait(false);
+            return true;
+        }
+        catch
+        {
+            Volatile.Write(ref _responseState, 0);
+            throw;
+        }
+    }
+
+    private bool TryBeginResponse() => Interlocked.CompareExchange(ref _responseState, 1, 0) == 0;
+
+    private async Task FinishResponseAsync(InteractionResponseCode responseCode, RequestOptions? options)
+    {
+        await Client.ApiClient.RespondInteractionAsync(Id, responseCode, options).ConfigureAwait(false);
+        Volatile.Write(ref _responseState, 2);
+    }
 
     private static InteractionScene ParseScene(string? scene, int? chatType) => scene?.ToLowerInvariant() switch
     {

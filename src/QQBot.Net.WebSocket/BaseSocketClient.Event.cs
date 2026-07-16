@@ -294,6 +294,20 @@ public abstract partial class BaseSocketClient
 
     internal readonly AsyncEvent<Func<SocketInteraction, Task>> _interactionCreatedEvent = new();
 
+    /// <summary>
+    ///     当用户点击消息按钮时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件在 <see cref="QQBot.WebSocket.BaseSocketClient.InteractionCreated"/> 之后引发。
+    /// </remarks>
+    public event Func<SocketInteraction, Task> ButtonExecuted
+    {
+        add => _buttonExecutedEvent.Add(value);
+        remove => _buttonExecutedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketInteraction, Task>> _buttonExecutedEvent = new();
+
     #endregion
 
     #region Voices

@@ -41,10 +41,16 @@ public abstract partial class BaseSocketClient : BaseQQBotClient, IQQBotClient
     /// </summary>
     public abstract IReadOnlyCollection<SocketGuild> Guilds { get; }
 
+    /// <summary>
+    ///     获取此客户端使用的互动路由服务。
+    /// </summary>
+    public InteractionService? InteractionService { get; }
+
     internal BaseSocketClient(QQBotSocketConfig config, QQBotRestApiClient client)
         : base(config, client)
     {
         BaseConfig = config;
+        InteractionService = config.InteractionService;
     }
 
     /// <summary>

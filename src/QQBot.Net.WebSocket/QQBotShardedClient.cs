@@ -360,6 +360,7 @@ public partial class QQBotShardedClient : BaseSocketClient, IQQBotClient
         client.MessageReceived += message => _messageReceivedEvent.InvokeAsync(message);
 
         client.InteractionCreated += interaction => _interactionCreatedEvent.InvokeAsync(interaction);
+        client.ButtonExecuted += interaction => _buttonExecutedEvent.InvokeAsync(interaction);
 
         client.UserConnected += (guild, user) => _userConnectedEvent.InvokeAsync(guild, user);
         client.UserDisconnected += (guild, user) => _userDisconnectedEvent.InvokeAsync(guild, user);

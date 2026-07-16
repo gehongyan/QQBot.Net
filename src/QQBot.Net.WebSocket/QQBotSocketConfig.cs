@@ -68,6 +68,24 @@ public class QQBotSocketConfig : QQBotRestConfig
     public int? HandlerTimeout { get; set; } = 3000;
 
     /// <summary>
+    ///     获取或设置是否自动确认未被用户代码回应的互动事件。
+    /// </summary>
+    public bool AutoAcknowledgeInteractions { get; set; } = true;
+
+    /// <summary>
+    ///     获取或设置自动确认互动事件前等待用户代码回应的时间（毫秒）。
+    /// </summary>
+    /// <remarks>
+    ///     默认值为 2000 毫秒。将此属性设置为 0 会在互动事件开始分发时立即进行自动确认。
+    /// </remarks>
+    public int InteractionAutoAcknowledgeDelay { get; set; } = 2000;
+
+    /// <summary>
+    ///     获取或设置自动处理互动事件的路由服务。
+    /// </summary>
+    public InteractionService? InteractionService { get; set; }
+
+    /// <summary>
     ///     Gets or sets the maximum identify concurrency.
     /// </summary>
     /// <remarks>
