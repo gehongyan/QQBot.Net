@@ -135,31 +135,29 @@ public class SocketInteraction : SocketEntity<string>
         new(client, model, eventId);
 
     /// <summary>
-    ///     向 QQ Bot API 回应此互动事件。
-    /// </summary>
-    /// <param name="responseCode"> 互动事件的处理结果。 </param>
-    /// <param name="options"> 发送请求时要使用的选项。 </param>
-    /// <exception cref="InvalidOperationException"> 此互动已经回应或正在回应。 </exception>
-    public Task RespondAsync(InteractionResponseCode responseCode = InteractionResponseCode.Success,
-        RequestOptions? options = null) =>
-        AcknowledgeAsync(responseCode, options);
-
-    /// <summary>
     ///     向 QQ Bot API 成功回应此互动事件，并向互动发生的聊天上下文发送一条消息。
     /// </summary>
     /// <param name="content"> 要发送的消息内容。 </param>
+    /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>
+    /// <param name="attachment"> 要发送的文件附件。 </param>
+    /// <param name="embed"> 要发送的嵌入式消息内容。 </param>
+    /// <param name="ark"> 要发送的模板消息内容。 </param>
+    /// <param name="keyboard"> 要发送的按钮。 </param>
+    /// <param name="messageReference"> 消息引用，用于回复消息。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <exception cref="InvalidOperationException"> 此互动已经回应或正在回应。 </exception>
     /// <exception cref="NotSupportedException"> 此互动没有提供可用于发送消息的聊天上下文。 </exception>
-    public async Task RespondAsync(string content, RequestOptions? options = null)
+    public async Task RespondAsync(string? content = null, IMarkdown? markdown = null,
+        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
+        MessageReference? messageReference = null, RequestOptions? options = null)
     {
         if (!TryBeginResponse())
             throw new InvalidOperationException("This interaction has already been acknowledged.");
 
         try
         {
-            await SendMessageAsync(content, options).ConfigureAwait(false);
-            await FinishResponseAsync(InteractionResponseCode.Success, options).ConfigureAwait(false);
+            await SendMessageAsync(content, markdown, attachment, embed, ark, keyboard, messageReference, options)
+                .ConfigureAwait(false);
         }
         catch
         {
@@ -172,6 +170,16 @@ public class SocketInteraction : SocketEntity<string>
                 Volatile.Write(ref _responseState, 0);
                 // Preserve the original message response exception.
             }
+            throw;
+        }
+
+        try
+        {
+            await FinishResponseAsync(InteractionResponseCode.Success, options).ConfigureAwait(false);
+        }
+        catch
+        {
+            Volatile.Write(ref _responseState, 0);
             throw;
         }
     }
@@ -203,10 +211,20 @@ public class SocketInteraction : SocketEntity<string>
     ///     向互动发生的聊天上下文发送一条消息。
     /// </summary>
     /// <param name="content"> 要发送的消息内容。 </param>
+    /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>
+    /// <param name="attachment"> 要发送的文件附件。 </param>
+    /// <param name="embed"> 要发送的嵌入式消息内容。 </param>
+    /// <param name="ark"> 要发送的模板消息内容。 </param>
+    /// <param name="keyboard"> 要发送的按钮。 </param>
+    /// <param name="messageReference"> 消息引用，用于回复消息。 </param>
     /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步发送操作的任务。任务的结果包含所发送的消息。 </returns>
     /// <exception cref="NotSupportedException"> 此互动没有提供可用于发送消息的聊天上下文。 </exception>
-    public Task SendMessageAsync(string content, RequestOptions? options = null) =>
-        SocketInteractionHelper.SendMessageAsync(this, content, options);
+    public Task<IUserMessage> SendMessageAsync(string? content = null, IMarkdown? markdown = null,
+        FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
+        MessageReference? messageReference = null, RequestOptions? options = null) =>
+        SocketInteractionHelper.SendMessageAsync(this, content, markdown, attachment, embed, ark, keyboard,
+            messageReference, options);
 
     internal async Task<bool> TryAcknowledgeAsync(InteractionResponseCode responseCode,
         RequestOptions? options = null)

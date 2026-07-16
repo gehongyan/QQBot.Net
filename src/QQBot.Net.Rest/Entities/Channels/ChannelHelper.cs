@@ -163,7 +163,8 @@ internal static class ChannelHelper
     public static async Task<IUserMessage> SendMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
-        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
+        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options,
+        string? eventId = null)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
             ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
@@ -177,13 +178,14 @@ internal static class ChannelHelper
             Markdown = markdown?.ToModel(),
             Keyboard = keyboard?.ToModel(),
             Ark = ark?.ToModel(),
+            Embed = embed?.ToModel(),
             MediaFileInfo = mediaFileInfo.HasValue
                 ? new API.Rest.MediaFileInfo { FileInfo = mediaFileInfo.Value.FileInfo }
                 : null,
             MessageReference = messageReference?.ToModel(),
-            EventId = null, // Using MessageId to identify the event is enough
-            MessageId = passiveSource?.Id,
-            MessageSequence = messageSequence
+            EventId = eventId,
+            MessageId = eventId is null ? passiveSource?.Id : null,
+            MessageSequence = eventId is null ? messageSequence : null
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendUserMessageAsync(channel.Id, args, options).ConfigureAwait(false);
@@ -193,7 +195,8 @@ internal static class ChannelHelper
     public static async Task<IUserMessage> SendMessageAsync(
         IGroupChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
-        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
+        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options,
+        string? eventId = null)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
             ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
@@ -207,13 +210,14 @@ internal static class ChannelHelper
             Markdown = markdown?.ToModel(),
             Keyboard = keyboard?.ToModel(),
             Ark = ark?.ToModel(),
+            Embed = embed?.ToModel(),
             MediaFileInfo = mediaFileInfo.HasValue
                 ? new API.Rest.MediaFileInfo { FileInfo = mediaFileInfo.Value.FileInfo }
                 : null,
             MessageReference = messageReference?.ToModel(),
-            EventId = null, // Using MessageId to identify the event is enough
-            MessageId = passiveSource?.Id,
-            MessageSequence = messageSequence
+            EventId = eventId,
+            MessageId = eventId is null ? passiveSource?.Id : null,
+            MessageSequence = eventId is null ? messageSequence : null
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendGroupMessageAsync(channel.Id, args, options).ConfigureAwait(false);
@@ -223,7 +227,8 @@ internal static class ChannelHelper
     public static async Task<IUserMessage> SendMessageAsync(
         ITextChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark,
-        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options)
+        MessageReference? messageReference, IUserMessage? passiveSource, RequestOptions? options,
+        string? eventId = null)
     {
         (string? uri, MultipartFile? multipartFile, bool needDispose) = attachment.HasValue
             ? EnsureChannelFileAttachmentAsync(attachment.Value)
@@ -237,8 +242,8 @@ internal static class ChannelHelper
             MessageReference = messageReference?.ToModel(),
             Image = uri,
             FileImage = multipartFile,
-            EventId = null, // Using MessageId to identify the event is enough
-            MessageId = passiveSource?.Id,
+            EventId = eventId,
+            MessageId = eventId is null ? passiveSource?.Id : null,
         };
         ChannelMessage response;
         try
