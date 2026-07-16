@@ -315,6 +315,17 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Interactions
+
+    private async Task HandleInteractionCreatedAsync(object? payload)
+    {
+        if (DeserializePayload<InteractionEvent>(payload) is not { } data) return;
+        SocketInteraction interaction = SocketInteraction.Create(this, data);
+        await TimedInvokeAsync(_interactionCreatedEvent, nameof(InteractionCreated), interaction).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Guilds
 
     private async Task HandleGuildCreatedAsync(object? payload)

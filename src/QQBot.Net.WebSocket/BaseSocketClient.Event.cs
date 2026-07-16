@@ -274,6 +274,28 @@ public abstract partial class BaseSocketClient
 
     #endregion
 
+    #region Interactions
+
+    /// <summary>
+    ///     当用户触发互动时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.Interaction"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketInteraction"/> 参数是网关接收到的互动事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketInteraction, Task> InteractionCreated
+    {
+        add => _interactionCreatedEvent.Add(value);
+        remove => _interactionCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketInteraction, Task>> _interactionCreatedEvent = new();
+
+    #endregion
+
     #region Voices
 
     /// <summary>

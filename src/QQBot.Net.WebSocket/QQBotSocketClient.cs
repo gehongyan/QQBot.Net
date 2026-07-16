@@ -585,6 +585,14 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
+            #region Interactions
+
+            case "INTERACTION_CREATE":
+                await HandleInteractionCreatedAsync(payload).ConfigureAwait(false);
+                break;
+
+            #endregion
+
             #region Guilds
 
             case "GUILD_CREATE":
