@@ -826,7 +826,9 @@ public partial class QQBotSocketClient
             await UnknownChannelAsync(nameof(UserAdded), data.OpenId, payload).ConfigureAwait(false);
             return;
         }
-        await TimedInvokeAsync(_userAddedEvent, nameof(UserAdded), channel, data.Scene, data.SceneParam).ConfigureAwait(false);
+
+        UserChannelSource scene = data.Scene ?? UserChannelSource.Default;
+        await TimedInvokeAsync(_userAddedEvent, nameof(UserAdded), channel, scene, data.SceneParam).ConfigureAwait(false);
     }
 
     private async Task HandleFriendRemovedAsync(object? payload)
