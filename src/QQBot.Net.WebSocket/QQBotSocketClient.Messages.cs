@@ -740,6 +740,56 @@ public partial class QQBotSocketClient
         await TimedInvokeAsync(_leftGroupEvent, nameof(LeftGroup), channel, user).ConfigureAwait(false);
     }
 
+    private async Task HandleGroupMemberAddedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupMemberEvent>(payload) is not { } data) return;
+        if (GetOrCreateGroupChannel(State, data.GroupOpenid) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(GroupMemberJoined), data.GroupOpenid, payload).ConfigureAwait(false);
+            return;
+        }
+
+        string? memberId = data.MemberOpenId ?? data.UserOpenId ?? data.UserId;
+        if (memberId is null)
+        {
+            await UnknownUserAsync(nameof(GroupMemberJoined), payload).ConfigureAwait(false);
+            return;
+        }
+
+        Cacheable<SocketUser, string> member = GetCacheableSocketUser(GetUser(memberId), memberId);
+        string? operatorId = data.OpMemberOpenId ?? data.OperatorId;
+        Cacheable<SocketUser, string>? operatorUser = operatorId is not null
+            ? GetCacheableSocketUser(GetUser(operatorId), operatorId)
+            : null;
+        await TimedInvokeAsync(_groupMemberJoinedEvent, nameof(GroupMemberJoined), channel, member, operatorUser)
+            .ConfigureAwait(false);
+    }
+
+    private async Task HandleGroupMemberRemovedAsync(object? payload)
+    {
+        if (DeserializePayload<GroupMemberEvent>(payload) is not { } data) return;
+        if (GetOrCreateGroupChannel(State, data.GroupOpenid) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(GroupMemberLeft), data.GroupOpenid, payload).ConfigureAwait(false);
+            return;
+        }
+
+        string? memberId = data.MemberOpenId ?? data.UserOpenId ?? data.UserId;
+        if (memberId is null)
+        {
+            await UnknownUserAsync(nameof(GroupMemberLeft), payload).ConfigureAwait(false);
+            return;
+        }
+
+        Cacheable<SocketUser, string> member = GetCacheableSocketUser(GetUser(memberId), memberId);
+        string? operatorId = data.OpMemberOpenId ?? data.OperatorId;
+        Cacheable<SocketUser, string>? operatorUser = operatorId is not null
+            ? GetCacheableSocketUser(GetUser(operatorId), operatorId)
+            : null;
+        await TimedInvokeAsync(_groupMemberLeftEvent, nameof(GroupMemberLeft), channel, member, operatorUser)
+            .ConfigureAwait(false);
+    }
+
     private async Task HandleGroupMessageRejectedAsync(object? payload)
     {
         if (DeserializePayload<GroupBotEvent>(payload) is not { } data) return;
@@ -861,6 +911,12 @@ public partial class QQBotSocketClient
                 if (model.User is null) return null;
                 return guild.AddOrUpdateUser(model.User, model);
             });
+    }
+
+    private Cacheable<SocketUser, string> GetCacheableSocketUser(SocketUser? value, string id)
+    {
+        return new Cacheable<SocketUser, string>(value, id, value is not null,
+            () => Task.FromResult<SocketUser?>(null));
     }
 
 

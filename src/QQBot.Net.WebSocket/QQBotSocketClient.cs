@@ -148,6 +148,8 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
         LeftGuild += async (g, u) => await _gatewayLogger.InfoAsync($"Left {g.Name}").ConfigureAwait(false);
         JoinedGuild += async (g, u) => await _gatewayLogger.InfoAsync($"Joined {g.Name}").ConfigureAwait(false);
+        GroupMemberJoined += async (g, u, o) => await _gatewayLogger.InfoAsync($"Group member joined {g.Id}: {u.Id}").ConfigureAwait(false);
+        GroupMemberLeft += async (g, u, o) => await _gatewayLogger.InfoAsync($"Group member left {g.Id}: {u.Id}").ConfigureAwait(false);
         GuildAvailable += async g => await _gatewayLogger.VerboseAsync($"Connected to {g.Name}").ConfigureAwait(false);
         GuildUnavailable += async g => await _gatewayLogger.VerboseAsync($"Disconnected from {g.Name}").ConfigureAwait(false);
         LatencyUpdated += async (_, val) => await _gatewayLogger.DebugAsync($"Latency = {val} ms").ConfigureAwait(false);
@@ -645,6 +647,12 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
                 break;
             case "GUILD_MEMBER_REMOVE":
                 await HandleGuildMemberRemovedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GROUP_MEMBER_ADD":
+                await HandleGroupMemberAddedAsync(payload).ConfigureAwait(false);
+                break;
+            case "GROUP_MEMBER_REMOVE":
+                await HandleGroupMemberRemovedAsync(payload).ConfigureAwait(false);
                 break;
             case "AUDIO_OR_LIVE_CHANNEL_MEMBER_ENTER":
                 await HandleAudioOrLiveChannelMemberEnterAsync(payload).ConfigureAwait(false);

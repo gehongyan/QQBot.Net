@@ -528,6 +528,64 @@ public abstract partial class BaseSocketClient
     internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task>> _leftGroupEvent = new();
 
     /// <summary>
+    ///     当群成员加入群组时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是成员加入的群组。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是加入群组的成员。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是执行该操作的群成员。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, Cacheable<SocketUser, string>, Cacheable<SocketUser, string>?, Task> GroupMemberJoined
+    {
+        add => _groupMemberJoinedEvent.Add(value);
+        remove => _groupMemberJoinedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Cacheable<SocketUser, string>?, Task>> _groupMemberJoinedEvent = new();
+
+    /// <summary>
+    ///     当群成员离开群组时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是成员离开的群组。 </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是离开群组的成员。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是执行该操作的群成员。如果缓存中存在此用户实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketUser"/> 群组用户；否则，包含 <see cref="System.String"/> 用户 ID。
+    ///         如果网关没有提供实体的详细信息，由于目前无法通过 API 获取此用户实体，因此
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}.GetOrDownloadAsync"/> 总会返回 <c>null</c>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, Cacheable<SocketUser, string>, Cacheable<SocketUser, string>?, Task> GroupMemberLeft
+    {
+        add => _groupMemberLeftEvent.Add(value);
+        remove => _groupMemberLeftEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Cacheable<SocketUser, string>?, Task>> _groupMemberLeftEvent = new();
+
+    /// <summary>
     ///     当群组接受当前用户的主动消息时引发。
     /// </summary>
     /// <remarks>
