@@ -41,6 +41,14 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
         ChannelHelper.SendMessageAsync(this, Client, content, markdown, attachment, embed, ark, keyboard,
             messageReference, passiveSource, null, options);
 
+    /// <inheritdoc cref="QQBot.IGroupChannel.DeleteMessageAsync(System.String,QQBot.RequestOptions)" />
+    public Task DeleteMessageAsync(string messageId, RequestOptions? options = null) =>
+        ChannelHelper.DeleteGroupMessageAsync(this, Client, messageId, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.DeleteMessageAsync(QQBot.IUserMessage,QQBot.RequestOptions)" />
+    public Task DeleteMessageAsync(IUserMessage message, RequestOptions? options = null) =>
+        DeleteMessageAsync(message.Id, options);
+
     #endregion
 
     #region ISocketMessageChannel

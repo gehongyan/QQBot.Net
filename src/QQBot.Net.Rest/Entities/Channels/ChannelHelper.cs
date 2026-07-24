@@ -575,6 +575,10 @@ internal static class ChannelHelper
         BaseQQBotClient client, string messageId, RequestOptions? options) =>
         client.ApiClient.UnpinMessageAsync(channel.Id, messageId, options);
 
+    public static Task DeleteGroupMessageAsync(IGroupChannel channel,
+        BaseQQBotClient client, string messageId, RequestOptions? options) =>
+        client.ApiClient.DeleteGroupMessageAsync(channel.Id, messageId, options);
+
     #endregion
 
     #region Schedules
