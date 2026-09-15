@@ -226,6 +226,44 @@ public class SocketInteraction : SocketEntity<string>
         SocketInteractionHelper.SendMessageAsync(this, content, markdown, attachment, embed, ark, keyboard,
             messageReference, options);
 
+    /// <summary>
+    ///     向此互动的 QQ 单聊上下文发起流式消息响应。
+    /// </summary>
+    /// <param name="initialContent"> 首个内容分片。 </param>
+    /// <param name="contentType"> 内容格式。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 已开始的流式消息会话。 </returns>
+    /// <exception cref="InvalidOperationException"> 此互动已经回应或正在回应。 </exception>
+    /// <exception cref="NotSupportedException"> 此互动不是可响应的 QQ 单聊上下文时引发。 </exception>
+    public async Task<IUserMessageStream> StartStreamResponseAsync(string initialContent,
+        StreamMessageContentType contentType = StreamMessageContentType.Text, RequestOptions? options = null)
+    {
+        if (!TryBeginResponse())
+            throw new InvalidOperationException("This interaction has already been acknowledged.");
+
+        try
+        {
+            IUserMessageStream stream = await SocketInteractionHelper
+                .StartStreamMessageAsync(this, initialContent, contentType, options)
+                .ConfigureAwait(false);
+            await FinishResponseAsync(InteractionResponseCode.Success, options).ConfigureAwait(false);
+            return stream;
+        }
+        catch
+        {
+            try
+            {
+                await FinishResponseAsync(InteractionResponseCode.Failed, options).ConfigureAwait(false);
+            }
+            catch
+            {
+                Volatile.Write(ref _responseState, 0);
+                // Preserve the original stream response exception.
+            }
+            throw;
+        }
+    }
+
     internal async Task<bool> TryAcknowledgeAsync(InteractionResponseCode responseCode,
         RequestOptions? options = null)
     {

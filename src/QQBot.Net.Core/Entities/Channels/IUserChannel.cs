@@ -28,6 +28,65 @@ public interface IUserChannel : IMessageChannel, IPrivateChannel, IEntity<Guid>
         RequestOptions? options = null);
 
     /// <summary>
+    ///     发送一个流式消息分片。
+    /// </summary>
+    /// <remarks>
+    ///     此方法仅适用于 QQ 单聊，并保留分片序号、输入模式和完成状态的完整控制权。多数场景应使用
+    ///     <see cref="StartStreamMessageAsync"/> 创建由 QQBot.Net 管理的流式消息会话。
+    /// </remarks>
+    /// <param name="chunk"> 要发送的流式消息分片。 </param>
+    /// <param name="passiveSource"> 可选的被动回复消息来源。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 分片发送结果。 </returns>
+    Task<StreamMessageChunkResult> SendStreamMessageChunkAsync(StreamMessageChunk chunk,
+        IUserMessage? passiveSource = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     发送一个单聊互动召回流式消息分片。
+    /// </summary>
+    /// <remarks>
+    ///     此方法仅适用于 QQ 单聊互动召回，不能作为对用户消息或事件的被动回复发送。平台的互动召回额度
+    ///     和时间窗口限制与 <see cref="SendWakeupMessageAsync"/> 相同；QQBot.Net 不预判平台额度。
+    /// </remarks>
+    /// <param name="chunk"> 要发送的流式消息分片。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 分片发送结果。 </returns>
+    Task<StreamMessageChunkResult> SendWakeupStreamMessageChunkAsync(StreamMessageChunk chunk,
+        RequestOptions? options = null);
+
+    /// <summary>
+    ///     开始一个由 QQBot.Net 管理的流式消息会话。
+    /// </summary>
+    /// <remarks>
+    ///     此方法仅适用于 QQ 单聊。返回的会话会自动维护分片序号和流式消息标识符；使用
+    ///     <see cref="IUserMessageStream.AppendAsync"/> 追加内容，并使用
+    ///     <see cref="IUserMessageStream.CompleteAsync"/> 显式结束消息。
+    /// </remarks>
+    /// <param name="initialContent"> 首个内容分片。 </param>
+    /// <param name="contentType"> 内容格式。 </param>
+    /// <param name="passiveSource"> 可选的被动回复消息来源。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 已开始的流式消息会话。 </returns>
+    Task<IUserMessageStream> StartStreamMessageAsync(string initialContent,
+        StreamMessageContentType contentType = StreamMessageContentType.Text,
+        IUserMessage? passiveSource = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     开始一个单聊互动召回流式消息会话。
+    /// </summary>
+    /// <remarks>
+    ///     此方法仅适用于 QQ 单聊互动召回，不能作为对用户消息或事件的被动回复发送。平台的互动召回额度
+    ///     和时间窗口限制与 <see cref="SendWakeupMessageAsync"/> 相同；QQBot.Net 不预判平台额度。
+    /// </remarks>
+    /// <param name="initialContent"> 首个内容分片。 </param>
+    /// <param name="contentType"> 内容格式。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 已开始的流式消息会话。 </returns>
+    Task<IUserMessageStream> StartWakeupStreamMessageAsync(string initialContent,
+        StreamMessageContentType contentType = StreamMessageContentType.Text,
+        RequestOptions? options = null);
+
+    /// <summary>
     ///     向此单聊发送一条互动召回消息。
     /// </summary>
     /// <remarks>

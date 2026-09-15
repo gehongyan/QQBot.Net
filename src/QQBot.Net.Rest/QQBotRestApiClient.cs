@@ -563,6 +563,19 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<SendUserStreamMessageResponse> SendUserStreamMessageAsync(Guid openId,
+        SendUserStreamMessageParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = openId.ToIdString();
+        return await SendJsonAsync<SendUserStreamMessageResponse>(HttpMethod.Post,
+                () => $"v2/users/{id}/stream_messages", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<SendUserGroupMessageResponse> SendGroupMessageAsync(Guid groupOpenid, SendUserGroupMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));

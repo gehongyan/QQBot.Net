@@ -184,6 +184,73 @@ internal static class ChannelHelper
         await client.ApiClient.SendUserMessageAsync(channel.Id, args, options).ConfigureAwait(false);
     }
 
+    public static Task<StreamMessageChunkResult> SendStreamMessageChunkAsync(
+        IUserChannel channel, BaseQQBotClient client, StreamMessageChunk chunk, IUserMessage? passiveSource,
+        RequestOptions? options) =>
+        SendStreamMessageChunkAsync(channel, client, chunk, passiveSource, null, false, options);
+
+    public static Task<StreamMessageChunkResult> SendWakeupStreamMessageChunkAsync(
+        IUserChannel channel, BaseQQBotClient client, StreamMessageChunk chunk, RequestOptions? options) =>
+        SendStreamMessageChunkAsync(channel, client, chunk, null, null, true, options);
+
+    public static Task<IUserMessageStream> StartStreamMessageAsync(
+        IUserChannel channel, BaseQQBotClient client, string initialContent,
+        StreamMessageContentType contentType, IUserMessage? passiveSource, RequestOptions? options) =>
+        StartStreamMessageAsync(channel, client, initialContent, contentType, passiveSource, null, false, options);
+
+    public static Task<IUserMessageStream> StartWakeupStreamMessageAsync(
+        IUserChannel channel, BaseQQBotClient client, string initialContent,
+        StreamMessageContentType contentType, RequestOptions? options) =>
+        StartStreamMessageAsync(channel, client, initialContent, contentType, null, null, true, options);
+
+    internal static async Task<IUserMessageStream> StartStreamMessageAsync(
+        IUserChannel channel, BaseQQBotClient client, string initialContent,
+        StreamMessageContentType contentType, IUserMessage? passiveSource, string? eventId, bool isWakeup,
+        RequestOptions? options)
+    {
+        ArgumentNullException.ThrowIfNull(initialContent);
+
+        int messageSequence = CreateMessageSequence(client.MessageSequenceGenerationParameters,
+            initialContent, null, null, null, null, null, null, passiveSource);
+        StreamMessageChunk initialChunk = new(initialContent, contentType, StreamMessageInputMode.Append,
+            StreamMessageInputState.Generating, 0, null, messageSequence);
+        StreamMessageChunkResult initialResult = await SendStreamMessageChunkAsync(channel, client, initialChunk,
+                passiveSource, eventId, isWakeup, options)
+            .ConfigureAwait(false);
+        return new RestUserMessageStream(channel, client, contentType, passiveSource, eventId, isWakeup,
+            messageSequence, initialResult);
+    }
+
+    internal static async Task<StreamMessageChunkResult> SendStreamMessageChunkAsync(
+        IUserChannel channel, BaseQQBotClient client, StreamMessageChunk chunk, IUserMessage? passiveSource,
+        string? eventId, bool isWakeup, RequestOptions? options)
+    {
+        ArgumentNullException.ThrowIfNull(chunk);
+
+        int messageSequence = chunk.MessageSequence ?? CreateMessageSequence(client.MessageSequenceGenerationParameters,
+            chunk.Content, null, null, null, null, null, null, passiveSource);
+        SendUserStreamMessageParams args = new()
+        {
+            InputMode = ToWireValue(chunk.InputMode),
+            InputState = chunk.InputState,
+            Index = chunk.Index,
+            ContentType = ToWireValue(chunk.ContentType),
+            Content = chunk.Content,
+            EventId = isWakeup ? null : eventId,
+            MessageId = isWakeup || eventId is not null ? null : passiveSource?.Id,
+            StreamMessageId = chunk.StreamMessageId,
+            MessageSequence = isWakeup || eventId is null ? messageSequence : null,
+            IsWakeup = isWakeup ? true : null
+        };
+        SendUserStreamMessageResponse response = await client.ApiClient
+            .SendUserStreamMessageAsync(channel.Id, args, options).ConfigureAwait(false);
+        MessageReference? replyReference = string.IsNullOrWhiteSpace(response.ExtInfo?.ReplyReferenceId)
+            ? null
+            : new MessageReference(response.ExtInfo.ReplyReferenceId);
+        return new StreamMessageChunkResult(response.Id, response.Timestamp,
+            response.RemainingMessageLength, replyReference);
+    }
+
     public static Task<IUserMessage> SendWakeupMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
@@ -328,6 +395,20 @@ internal static class ChannelHelper
             "Ignoring MarkdownText.ForceVerifyImageResource because it is only supported for C2C and group messages.")
             .ConfigureAwait(false);
     }
+
+    private static string ToWireValue(StreamMessageInputMode inputMode) => inputMode switch
+    {
+        StreamMessageInputMode.Append => "append",
+        StreamMessageInputMode.Replace => "replace",
+        _ => throw new ArgumentOutOfRangeException(nameof(inputMode), inputMode, "Unknown stream message input mode.")
+    };
+
+    private static string ToWireValue(StreamMessageContentType contentType) => contentType switch
+    {
+        StreamMessageContentType.Text => "text",
+        StreamMessageContentType.Markdown => "markdown",
+        _ => throw new ArgumentOutOfRangeException(nameof(contentType), contentType, "Unknown stream message content type.")
+    };
 
     private static MessageType InferMessageType(string? content, IMarkdown? markdown, FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard)
     {

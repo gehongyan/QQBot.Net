@@ -32,6 +32,18 @@ internal static class SocketInteractionHelper
         };
     }
 
+    public static Task<IUserMessageStream> StartStreamMessageAsync(SocketInteraction interaction,
+        string initialContent, StreamMessageContentType contentType, RequestOptions? options)
+    {
+        if (string.IsNullOrWhiteSpace(interaction.EventId))
+            throw new NotSupportedException("The interaction does not contain a gateway event ID.");
+        if (interaction.Scene is not InteractionScene.C2C || !interaction.UserOpenId.HasValue)
+            throw new NotSupportedException("Only C2C interactions support stream message responses.");
+
+        return ChannelHelper.StartStreamMessageAsync(GetUserChannel(interaction), interaction.Client,
+            initialContent, contentType, null, interaction.EventId, false, options);
+    }
+
     private static IUserChannel GetUserChannel(SocketInteraction interaction) =>
         interaction.Channel as IUserChannel ??
         new SocketUserChannel(interaction.Client, interaction.UserOpenId!.Value, interaction.User);

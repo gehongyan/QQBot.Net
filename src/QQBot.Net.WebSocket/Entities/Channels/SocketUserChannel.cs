@@ -51,6 +51,28 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
         ChannelHelper.TriggerTypingAsync(this, Client, duration, passiveSource, options);
 
     /// <inheritdoc />
+    public Task<StreamMessageChunkResult> SendStreamMessageChunkAsync(StreamMessageChunk chunk,
+        IUserMessage? passiveSource = null, RequestOptions? options = null) =>
+        ChannelHelper.SendStreamMessageChunkAsync(this, Client, chunk, passiveSource, options);
+
+    /// <inheritdoc />
+    public Task<StreamMessageChunkResult> SendWakeupStreamMessageChunkAsync(StreamMessageChunk chunk,
+        RequestOptions? options = null) =>
+        ChannelHelper.SendWakeupStreamMessageChunkAsync(this, Client, chunk, options);
+
+    /// <inheritdoc />
+    public Task<IUserMessageStream> StartStreamMessageAsync(string initialContent,
+        StreamMessageContentType contentType = StreamMessageContentType.Text,
+        IUserMessage? passiveSource = null, RequestOptions? options = null) =>
+        ChannelHelper.StartStreamMessageAsync(this, Client, initialContent, contentType, passiveSource, options);
+
+    /// <inheritdoc />
+    public Task<IUserMessageStream> StartWakeupStreamMessageAsync(string initialContent,
+        StreamMessageContentType contentType = StreamMessageContentType.Text,
+        RequestOptions? options = null) =>
+        ChannelHelper.StartWakeupStreamMessageAsync(this, Client, initialContent, contentType, options);
+
+    /// <inheritdoc />
     public Task<IUserMessage> SendWakeupMessageAsync(string? content = null, IMarkdown? markdown = null,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
         MessageReference? messageReference = null, RequestOptions? options = null) =>
