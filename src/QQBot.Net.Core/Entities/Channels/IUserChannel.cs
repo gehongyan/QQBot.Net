@@ -14,6 +14,20 @@ public interface IUserChannel : IMessageChannel, IPrivateChannel, IEntity<Guid>
     new Guid Id { get; }
 
     /// <summary>
+    ///     显示机器人正在输入的状态。
+    /// </summary>
+    /// <remarks>
+    ///     此方法仅适用于 QQ 单聊。未指定持续时间时，状态默认持续 60 秒；有效范围为大于零且不超过 60 秒。
+    ///     可选地提供触发输入状态的用户消息，以便作为该消息的被动回复发送。
+    /// </remarks>
+    /// <param name="duration"> 输入中状态的持续时间；为 <see langword="null"/> 时使用 60 秒。非整秒持续时间会向上取整到下一整秒。 </param>
+    /// <param name="passiveSource"> 可选的被动回复消息来源。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步发送操作的任务。 </returns>
+    Task TriggerTypingAsync(TimeSpan? duration = null, IUserMessage? passiveSource = null,
+        RequestOptions? options = null);
+
+    /// <summary>
     ///     向此单聊发送一条互动召回消息。
     /// </summary>
     /// <remarks>

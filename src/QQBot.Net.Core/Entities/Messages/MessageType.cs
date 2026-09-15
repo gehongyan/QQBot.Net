@@ -26,6 +26,11 @@ public enum MessageType
     Embed = 4,
 
     /// <summary>
+    ///     输入中状态消息。
+    /// </summary>
+    InputNotify = 6,
+
+    /// <summary>
     ///     富媒体消息。
     /// </summary>
     Media = 7

@@ -46,6 +46,11 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
             messageReference, passiveSource, null, false, options);
 
     /// <inheritdoc />
+    public Task TriggerTypingAsync(TimeSpan? duration = null, IUserMessage? passiveSource = null,
+        RequestOptions? options = null) =>
+        ChannelHelper.TriggerTypingAsync(this, Client, duration, passiveSource, options);
+
+    /// <inheritdoc />
     public Task<IUserMessage> SendWakeupMessageAsync(string? content = null, IMarkdown? markdown = null,
         FileAttachment? attachment = null, Embed? embed = null, Ark? ark = null, IKeyboard? keyboard = null,
         MessageReference? messageReference = null, RequestOptions? options = null) =>

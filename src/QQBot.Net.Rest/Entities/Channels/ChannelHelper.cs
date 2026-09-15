@@ -160,6 +160,30 @@ internal static class ChannelHelper
 
     #region Send Messages
 
+    public static async Task TriggerTypingAsync(
+        IUserChannel channel, BaseQQBotClient client, TimeSpan? duration, IUserMessage? passiveSource,
+        RequestOptions? options)
+    {
+        TimeSpan effectiveDuration = duration ?? TimeSpan.FromSeconds(60);
+        if (effectiveDuration <= TimeSpan.Zero || effectiveDuration > TimeSpan.FromSeconds(60))
+            throw new ArgumentOutOfRangeException(nameof(duration), "The typing duration must be greater than zero and no more than 60 seconds.");
+
+        int messageSequence = CreateMessageSequence(client.MessageSequenceGenerationParameters,
+            null, null, null, null, null, null, null, passiveSource);
+        SendUserGroupMessageParams args = new()
+        {
+            MessageType = MessageType.InputNotify,
+            InputNotify = new InputNotify
+            {
+                InputType = InputNotifyType.Typing,
+                InputSecond = (int)Math.Ceiling(effectiveDuration.TotalSeconds)
+            },
+            MessageId = passiveSource?.Id,
+            MessageSequence = messageSequence
+        };
+        await client.ApiClient.SendUserMessageAsync(channel.Id, args, options).ConfigureAwait(false);
+    }
+
     public static Task<IUserMessage> SendWakeupMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,

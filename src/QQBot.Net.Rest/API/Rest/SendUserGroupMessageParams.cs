@@ -10,6 +10,9 @@ internal class SendUserGroupMessageParams
     [JsonPropertyName("msg_type")]
     public required MessageType MessageType { get; init; }
 
+    [JsonPropertyName("input_notify")]
+    public InputNotify? InputNotify { get; init; }
+
     [JsonPropertyName("markdown")]
     public MessageMarkdown? Markdown { get; init; }
 
