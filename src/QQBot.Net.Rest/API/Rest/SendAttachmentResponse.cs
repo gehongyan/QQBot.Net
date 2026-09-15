@@ -15,4 +15,7 @@ internal class SendAttachmentResponse
 
     [JsonPropertyName("id")]
     public string? Id { get; init; }
+
+    [JsonPropertyName("raw_url")]
+    public string? RawUrl { get; init; }
 }

@@ -51,6 +51,12 @@ public class SocketUserChannel : SocketChannel, IUserChannel, ISocketPrivateChan
         ChannelHelper.TriggerTypingAsync(this, Client, duration, passiveSource, options);
 
     /// <inheritdoc />
+    public Task<MediaUploadResult> UploadMediaAsync(MediaUploadSource source,
+        IProgress<MediaUploadProgress>? progress = null, MediaUploadOptions? uploadOptions = null,
+        RequestOptions? options = null) =>
+        MediaUploadHelper.UploadAsync(this, Client, source, progress, uploadOptions, options);
+
+    /// <inheritdoc />
     public Task<StreamMessageChunkResult> SendStreamMessageChunkAsync(StreamMessageChunk chunk,
         IUserMessage? passiveSource = null, RequestOptions? options = null) =>
         ChannelHelper.SendStreamMessageChunkAsync(this, Client, chunk, passiveSource, options);

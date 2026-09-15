@@ -685,6 +685,58 @@ internal class QQBotRestApiClient : IDisposable
 
     #region Files
 
+    public async Task<PrepareMediaUploadResponse> PrepareUserMediaUploadAsync(Guid openId,
+        PrepareMediaUploadParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = openId.ToIdString();
+        return await SendJsonAsync<PrepareMediaUploadResponse>(HttpMethod.Post,
+                () => $"v2/users/{id}/upload_prepare", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task PrepareUserMediaUploadPartAsync(Guid openId, FinishMediaUploadPartParams args,
+        RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = openId.ToIdString();
+        await SendJsonAsync(HttpMethod.Post, () => $"v2/users/{id}/upload_part_finish", args,
+                ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<PrepareMediaUploadResponse> PrepareGroupMediaUploadAsync(Guid groupOpenId,
+        PrepareMediaUploadParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenId, Guid.Empty, nameof(groupOpenId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = groupOpenId.ToIdString();
+        return await SendJsonAsync<PrepareMediaUploadResponse>(HttpMethod.Post,
+                () => $"v2/groups/{id}/upload_prepare", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task PrepareGroupMediaUploadPartAsync(Guid groupOpenId, FinishMediaUploadPartParams args,
+        RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenId, Guid.Empty, nameof(groupOpenId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = groupOpenId.ToIdString();
+        await SendJsonAsync(HttpMethod.Post, () => $"v2/groups/{id}/upload_part_finish", args,
+                ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<SendAttachmentResponse> CreateUserAttachmentAsync(Guid openId, SendAttachmentParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(openId, Guid.Empty, nameof(openId));

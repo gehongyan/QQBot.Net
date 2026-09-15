@@ -265,7 +265,7 @@ internal static class ChannelHelper
         bool isWakeup, RequestOptions? options)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
-            ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
+            ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value, options)
             : null;
         int messageSequence = CreateMessageSequence(client.MessageSequenceGenerationParameters,
             content, markdown, mediaFileInfo, embed, ark, keyboard, messageReference, passiveSource);
@@ -298,7 +298,7 @@ internal static class ChannelHelper
         RequestOptions? options)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
-            ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
+            ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value, options)
             : null;
         int messageSequence = CreateMessageSequence(client.MessageSequenceGenerationParameters,
             content, markdown, mediaFileInfo, embed, ark, keyboard, messageReference, passiveSource);
@@ -465,13 +465,39 @@ internal static class ChannelHelper
         return RestUserMessage.Create(client, channel, client.CurrentUser, model);
     }
 
-    private static async Task<MediaFileInfo?> EnsureUserGroupFileAttachmentAsync(BaseQQBotClient client, IMessageChannel channel, FileAttachment attachment)
+    private static async Task<MediaFileInfo?> EnsureUserGroupFileAttachmentAsync(BaseQQBotClient client,
+        IMessageChannel channel, FileAttachment attachment, RequestOptions? options)
     {
         switch (attachment.Mode)
         {
             case CreateAttachmentMode.FilePath:
             case CreateAttachmentMode.Stream:
-                throw new NotSupportedException("CreateAttachmentMode.FilePath and CreateAttachmentMode.Stream are not supported when sent to IUserChannel or IGroupChannel.");
+            {
+                if (channel is not IMediaUploadChannel uploadChannel)
+                    throw new NotSupportedException("The channel does not support media uploads.");
+                MediaUploadSource source = attachment.Mode switch
+                {
+                    CreateAttachmentMode.FilePath when attachment.FilePath is not null => MediaUploadSource
+                        .FromFile(attachment.FilePath, attachment.Type, attachment.Filename),
+                    CreateAttachmentMode.Stream when attachment.Stream is not null => MediaUploadSource
+                        .FromStream(attachment.Stream, attachment.Filename ?? "attachment", attachment.Type),
+                    _ => throw new InvalidOperationException("The file attachment source is invalid.")
+                };
+                MediaUploadResult uploadResult = await MediaUploadHelper
+                    .UploadAsync(uploadChannel, client, source, null, null, options)
+                    .ConfigureAwait(false);
+                MediaFileInfo mediaFileInfo = uploadResult.MediaFileInfo;
+                switch (channel)
+                {
+                    case IUserChannel:
+                        attachment.UserMediaFileInfo = mediaFileInfo;
+                        break;
+                    case IGroupChannel:
+                        attachment.GroupMediaFileInfo = mediaFileInfo;
+                        break;
+                }
+                return mediaFileInfo;
+            }
             case CreateAttachmentMode.Uri:
                 if (attachment.Uri is null)
                     throw new InvalidOperationException("The Uri in the FileAttachment must not be null when creating a FileAttachment with CreateAttachmentMode.Uri.");
@@ -486,7 +512,8 @@ internal static class ChannelHelper
                             {
                                 FileType = attachment.Type,
                                 Url = attachment.Uri.OriginalString,
-                                ServerSendMessage = false
+                                ServerSendMessage = false,
+                                FileName = attachment.Filename
                             });
                         attachment.UserMediaFileInfo = new MediaFileInfo
                         {
@@ -507,7 +534,8 @@ internal static class ChannelHelper
                             {
                                 FileType = attachment.Type,
                                 Url = attachment.Uri.OriginalString,
-                                ServerSendMessage = false
+                                ServerSendMessage = false,
+                                FileName = attachment.Filename
                             });
                         attachment.GroupMediaFileInfo = new MediaFileInfo
                         {
