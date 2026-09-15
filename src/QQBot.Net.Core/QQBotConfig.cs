@@ -29,12 +29,12 @@ public class QQBotConfig
     /// <summary>
     ///     获取 QQ Bot API 请求的根 URL。
     /// </summary>
-    public const string APIUrl = "https://api.sgroup.qq.com/";
+    public const string APIUrl = "https://api.bot.qq.com/";
 
     /// <summary>
     ///     获取 QQ Bot 沙箱环境 API 请求的根 URL。
     /// </summary>
-    public const string SandboxAPIUrl = "https://sandbox.api.sgroup.qq.com/";
+    public const string SandboxAPIUrl = "https://sandbox.api.bot.qq.com/";
 
     /// <summary>
     ///     获取 QQ Bot 沙箱环境 API 请求的根 URL。
