@@ -160,11 +160,18 @@ internal static class ChannelHelper
 
     #region Send Messages
 
+    public static Task<IUserMessage> SendWakeupMessageAsync(
+        IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
+        FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
+        MessageReference? messageReference, RequestOptions? options) =>
+        SendMessageAsync(channel, client, content, markdown, attachment, embed, ark, keyboard,
+            messageReference, null, null, true, options);
+
     public static async Task<IUserMessage> SendMessageAsync(
         IUserChannel channel, BaseQQBotClient client, string? content, IMarkdown? markdown,
         FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard,
         MessageReference? messageReference, IUserMessage? passiveSource, string? eventId,
-        RequestOptions? options)
+        bool isWakeup, RequestOptions? options)
     {
         MediaFileInfo? mediaFileInfo = attachment.HasValue
             ? await EnsureUserGroupFileAttachmentAsync(client, channel, attachment.Value)
@@ -183,9 +190,10 @@ internal static class ChannelHelper
                 ? new API.Rest.MediaFileInfo { FileInfo = mediaFileInfo.Value.FileInfo }
                 : null,
             MessageReference = messageReference?.ToModel(),
-            EventId = eventId,
-            MessageId = eventId is null ? passiveSource?.Id : null,
-            MessageSequence = eventId is null ? messageSequence : null
+            EventId = isWakeup ? null : eventId,
+            MessageId = isWakeup || eventId is not null ? null : passiveSource?.Id,
+            MessageSequence = isWakeup || eventId is null ? messageSequence : null,
+            IsWakeup = isWakeup ? true : null
         };
         SendUserGroupMessageResponse response = await client.ApiClient
             .SendUserMessageAsync(channel.Id, args, options).ConfigureAwait(false);

@@ -36,4 +36,7 @@ internal class SendUserGroupMessageParams
 
     [JsonPropertyName("msg_seq")]
     public int? MessageSequence { get; init; }
+
+    [JsonPropertyName("is_wakeup")]
+    public bool? IsWakeup { get; init; }
 }

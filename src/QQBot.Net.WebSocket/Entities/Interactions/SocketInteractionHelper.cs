@@ -16,7 +16,7 @@ internal static class SocketInteractionHelper
             InteractionScene.C2C when interaction.UserOpenId.HasValue =>
                 await ChannelHelper.SendMessageAsync(GetUserChannel(interaction), interaction.Client,
                         content, markdown, attachment, embed, ark, keyboard, messageReference, null,
-                        interaction.EventId, options)
+                        interaction.EventId, false, options)
                     .ConfigureAwait(false),
             InteractionScene.Group when interaction.GroupOpenId.HasValue =>
                 await ChannelHelper.SendMessageAsync(GetGroupChannel(interaction), interaction.Client,
