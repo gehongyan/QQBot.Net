@@ -499,57 +499,36 @@ internal static class ChannelHelper
                 return mediaFileInfo;
             }
             case CreateAttachmentMode.Uri:
+            {
                 if (attachment.Uri is null)
                     throw new InvalidOperationException("The Uri in the FileAttachment must not be null when creating a FileAttachment with CreateAttachmentMode.Uri.");
+                if (channel is not IMediaUploadChannel uploadChannel)
+                    throw new NotSupportedException("The channel does not support media uploads.");
+                MediaFileInfo? cachedMediaFileInfo = channel switch
+                {
+                    IUserChannel => attachment.UserMediaFileInfo,
+                    IGroupChannel => attachment.GroupMediaFileInfo,
+                    _ => null
+                };
+                if (cachedMediaFileInfo?.HasExpired is false)
+                    return cachedMediaFileInfo.Value;
+
+                MediaUploadResult uploadResult = await MediaUploadHelper.UploadAsync(uploadChannel, client,
+                        MediaUploadSource.FromUri(attachment.Uri, attachment.Type, attachment.Filename),
+                        null, null, options)
+                    .ConfigureAwait(false);
+                MediaFileInfo mediaFileInfo = uploadResult.MediaFileInfo;
                 switch (channel)
                 {
-                    case IUserChannel userChannel:
-                    {
-                        if (attachment.UserMediaFileInfo?.HasExpired is false)
-                            return attachment.UserMediaFileInfo.Value;
-                        SendAttachmentResponse response = await client.ApiClient.CreateUserAttachmentAsync(
-                            userChannel.Id, new SendAttachmentParams
-                            {
-                                FileType = attachment.Type,
-                                Url = attachment.Uri.OriginalString,
-                                ServerSendMessage = false,
-                                FileName = attachment.Filename
-                            });
-                        attachment.UserMediaFileInfo = new MediaFileInfo
-                        {
-                            FileId = response.FileUuid,
-                            AttachmentType = attachment.Type,
-                            CreatedAt = DateTimeOffset.Now,
-                            LifeTime = TimeSpan.FromSeconds(response.TimeToLive),
-                            FileInfo = response.FileInfo
-                        };
-                        return attachment.UserMediaFileInfo.Value;
-                    }
-                    case IGroupChannel groupChannel:
-                    {
-                        if (attachment.GroupMediaFileInfo?.HasExpired is false)
-                            return attachment.GroupMediaFileInfo.Value;
-                        SendAttachmentResponse response = await client.ApiClient.CreateGroupAttachmentAsync(
-                            groupChannel.Id, new SendAttachmentParams
-                            {
-                                FileType = attachment.Type,
-                                Url = attachment.Uri.OriginalString,
-                                ServerSendMessage = false,
-                                FileName = attachment.Filename
-                            });
-                        attachment.GroupMediaFileInfo = new MediaFileInfo
-                        {
-                            FileId = response.FileUuid,
-                            AttachmentType = attachment.Type,
-                            CreatedAt = DateTimeOffset.Now,
-                            LifeTime = TimeSpan.FromSeconds(response.TimeToLive),
-                            FileInfo = response.FileInfo
-                        };
-                        return attachment.GroupMediaFileInfo.Value;
-                    }
-                    default:
-                        throw new NotSupportedException("Unsupported channel type.");
+                    case IUserChannel:
+                        attachment.UserMediaFileInfo = mediaFileInfo;
+                        break;
+                    case IGroupChannel:
+                        attachment.GroupMediaFileInfo = mediaFileInfo;
+                        break;
                 }
+                return mediaFileInfo;
+            }
             case CreateAttachmentMode.MediaFileInfo:
                 switch (channel)
                 {

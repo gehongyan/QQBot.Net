@@ -34,18 +34,24 @@ public class MediaUploadSource
     internal Stream? Stream { get; }
 
     /// <summary>
+    ///     获取 URI 来源的地址。
+    /// </summary>
+    internal Uri? Uri { get; }
+
+    /// <summary>
     ///     获取内存来源的数据。
     /// </summary>
     internal ReadOnlyMemory<byte> Memory { get; }
 
     private MediaUploadSource(MediaUploadSourceKind kind, AttachmentType type, string fileName,
-        string? filePath, Stream? stream, ReadOnlyMemory<byte> memory)
+        string? filePath, Stream? stream, Uri? uri, ReadOnlyMemory<byte> memory)
     {
         Kind = kind;
         Type = type;
         FileName = fileName;
         FilePath = filePath;
         Stream = stream;
+        Uri = uri;
         Memory = memory;
     }
 
@@ -59,7 +65,7 @@ public class MediaUploadSource
         string effectiveFileName = fileName ?? Path.GetFileName(filePath);
         ArgumentException.ThrowIfNullOrWhiteSpace(effectiveFileName);
         return new MediaUploadSource(MediaUploadSourceKind.FilePath, type, effectiveFileName,
-            filePath, null, default);
+            filePath, null, null, default);
     }
 
     /// <summary>
@@ -73,7 +79,25 @@ public class MediaUploadSource
         if (!stream.CanRead || !stream.CanSeek)
             throw new ArgumentException("The upload stream must be readable and seekable.", nameof(stream));
         return new MediaUploadSource(MediaUploadSourceKind.Stream, type, fileName,
-            null, stream, default);
+            null, stream, null, default);
+    }
+
+    /// <summary>
+    ///     从公网 URI 创建上传源。
+    /// </summary>
+    /// <remarks>
+    ///     QQBot.Net 会请求 QQ 平台下载并转存该 URI 指向的资源；不会在本地下载或分片上传该资源。
+    /// </remarks>
+    public static MediaUploadSource FromUri(Uri uri, AttachmentType type = AttachmentType.Image,
+        string? fileName = null)
+    {
+        ArgumentNullException.ThrowIfNull(uri);
+        if (!uri.IsAbsoluteUri || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            throw new ArgumentException("The upload URI must be an absolute HTTP or HTTPS URI.", nameof(uri));
+        string effectiveFileName = fileName ?? Path.GetFileName(uri.AbsolutePath);
+        ArgumentException.ThrowIfNullOrWhiteSpace(effectiveFileName);
+        return new MediaUploadSource(MediaUploadSourceKind.Uri, type, effectiveFileName,
+            null, null, uri, default);
     }
 
     /// <summary>
@@ -84,6 +108,6 @@ public class MediaUploadSource
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
         return new MediaUploadSource(MediaUploadSourceKind.Memory, type, fileName,
-            null, null, memory);
+            null, null, null, memory);
     }
 }

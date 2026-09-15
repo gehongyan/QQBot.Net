@@ -54,6 +54,13 @@ internal static class MediaUploadHelper
     {
         ArgumentNullException.ThrowIfNull(source);
         options = CreateMediaUploadRequestOptions(options);
+        if (source.Kind == MediaUploadSourceKind.Uri)
+        {
+            if (source.Uri is null)
+                throw new InvalidOperationException("The URI media upload source is invalid.");
+            return await UploadUriAsync(channel, client, source, options).ConfigureAwait(false);
+        }
+
         CancellationToken cancellationToken = options.CancellationToken;
         await using UploadInput input = await UploadInput.CreateAsync(source, cancellationToken).ConfigureAwait(false);
         MediaUploadDescriptor descriptor = await CreateDescriptorAsync(source, input.Stream, cancellationToken)
@@ -145,10 +152,37 @@ internal static class MediaUploadHelper
                 .ConfigureAwait(false),
             _ => throw new NotSupportedException("The channel does not support media uploads.")
         };
+        return CreateMediaUploadResult(channel, descriptor.Type, descriptor.FileName, response);
+    }
+
+    private static async Task<MediaUploadResult> UploadUriAsync(IMediaUploadChannel channel, BaseQQBotClient client,
+        MediaUploadSource source, RequestOptions options)
+    {
+        SendAttachmentParams args = new()
+        {
+            FileType = source.Type,
+            Url = source.Uri!.OriginalString,
+            FileName = source.FileName,
+            ServerSendMessage = false
+        };
+        SendAttachmentResponse response = channel switch
+        {
+            IUserChannel userChannel => await client.ApiClient.CreateUserAttachmentAsync(userChannel.Id, args, options)
+                .ConfigureAwait(false),
+            IGroupChannel groupChannel => await client.ApiClient.CreateGroupAttachmentAsync(groupChannel.Id, args, options)
+                .ConfigureAwait(false),
+            _ => throw new NotSupportedException("The channel does not support media uploads.")
+        };
+        return CreateMediaUploadResult(channel, source.Type, source.FileName, response);
+    }
+
+    private static MediaUploadResult CreateMediaUploadResult(IMediaUploadChannel channel, AttachmentType type,
+        string fileName, SendAttachmentResponse response)
+    {
         MediaFileInfo mediaFileInfo = new()
         {
             FileId = response.FileUuid,
-            AttachmentType = descriptor.Type,
+            AttachmentType = type,
             CreatedAt = DateTimeOffset.UtcNow,
             LifeTime = response.TimeToLive == 0 ? TimeSpan.Zero : TimeSpan.FromSeconds(response.TimeToLive),
             FileInfo = response.FileInfo
@@ -156,8 +190,8 @@ internal static class MediaUploadHelper
         Uri? downloadUri = Uri.TryCreate(response.RawUrl, UriKind.Absolute, out Uri? uri) ? uri : null;
         FileAttachment attachment = channel switch
         {
-            IUserChannel => new FileAttachment(mediaFileInfo, null, descriptor.FileName),
-            IGroupChannel => new FileAttachment(null, mediaFileInfo, descriptor.FileName),
+            IUserChannel => new FileAttachment(mediaFileInfo, null, fileName),
+            IGroupChannel => new FileAttachment(null, mediaFileInfo, fileName),
             _ => throw new NotSupportedException("The channel does not support media uploads.")
         };
         return new MediaUploadResult(attachment, mediaFileInfo, downloadUri);

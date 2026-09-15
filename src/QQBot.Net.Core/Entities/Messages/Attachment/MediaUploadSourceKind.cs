@@ -16,7 +16,12 @@ internal enum MediaUploadSourceKind
     Stream = 1,
 
     /// <summary>
+    ///     QQ 平台需要下载并转存的公网 URI。
+    /// </summary>
+    Uri = 2,
+
+    /// <summary>
     ///     内存中的二进制数据。
     /// </summary>
-    Memory = 2
+    Memory = 3
 }
