@@ -14,6 +14,7 @@ public enum QQBotErrorCode
     UnknownAccount = 10001,
     UnknownChannel = 10003,
     UnknownGuild = 10004,
+    BotNotFound = 10004, // Same as 10004
     MissingUserId = 10013,
 
     #endregion
@@ -88,7 +89,15 @@ public enum QQBotErrorCode
 
     #endregion
 
-    #region SubChannel Modification Errors (100XXX)
+    #region Login Errors (100XXX)
+
+    TooManyRequests = 100001,
+    AppIdInvalid = 100007,
+    InvalidAppIdOrSecret = 100016,
+
+    #endregion
+
+    #region SubChannel Modification Errors (130XXX)
 
     ModifyCategoryError = 130008,
 
