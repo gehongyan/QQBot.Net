@@ -11,4 +11,7 @@ internal class SendUserGroupMessageResponse
     [JsonPropertyName("timestamp")]
     [DateTimeOffsetTimestampJsonConverter(Unit = DateTimeOffsetTimestampJsonConverter.Format.RFC3339)]
     public required DateTimeOffset Timestamp { get; init; }
+
+    [JsonPropertyName("ext_info")]
+    public SendUserGroupMessageResponseExtInfo? ExtInfo { get; init; }
 }

@@ -11,6 +11,9 @@ namespace QQBot.WebSocket;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SocketUserMessage : SocketMessage, IUserMessage
 {
+    /// <inheritdoc cref="QQBot.IUserMessage.ReplyReference"/>
+    public MessageReference? ReplyReference { get; private set; }
+
     internal SocketUserMessage(QQBotSocketClient client, string id,
         ISocketMessageChannel channel, SocketUser author, MessageSource source)
         : base(client, id, channel, author, source)
@@ -22,6 +25,8 @@ public class SocketUserMessage : SocketMessage, IUserMessage
     {
         SocketUserMessage entity = new(client, model.Id, channel, author, MessageSource.User);
         entity.Update(state, model);
+        if (model.MessageScene?.MessageIndex is { Length: > 0 } replyReferenceId)
+            entity.ReplyReference = new MessageReference(replyReferenceId);
         return entity;
     }
 

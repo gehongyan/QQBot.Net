@@ -14,6 +14,12 @@ internal class MessageCreatedEvent
     [JsonPropertyName("content")]
     public required string Content { get; init; }
 
+    [JsonPropertyName("message_type")]
+    public int? MessageType { get; init; }
+
+    [JsonPropertyName("message_scene")]
+    public MessageScene? MessageScene { get; init; }
+
     [JsonPropertyName("group_id")]
     [GuidJsonConverter]
     public Guid? GroupId { get; init; }

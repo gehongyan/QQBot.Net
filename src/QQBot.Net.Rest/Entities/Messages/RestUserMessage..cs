@@ -9,6 +9,9 @@ namespace QQBot.Rest;
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class RestUserMessage : RestMessage, IUserMessage
 {
+    /// <inheritdoc />
+    public MessageReference? ReplyReference { get; internal set; }
+
     internal RestUserMessage(BaseQQBotClient client, string id,
         IMessageChannel channel, IUser author, MessageSource source)
         : base(client, id, channel, author, source)
@@ -30,6 +33,14 @@ public class RestUserMessage : RestMessage, IUserMessage
         RestUserMessage entity = new(client, model.Id, channel, author, MessageSource.User);
         entity.Update(args, model);
         return entity;
+    }
+
+    internal override void Update(API.Rest.SendUserGroupMessageParams args, API.Rest.SendUserGroupMessageResponse model)
+    {
+        base.Update(args, model);
+        ReplyReference = string.IsNullOrWhiteSpace(model.ExtInfo?.ReplyReferenceId)
+            ? null
+            : new MessageReference(model.ExtInfo.ReplyReferenceId);
     }
 
     /// <summary>
