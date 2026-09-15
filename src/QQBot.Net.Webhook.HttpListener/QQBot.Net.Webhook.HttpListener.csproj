@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="../../QQBot.Net.props"/>
+
+  <PropertyGroup>
+    <RootNamespace>QQBot.Webhook.HttpListener</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageId>QQBot.Net.Webhook.HttpListener</PackageId>
+    <Description>The Webhook API implementation for QQBot.Net using HTTP listener.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QQBot.Net.Webhook\QQBot.Net.Webhook.csproj"/>
+  </ItemGroup>
+
+</Project>

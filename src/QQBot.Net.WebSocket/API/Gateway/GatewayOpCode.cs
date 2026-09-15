@@ -10,5 +10,6 @@ internal enum GatewayOpCode
     InvalidSession = 9,
     Hello = 10,
     HeartbeatAck = 11,
-    HttpCallbackAck = 12
+    HttpCallbackAck = 12,
+    CallbackValidation = 13
 }

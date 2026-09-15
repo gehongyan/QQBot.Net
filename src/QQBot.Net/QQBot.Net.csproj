@@ -13,6 +13,7 @@
     <ProjectReference Include="..\QQBot.Net.Core\QQBot.Net.Core.csproj" />
     <ProjectReference Include="..\QQBot.Net.Commands\QQBot.Net.Commands.csproj" />
     <ProjectReference Include="..\QQBot.Net.Rest\QQBot.Net.Rest.csproj" />
+    <ProjectReference Include="..\QQBot.Net.Webhook\QQBot.Net.Webhook.csproj" />
     <ProjectReference Include="..\QQBot.Net.WebSocket\QQBot.Net.WebSocket.csproj" />
   </ItemGroup>
 

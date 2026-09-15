@@ -1,4 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("QQBot.Net.WebSocket")]
 [assembly: InternalsVisibleTo("QQBot.Net.Webhook")]

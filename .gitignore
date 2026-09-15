@@ -359,3 +359,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+
+# Local TLS certificates and private keys
+/certificate/
