@@ -69,10 +69,14 @@ internal class RequestBucket
 
                 request.Options.ExecuteRatelimitCallback(info);
 
-                if (response.StatusCode is not (HttpStatusCode.OK or HttpStatusCode.Accepted or HttpStatusCode.NoContent))
+                MemoryStream responseStream = await CopyResponseAsync(response.Stream).ConfigureAwait(false);
+                API.QQBotError? error = await GetBusinessErrorAsync(responseStream).ConfigureAwait(false);
+                int statusCode = (int)response.StatusCode;
+                if (statusCode is < 200 or >= 300)
                     switch (response.StatusCode)
                     {
                         case (HttpStatusCode)429:
+                            await responseStream.DisposeAsync().ConfigureAwait(false);
                             if (info.IsGlobal)
                             {
                                 QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] (!) 429 [Global]");
@@ -84,39 +88,27 @@ internal class RequestBucket
                             }
 
                             await _queue.RaiseRateLimitTriggered(Id, info, $"{request.Method} {request.Endpoint}").ConfigureAwait(false);
-                            continue;                   //Retry
-                        case HttpStatusCode.BadGateway: //502
+                            continue; // Retry
+                        case HttpStatusCode.BadGateway: // 502
+                            await responseStream.DisposeAsync().ConfigureAwait(false);
                             QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] (!) 502");
                             if ((request.Options.RetryMode & RetryMode.Retry502) == 0)
                                 throw new HttpException(HttpStatusCode.BadGateway, request);
 
-                            continue; //Retry
+                            continue; // Retry
                         default:
-                            API.QQBotError? error = null;
-                            if (response.Stream != null)
-                                try
-                                {
-                                    error = await JsonSerializer.DeserializeAsync<API.QQBotError>(response.Stream, _serializerOptions);
-                                }
-                                catch
-                                {
-                                    // ignored
-                                }
-
-                            throw new HttpException(
-                                response.StatusCode,
-                                request,
-                                error?.Code,
-                                error?.Message,
-                                error?.ErrorCode,
-                                error?.TraceId
-                            );
+                            await responseStream.DisposeAsync().ConfigureAwait(false);
+                            throw CreateHttpException(response.StatusCode, request, error);
                     }
-                else
+
+                if (error is not null)
                 {
-                    QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] Success");
-                    return response.Stream;
+                    await responseStream.DisposeAsync().ConfigureAwait(false);
+                    throw CreateHttpException(response.StatusCode, request, error);
                 }
+
+                QQBotDebugger.DebugRatelimit($"[Ratelimit] [{id}] Success");
+                return responseStream;
             }
             //catch (HttpException) { throw; } //Pass through
             catch (TimeoutException)
@@ -144,6 +136,41 @@ internal class RequestBucket
             }
         }
     }
+
+    private static async Task<MemoryStream> CopyResponseAsync(Stream responseStream)
+    {
+        MemoryStream buffer = new();
+        await responseStream.CopyToAsync(buffer).ConfigureAwait(false);
+        buffer.Position = 0;
+        return buffer;
+    }
+
+    private async Task<API.QQBotError?> GetBusinessErrorAsync(Stream responseStream)
+    {
+        try
+        {
+            if (responseStream.Length == 0)
+                return null;
+
+            API.QQBotError? error = await JsonSerializer
+                .DeserializeAsync<API.QQBotError>(responseStream, _serializerOptions)
+                .ConfigureAwait(false);
+            bool hasErrorCode = error?.Code is { } code && code != QQBotErrorCode.GeneralError;
+            bool hasExtendedErrorCode = error?.ErrorCode is { } errorCode && errorCode != 0;
+            return hasErrorCode || hasExtendedErrorCode ? error : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+        finally
+        {
+            responseStream.Position = 0;
+        }
+    }
+
+    private static HttpException CreateHttpException(HttpStatusCode statusCode, IRequest request, API.QQBotError? error) =>
+        new(statusCode, request, error?.Code, error?.Message, error?.ErrorCode, error?.TraceId);
 
     public async Task SendAsync(WebSocketRequest request)
     {

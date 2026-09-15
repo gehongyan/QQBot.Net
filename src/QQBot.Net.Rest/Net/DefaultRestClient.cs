@@ -13,7 +13,7 @@ namespace QQBot.Net.Rest;
 internal sealed class DefaultRestClient : IRestClient, IDisposable
 {
     private readonly HttpClient _client;
-    private readonly string _baseUrl;
+    private readonly Uri _baseUri;
     private CancellationToken _cancellationToken;
     private bool _isDisposed;
 
@@ -22,7 +22,8 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
 
     public DefaultRestClient(string baseUrl, bool useProxy = false)
     {
-        _baseUrl = baseUrl;
+        ArgumentException.ThrowIfNullOrWhiteSpace(baseUrl);
+        _baseUri = new Uri(baseUrl.EndsWith('/') ? baseUrl : $"{baseUrl}/", UriKind.Absolute);
 
         _client = new HttpClient(new HttpClientHandler
         {
@@ -62,35 +63,36 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
 
     public void SetCancellationToken(CancellationToken cancellationToken) => _cancellationToken = cancellationToken;
 
+    private Uri GetRequestUri(string endpoint)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(endpoint);
+        return Uri.TryCreate(endpoint, UriKind.Absolute, out Uri? absoluteUri)
+            ? absoluteUri
+            : new Uri(_baseUri, endpoint);
+    }
 
     public async Task<RestResponse> SendAsync(HttpMethod method, string endpoint, CancellationToken cancellationToken,
         string? reason = null,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders = null)
     {
-        string uri = Uri.IsWellFormedUriString(endpoint, UriKind.Absolute)
-            ? endpoint
-            : Path.Combine(_baseUrl, endpoint);
+        Uri uri = GetRequestUri(endpoint);
 
-        using (HttpRequestMessage restRequest = new(method, uri))
-        {
-            if (reason != null)
-                restRequest.Headers.Add("X-Audit-Log-Reason", Uri.EscapeDataString(reason));
+        using HttpRequestMessage restRequest = new(method, uri);
+        if (reason != null)
+            restRequest.Headers.Add("X-Audit-Log-Reason", Uri.EscapeDataString(reason));
 
-            if (requestHeaders != null)
-                foreach (KeyValuePair<string, IEnumerable<string>> header in requestHeaders)
-                    restRequest.Headers.Add(header.Key, header.Value);
+        if (requestHeaders != null)
+            foreach (KeyValuePair<string, IEnumerable<string>> header in requestHeaders)
+                restRequest.Headers.Add(header.Key, header.Value);
 
-            return await SendInternalAsync(restRequest, cancellationToken).ConfigureAwait(false);
-        }
+        return await SendInternalAsync(restRequest, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<RestResponse> SendAsync(HttpMethod method, string endpoint, string json,
         CancellationToken cancellationToken, string? reason = null,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders = null)
     {
-        string uri = Uri.IsWellFormedUriString(endpoint, UriKind.Absolute)
-            ? endpoint
-            : Path.Combine(_baseUrl, endpoint);
+        Uri uri = GetRequestUri(endpoint);
 
         using HttpRequestMessage restRequest = new(method, uri);
         if (reason != null)
@@ -109,9 +111,7 @@ internal sealed class DefaultRestClient : IRestClient, IDisposable
         CancellationToken cancellationToken, string? reason = null,
         IEnumerable<KeyValuePair<string, IEnumerable<string>>>? requestHeaders = null)
     {
-        string uri = Uri.IsWellFormedUriString(endpoint, UriKind.Absolute)
-            ? endpoint
-            : Path.Combine(_baseUrl, endpoint);
+        Uri uri = GetRequestUri(endpoint);
 
         // HttpRequestMessage implements IDisposable but we do not need to dispose it as it merely disposes of its Content property,
         // which we can do as needed. And regarding that, we do not want to take responsibility for disposing of content provided by
