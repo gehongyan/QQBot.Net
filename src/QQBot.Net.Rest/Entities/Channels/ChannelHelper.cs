@@ -175,7 +175,7 @@ internal static class ChannelHelper
         {
             Content = content,
             MessageType = InferMessageType(content, markdown, attachment, embed, ark, keyboard),
-            Markdown = markdown?.ToModel(),
+            Markdown = markdown?.ToModel(includeForceVerifyImageResource: true),
             Keyboard = keyboard?.ToModel(),
             Ark = ark?.ToModel(),
             Embed = embed?.ToModel(),
@@ -207,7 +207,7 @@ internal static class ChannelHelper
         {
             Content = content,
             MessageType = InferMessageType(content, markdown, attachment, embed, ark, keyboard),
-            Markdown = markdown?.ToModel(),
+            Markdown = markdown?.ToModel(includeForceVerifyImageResource: true),
             Keyboard = keyboard?.ToModel(),
             Ark = ark?.ToModel(),
             Embed = embed?.ToModel(),
@@ -233,6 +233,7 @@ internal static class ChannelHelper
         (string? uri, MultipartFile? multipartFile, bool needDispose) = attachment.HasValue
             ? EnsureChannelFileAttachmentAsync(attachment.Value)
             : (null, null, false);
+        await WarnUnsupportedForceVerifyImageResourceAsync(client, markdown).ConfigureAwait(false);
         SendChannelMessageParams args = new()
         {
             Content = content,
@@ -266,6 +267,7 @@ internal static class ChannelHelper
         (string? uri, MultipartFile? multipartFile, bool needDispose) = attachment.HasValue
             ? EnsureChannelFileAttachmentAsync(attachment.Value)
             : (null, null, false);
+        await WarnUnsupportedForceVerifyImageResourceAsync(client, markdown).ConfigureAwait(false);
         SendChannelMessageParams args = new()
         {
             Content = content,
@@ -283,6 +285,16 @@ internal static class ChannelHelper
         if (needDispose && multipartFile.HasValue)
             await multipartFile.Value.Stream.DisposeAsync();
         return CreateMessageEntity(client, channel, response);
+    }
+
+    private static async Task WarnUnsupportedForceVerifyImageResourceAsync(BaseQQBotClient client, IMarkdown? markdown)
+    {
+        if (markdown is not MarkdownText { ForceVerifyImageResource: not null })
+            return;
+
+        await client._restLogger.WarningAsync(
+            "Ignoring MarkdownText.ForceVerifyImageResource because it is only supported for C2C and group messages.")
+            .ConfigureAwait(false);
     }
 
     private static MessageType InferMessageType(string? content, IMarkdown? markdown, FileAttachment? attachment, Embed? embed, Ark? ark, IKeyboard? keyboard)

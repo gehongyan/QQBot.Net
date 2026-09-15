@@ -14,15 +14,28 @@ public class MarkdownText : IMarkdown, IEquatable<MarkdownText>
     public string Text { get; }
 
     /// <summary>
+    ///     获取是否在发送消息前校验 Markdown 图片资源的转存结果。
+    /// </summary>
+    /// <remarks>
+    ///     此选项仅适用于 QQ 单聊和群聊消息。文字子频道和频道私信消息不支持该字段；当其值不为
+    ///     <see langword="null"/> 时，QQBot.Net 会忽略该设置并写入一条警告日志。
+    ///     <see langword="true"/> 表示图片转存失败时中断消息发送；<see langword="false"/> 表示显式关闭校验；
+    ///     <see langword="null"/> 表示不发送该字段并使用 QQ 平台默认行为。
+    /// </remarks>
+    public bool? ForceVerifyImageResource { get; }
+
+    /// <summary>
     ///     初始化一个 <see cref="MarkdownText"/> 类的新实例。
     /// </summary>
     /// <param name="text"> Markdown 文本内容。 </param>
-    internal MarkdownText(string text)
+    /// <param name="forceVerifyImageResource"> 是否校验 Markdown 图片资源的转存结果。 </param>
+    internal MarkdownText(string text, bool? forceVerifyImageResource = null)
     {
         Text = text;
+        ForceVerifyImageResource = forceVerifyImageResource;
     }
 
-    private string DebuggerDisplay => $"Text: {Text}";
+    private string DebuggerDisplay => $"Text: {Text}, ForceVerifyImageResource: {ForceVerifyImageResource}";
 
     /// <inheritdoc />
     public override string ToString() => Text;
@@ -32,7 +45,7 @@ public class MarkdownText : IMarkdown, IEquatable<MarkdownText>
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Text == other.Text;
+        return Text == other.Text && ForceVerifyImageResource == other.ForceVerifyImageResource;
     }
 
     /// <inheritdoc />
@@ -55,5 +68,5 @@ public class MarkdownText : IMarkdown, IEquatable<MarkdownText>
     public static bool operator !=(MarkdownText? left, MarkdownText? right) => !(left == right);
 
     /// <inheritdoc />
-    public override int GetHashCode() => base.GetHashCode();
+    public override int GetHashCode() => HashCode.Combine(Text, ForceVerifyImageResource);
 }

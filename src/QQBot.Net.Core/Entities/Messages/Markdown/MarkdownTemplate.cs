@@ -6,6 +6,7 @@ namespace QQBot;
 ///     表示一个 Markdown 模板。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
+[Obsolete("QQ Bot Markdown templates are deprecated. Use MarkdownText instead.")]
 public class MarkdownTemplate : IMarkdown, IEquatable<MarkdownTemplate>
 {
     /// <summary>

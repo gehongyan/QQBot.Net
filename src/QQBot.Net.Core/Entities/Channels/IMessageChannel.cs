@@ -9,7 +9,9 @@ public interface IMessageChannel : IChannel
     ///     向此子频道发送消息。
     /// </summary>
     /// <param name="content"> 要发送的消息内容。 </param>
-    /// <param name="markdown"> 要发送的 Markdown 消息内容。 </param>
+    /// <param name="markdown"> 要发送的 Markdown 消息内容。若传入 <see cref="MarkdownText"/> 且其
+    ///     <see cref="MarkdownText.ForceVerifyImageResource"/> 不为 <see langword="null"/>，该选项仅在
+    ///     <see cref="IUserChannel"/> 和 <see cref="IGroupChannel"/> 中生效；文字子频道和频道私信会忽略该选项并写入警告日志。 </param>
     /// <param name="attachment"> 要发送的文件附件。 </param>
     /// <param name="embed"> 要发送的嵌入式消息内容。 </param>
     /// <param name="ark"> 要发送的模板消息内容。 </param>

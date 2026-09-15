@@ -5,6 +5,7 @@ namespace QQBot;
 /// <summary>
 ///     表示一个用于创建 <see cref="MarkdownTemplate"/> 实例的构建器。
 /// </summary>
+[Obsolete("QQ Bot Markdown templates are deprecated. Use MarkdownTextBuilder instead.")]
 public class MarkdownTemplateBuilder : IMarkdownBuilder, IEquatable<MarkdownTemplateBuilder>
 {
     /// <summary>

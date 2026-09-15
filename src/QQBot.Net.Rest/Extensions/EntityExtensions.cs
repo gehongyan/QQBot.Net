@@ -23,9 +23,13 @@ internal static class EntityExtensions
 
     #region Markdown
 
-    public static MessageMarkdown ToModel(this IMarkdown entity) => new()
+#pragma warning disable CS0618 // Preserve serialization compatibility for deprecated Markdown templates.
+    public static MessageMarkdown ToModel(this IMarkdown entity, bool includeForceVerifyImageResource = false) => new()
     {
         Content = (entity as MarkdownText)?.Text,
+        ForceVerifyImageResource = includeForceVerifyImageResource
+            ? (entity as MarkdownText)?.ForceVerifyImageResource
+            : null,
         CustomTemplateId = (entity as MarkdownTemplate)?.TemplateId,
         Params = (entity as MarkdownTemplate)?.Parameters.Select(x => new MessageMarkdownParam
         {
@@ -33,6 +37,7 @@ internal static class EntityExtensions
             Values = [..x.Value]
         }).ToArray()
     };
+#pragma warning restore CS0618
 
     #endregion
 

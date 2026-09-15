@@ -7,6 +7,9 @@ internal class MessageMarkdown
     [JsonPropertyName("content")]
     public string? Content { get; init; }
 
+    [JsonPropertyName("force_verify_image_resource")]
+    public bool? ForceVerifyImageResource { get; init; }
+
     [JsonPropertyName("custom_template_id")]
     public string? CustomTemplateId { get; init; }
 
