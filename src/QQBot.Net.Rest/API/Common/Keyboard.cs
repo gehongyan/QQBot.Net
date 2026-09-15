@@ -28,6 +28,9 @@ internal class KeyboardButton
     [JsonPropertyName("id")]
     public string? Id { get; init; }
 
+    [JsonPropertyName("group_id")]
+    public string? GroupId { get; init; }
+
     [JsonPropertyName("render_data")]
     public required KeyboardRenderData RenderData { get; init; }
 
@@ -51,6 +54,9 @@ internal class KeyboardAction
 {
     [JsonPropertyName("type")]
     public required ButtonAction Type { get; init; }
+
+    [JsonPropertyName("modal")]
+    public KeyboardModal? Modal { get; init; }
 
     [JsonPropertyName("permission")]
     public required KeyboardPermission Permission { get; init; }
@@ -89,4 +95,16 @@ internal class KeyboardPermission
 
     [JsonPropertyName("specify_role_ids")]
     public uint[]? SpecifyRoleIds { get; init; }
+}
+
+internal class KeyboardModal
+{
+    [JsonPropertyName("content")]
+    public required string Content { get; init; }
+
+    [JsonPropertyName("confirm_text")]
+    public string? ConfirmText { get; init; }
+
+    [JsonPropertyName("cancel_text")]
+    public string? CancelText { get; init; }
 }

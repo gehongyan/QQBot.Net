@@ -17,6 +17,14 @@ public class KeyboardButtonBuilder
     public string? Id { get; set; }
 
     /// <summary>
+    ///     获取或设置此按钮所属的分组 ID。
+    /// </summary>
+    /// <remarks>
+    ///     为 <see langword="null"/> 时，此按钮不属于指定分组。
+    /// </remarks>
+    public string? GroupId { get; set; }
+
+    /// <summary>
     ///     获取或设置此按钮上的文本。
     /// </summary>
     /// <remarks>
@@ -69,6 +77,14 @@ public class KeyboardButtonBuilder
     ///     </list>
     /// </remarks>
     public ButtonAction? Action { get; set; }
+
+    /// <summary>
+    ///     获取或设置执行此按钮操作前显示的二次确认提示。
+    /// </summary>
+    /// <remarks>
+    ///     为 <see langword="null"/> 时，点击按钮后不会显示由此按钮配置的二次确认提示。
+    /// </remarks>
+    public KeyboardModal? Modal { get; set; }
 
     /// <summary>
     ///     获取或设置此按钮的权限。
@@ -153,17 +169,21 @@ public class KeyboardButtonBuilder
     /// <param name="isCommandAutoSend"> 此指令钮是否自动发送。 </param>
     /// <param name="actionAnchor"> 此指定按钮的特殊操作。 </param>
     /// <param name="unsupportedVersionTip"> 客户端不支持此按钮时弹出的提示信息。 </param>
+    /// <param name="groupId"> 此按钮所属的分组 ID。 </param>
+    /// <param name="modal"> 执行此按钮操作前显示的二次确认提示。 </param>
     public KeyboardButtonBuilder(string? id = null, string? label = null, string? labelVisited = null,
         ButtonStyle? style = null, ButtonAction? action = null, ButtonPermission? permission = null,
         IEnumerable<string>? allowedUserIds = null, IEnumerable<uint>? allowedRoleIds = null, string? data = null,
         bool? isCommandReply = null, bool? isCommandAutoSend = null, ButtonActionAnchor? actionAnchor = null,
-        string? unsupportedVersionTip = null)
+        string? unsupportedVersionTip = null, string? groupId = null, KeyboardModal? modal = null)
     {
         Id = id;
+        GroupId = groupId;
         Label = label;
         LabelVisited = labelVisited;
         Style = style;
         Action = action;
+        Modal = modal;
         Permission = permission;
         AllowedUserIds = allowedUserIds?.ToList();
         AllowedRoleIds = allowedRoleIds?.ToList();
@@ -182,6 +202,17 @@ public class KeyboardButtonBuilder
     public KeyboardButtonBuilder WithId(string id)
     {
         Id = id;
+        return this;
+    }
+
+    /// <summary>
+    ///     设置此按钮所属的分组 ID。
+    /// </summary>
+    /// <param name="groupId"> 分组 ID。 </param>
+    /// <returns> 当前构建器。 </returns>
+    public KeyboardButtonBuilder WithGroupId(string groupId)
+    {
+        GroupId = groupId;
         return this;
     }
 
@@ -226,6 +257,17 @@ public class KeyboardButtonBuilder
     public KeyboardButtonBuilder WithAction(ButtonAction action)
     {
         Action = action;
+        return this;
+    }
+
+    /// <summary>
+    ///     设置执行此按钮操作前显示的二次确认提示。
+    /// </summary>
+    /// <param name="modal"> 二次确认提示。 </param>
+    /// <returns> 当前构建器。 </returns>
+    public KeyboardButtonBuilder WithModal(KeyboardModal modal)
+    {
+        Modal = modal;
         return this;
     }
 
@@ -353,7 +395,7 @@ public class KeyboardButtonBuilder
             throw new ArgumentNullException(nameof(Label), "Label or ID must be set.");
 
         return new KeyboardButton(
-            Id, label, LabelVisited ?? label, Style ?? ButtonStyle.Blue, Action ?? InferButtonAction(),
+            Id, GroupId, label, LabelVisited ?? label, Style ?? ButtonStyle.Blue, Action ?? InferButtonAction(), Modal,
             Permission ?? ButtonPermission.Everyone, AllowedUserIds, AllowedRoleIds,
             Data ?? Id ?? label, IsCommandReply, IsCommandAutoSend, ActionAnchor, UnsupportedVersionTip ?? label
         );

@@ -123,6 +123,7 @@ internal static class EntityExtensions
     private static API.KeyboardButton ToModel(this KeyboardButton entity) => new()
     {
         Id = entity.Id,
+        GroupId = entity.GroupId,
         RenderData = new KeyboardRenderData
         {
             Label = entity.Label,
@@ -132,6 +133,7 @@ internal static class EntityExtensions
         Action = new KeyboardAction
         {
             Type = entity.Action,
+            Modal = entity.Modal?.ToModel(),
             Permission = new KeyboardPermission
             {
                 Type = entity.Permission,
@@ -145,6 +147,14 @@ internal static class EntityExtensions
             UnsupportedTips = entity.UnsupportedVersionTip
         }
     };
+
+    private static API.KeyboardModal ToModel(this KeyboardModal entity) => new()
+    {
+        Content = entity.Content,
+        ConfirmText = entity.ConfirmText,
+        CancelText = entity.CancelText
+    };
+
 
     #endregion
 

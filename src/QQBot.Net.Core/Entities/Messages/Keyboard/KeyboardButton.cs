@@ -17,6 +17,14 @@ public class KeyboardButton
     public string? Id { get; }
 
     /// <summary>
+    ///     获取此按钮所属的分组 ID。
+    /// </summary>
+    /// <remarks>
+    ///     为 <see langword="null"/> 时，此按钮不属于指定分组。
+    /// </remarks>
+    public string? GroupId { get; }
+
+    /// <summary>
     ///     获取此按钮上的文本。
     /// </summary>
     public string Label { get; }
@@ -35,6 +43,14 @@ public class KeyboardButton
     ///     获取此按钮的动作类型。
     /// </summary>
     public ButtonAction Action { get; }
+
+    /// <summary>
+    ///     获取执行此按钮操作前显示的二次确认提示。
+    /// </summary>
+    /// <remarks>
+    ///     为 <see langword="null"/> 时，点击按钮后不会显示由此按钮配置的二次确认提示。
+    /// </remarks>
+    public KeyboardModal? Modal { get; }
 
     /// <summary>
     ///     获取此按钮的权限。
@@ -85,15 +101,18 @@ public class KeyboardButton
     /// </summary>
     public string UnsupportedVersionTip { get; }
 
-    internal KeyboardButton(string? id, string label, string labelVisited, ButtonStyle style, ButtonAction action,
-        ButtonPermission permission, IReadOnlyCollection<string>? allowedUserIds, IReadOnlyCollection<uint>? allowedRoleIds,
-        string data, bool? isCommandReply, bool? isCommandAutoSend, ButtonActionAnchor? actionAnchor, string unsupportedVersionTip)
+    internal KeyboardButton(string? id, string? groupId, string label, string labelVisited, ButtonStyle style,
+        ButtonAction action, KeyboardModal? modal, ButtonPermission permission,
+        IReadOnlyCollection<string>? allowedUserIds, IReadOnlyCollection<uint>? allowedRoleIds, string data,
+        bool? isCommandReply, bool? isCommandAutoSend, ButtonActionAnchor? actionAnchor, string unsupportedVersionTip)
     {
         Id = id;
+        GroupId = groupId;
         Label = label;
         LabelVisited = labelVisited;
         Style = style;
         Action = action;
+        Modal = modal;
         Permission = permission;
         AllowedUserIds = allowedUserIds;
         AllowedRoleIds = allowedRoleIds;
