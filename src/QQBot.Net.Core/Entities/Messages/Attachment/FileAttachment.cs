@@ -36,6 +36,11 @@ public struct FileAttachment : IDisposable
     public Uri? Uri { get; set; }
 
     /// <summary>
+    ///     获取包含文件内容的内存数据。
+    /// </summary>
+    public ReadOnlyMemory<byte> Memory { get; }
+
+    /// <summary>
     ///     获取用于单聊的富媒体文件信息。
     /// </summary>
     public MediaFileInfo? UserMediaFileInfo { get; internal set; }
@@ -59,6 +64,7 @@ public struct FileAttachment : IDisposable
         FilePath = null;
         Filename = filename;
         Stream = stream;
+        Memory = default;
         Uri = null;
         UserMediaFileInfo = null;
         GroupMediaFileInfo = null;
@@ -90,6 +96,7 @@ public struct FileAttachment : IDisposable
         Type = type;
         FilePath = filePath;
         Stream = null;
+        Memory = default;
         Filename = filename ?? Path.GetFileName(filePath);
         Uri = null;
         UserMediaFileInfo = null;
@@ -110,8 +117,30 @@ public struct FileAttachment : IDisposable
         Type = type;
         FilePath = null;
         Stream = null;
+        Memory = default;
         Filename = filename;
         Uri = uri;
+        UserMediaFileInfo = null;
+        GroupMediaFileInfo = null;
+    }
+
+    /// <summary>
+    ///     通过内存数据创建附件。
+    /// </summary>
+    /// <param name="memory"> 创建附件所使用的内存数据。 </param>
+    /// <param name="filename"> 文件名。 </param>
+    /// <param name="type"> 附件的类型。 </param>
+    public FileAttachment(ReadOnlyMemory<byte> memory, string? filename = null,
+        AttachmentType type = AttachmentType.Image)
+    {
+        IsDisposed = false;
+        Mode = CreateAttachmentMode.Memory;
+        Type = type;
+        FilePath = null;
+        Filename = filename;
+        Stream = null;
+        Memory = memory;
+        Uri = null;
         UserMediaFileInfo = null;
         GroupMediaFileInfo = null;
     }
@@ -139,6 +168,7 @@ public struct FileAttachment : IDisposable
         Type = userMediaFileInfo?.AttachmentType ?? groupMediaFileInfo!.Value.AttachmentType;
         FilePath = null;
         Stream = null;
+        Memory = default;
         Filename = filename;
         Uri = null;
         UserMediaFileInfo = userMediaFileInfo;

@@ -472,6 +472,7 @@ internal static class ChannelHelper
         {
             case CreateAttachmentMode.FilePath:
             case CreateAttachmentMode.Stream:
+            case CreateAttachmentMode.Memory:
             {
                 if (channel is not IMediaUploadChannel uploadChannel)
                     throw new NotSupportedException("The channel does not support media uploads.");
@@ -481,6 +482,8 @@ internal static class ChannelHelper
                         .FromFile(attachment.FilePath, attachment.Type, attachment.Filename),
                     CreateAttachmentMode.Stream when attachment.Stream is not null => MediaUploadSource
                         .FromStream(attachment.Stream, attachment.Filename ?? "attachment", attachment.Type),
+                    CreateAttachmentMode.Memory => MediaUploadSource
+                        .FromMemory(attachment.Memory, attachment.Filename ?? "attachment", attachment.Type),
                     _ => throw new InvalidOperationException("The file attachment source is invalid.")
                 };
                 MediaUploadResult uploadResult = await MediaUploadHelper
@@ -572,6 +575,11 @@ internal static class ChannelHelper
                 if (attachment.IsDisposed)
                     throw new InvalidOperationException("The stream in the FileAttachment has been disposed.");
                 return (null, new MultipartFile(attachment.Stream, attachment.Filename), false);
+            }
+            case CreateAttachmentMode.Memory:
+            {
+                MemoryStream stream = new(attachment.Memory.ToArray(), writable: false);
+                return (null, new MultipartFile(stream, attachment.Filename), true);
             }
             case CreateAttachmentMode.Uri:
                 return (attachment.Uri?.OriginalString, null, false);

@@ -21,6 +21,11 @@ public enum CreateAttachmentMode
     Uri,
 
     /// <summary>
+    ///     通过 <see cref="System.ReadOnlyMemory{T}"/> 内存数据创建附件。
+    /// </summary>
+    Memory,
+
+    /// <summary>
     ///     通过富媒体文件信息创建附件。
     /// </summary>
     MediaFileInfo
