@@ -144,4 +144,29 @@ public interface IQQBotClient : IDisposable
         IEnumerable<ulong> groupNumbers, Action<GroupJoinApprovalStrategyProperties>? func = null, RequestOptions? options = null);
 
     #endregion
+
+    #region Menus
+
+    /// <summary>
+    ///     获取当前机器人已设置的全局自定义菜单。
+    /// </summary>
+    /// <remarks>
+    ///     若尚未设置过菜单，返回的 <see cref="BotMenu.Items"/> 为空集合。
+    /// </remarks>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含当前的全局自定义菜单。 </returns>
+    Task<BotMenu> GetMenuAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     修改当前机器人的全局自定义菜单。
+    /// </summary>
+    /// <remarks>
+    ///     传入的菜单项将覆盖原有的完整菜单配置。全局自定义菜单仅在 QQ 单聊（C2C）场景生效。
+    /// </remarks>
+    /// <param name="items"> 要设置的菜单项列表，最多 10 个。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步修改操作的任务。任务的结果包含修改后的全局自定义菜单。 </returns>
+    Task<BotMenu> ModifyMenuAsync(IEnumerable<MenuItem> items, RequestOptions? options = null);
+
+    #endregion
 }

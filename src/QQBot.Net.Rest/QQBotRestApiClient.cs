@@ -861,6 +861,27 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<GetMenuResponse> GetMenuAsync(RequestOptions? options = null)
+    {
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendAsync<GetMenuResponse>(HttpMethod.Get,
+                () => "v2/menu", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<ModifyMenuResponse> ModifyMenuAsync(ModifyMenuParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendJsonAsync<ModifyMenuResponse>(HttpMethod.Put,
+                () => "v2/menu", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));

@@ -4,10 +4,10 @@ namespace QQBot.Rest;
 
 internal static class StrategyHelper
 {
-    public static IAsyncEnumerable<IReadOnlyCollection<IGroupJoinApprovalStrategy>> GetStrategiesAsync(
+    public static IAsyncEnumerable<IReadOnlyCollection<RestGroupJoinApprovalStrategy>> GetStrategiesAsync(
         BaseQQBotClient client, RequestOptions? options)
     {
-        return new PagedAsyncEnumerable<IGroupJoinApprovalStrategy>(
+        return new PagedAsyncEnumerable<RestGroupJoinApprovalStrategy>(
             QQBotConfig.MaxJoinApprovalStrategiesPerBatch,
             async (info, _) =>
             {
@@ -16,7 +16,7 @@ internal static class StrategyHelper
                         QQBotConfig.MaxJoinApprovalStrategiesPerBatch, options).ConfigureAwait(false);
                 info.Cookie = response.NextCursor;
                 return response.Strategies
-                    .Select(x => (IGroupJoinApprovalStrategy)RestGroupJoinApprovalStrategy.Create(client, x))
+                    .Select(x => RestGroupJoinApprovalStrategy.Create(client, x))
                     .ToArray();
             },
             nextPage: (info, _) => !string.IsNullOrEmpty(info.Cookie));
@@ -58,10 +58,10 @@ internal static class StrategyHelper
     {
         if (string.IsNullOrEmpty(strategyId))
             return null;
-        await foreach (IReadOnlyCollection<IGroupJoinApprovalStrategy> page in GetStrategiesAsync(client, options).ConfigureAwait(false))
-            foreach (IGroupJoinApprovalStrategy strategy in page)
-                if (strategy is RestGroupJoinApprovalStrategy rest && rest.Id == strategyId)
-                    return rest;
+        await foreach (IReadOnlyCollection<RestGroupJoinApprovalStrategy> page in GetStrategiesAsync(client, options).ConfigureAwait(false))
+            foreach (RestGroupJoinApprovalStrategy strategy in page)
+                if (strategy.Id == strategyId)
+                    return strategy;
         return null;
     }
 

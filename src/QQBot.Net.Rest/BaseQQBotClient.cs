@@ -253,19 +253,46 @@ public abstract class BaseQQBotClient : IQQBotClient
     #region Group Join Approval Strategies
 
     /// <inheritdoc cref="QQBot.IQQBotClient.GetJoinApprovalStrategiesAsync(QQBot.RequestOptions)" />
-    public IAsyncEnumerable<IReadOnlyCollection<IGroupJoinApprovalStrategy>> GetJoinApprovalStrategiesAsync(
+    public IAsyncEnumerable<IReadOnlyCollection<RestGroupJoinApprovalStrategy>> GetJoinApprovalStrategiesAsync(
         RequestOptions? options = null) =>
         StrategyHelper.GetStrategiesAsync(this, options);
 
     /// <inheritdoc cref="QQBot.IQQBotClient.CreateJoinApprovalStrategyAsync(System.Collections.Generic.IEnumerable{System.Guid},System.Action{QQBot.GroupJoinApprovalStrategyProperties},QQBot.RequestOptions)" />
-    public async Task<IGroupJoinApprovalStrategy> CreateJoinApprovalStrategyAsync(
+    public Task<RestGroupJoinApprovalStrategy> CreateJoinApprovalStrategyAsync(
         IEnumerable<Guid> groupIds, Action<GroupJoinApprovalStrategyProperties>? func = null, RequestOptions? options = null) =>
-        await StrategyHelper.CreateStrategyAsync(this, groupIds, func, options).ConfigureAwait(false);
+        StrategyHelper.CreateStrategyAsync(this, groupIds, func, options);
 
     /// <inheritdoc cref="QQBot.IQQBotClient.CreateJoinApprovalStrategyAsync(System.Collections.Generic.IEnumerable{System.UInt64},System.Action{QQBot.GroupJoinApprovalStrategyProperties},QQBot.RequestOptions)" />
-    public async Task<IGroupJoinApprovalStrategy> CreateJoinApprovalStrategyAsync(
+    public Task<RestGroupJoinApprovalStrategy> CreateJoinApprovalStrategyAsync(
         IEnumerable<ulong> groupNumbers, Action<GroupJoinApprovalStrategyProperties>? func = null, RequestOptions? options = null) =>
-        await StrategyHelper.CreateStrategyAsync(this, groupNumbers, func, options).ConfigureAwait(false);
+        StrategyHelper.CreateStrategyAsync(this, groupNumbers, func, options);
+
+    /// <inheritdoc />
+    IAsyncEnumerable<IReadOnlyCollection<IGroupJoinApprovalStrategy>> IQQBotClient.GetJoinApprovalStrategiesAsync(
+        RequestOptions? options) =>
+        GetJoinApprovalStrategiesAsync(options);
+
+    /// <inheritdoc />
+    async Task<IGroupJoinApprovalStrategy> IQQBotClient.CreateJoinApprovalStrategyAsync(
+        IEnumerable<Guid> groupIds, Action<GroupJoinApprovalStrategyProperties>? func, RequestOptions? options) =>
+        await CreateJoinApprovalStrategyAsync(groupIds, func, options).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    async Task<IGroupJoinApprovalStrategy> IQQBotClient.CreateJoinApprovalStrategyAsync(
+        IEnumerable<ulong> groupNumbers, Action<GroupJoinApprovalStrategyProperties>? func, RequestOptions? options) =>
+        await CreateJoinApprovalStrategyAsync(groupNumbers, func, options).ConfigureAwait(false);
+
+    #endregion
+
+    #region Menus
+
+    /// <inheritdoc cref="QQBot.IQQBotClient.GetMenuAsync(QQBot.RequestOptions)" />
+    public Task<BotMenu> GetMenuAsync(RequestOptions? options = null) =>
+        MenuHelper.GetMenuAsync(this, options);
+
+    /// <inheritdoc cref="QQBot.IQQBotClient.ModifyMenuAsync(System.Collections.Generic.IEnumerable{QQBot.MenuItem},QQBot.RequestOptions)" />
+    public Task<BotMenu> ModifyMenuAsync(IEnumerable<MenuItem> items, RequestOptions? options = null) =>
+        MenuHelper.ModifyMenuAsync(this, items, options);
 
     #endregion
 }
