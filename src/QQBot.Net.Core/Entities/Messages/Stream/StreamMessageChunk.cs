@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示要发送的一个流式消息分片。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class StreamMessageChunk
 {
     /// <summary>
@@ -84,4 +87,6 @@ public class StreamMessageChunk
         StreamMessageId = streamMessageId;
         MessageSequence = messageSequence;
     }
+
+    private string DebuggerDisplay => $"#{Index} ({InputState}, {Content.Length} chars)";
 }

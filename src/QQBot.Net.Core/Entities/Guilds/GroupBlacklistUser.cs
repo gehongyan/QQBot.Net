@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示一个 QQ 群黑名单中的用户。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupBlacklistUser
 {
     /// <summary>
@@ -39,4 +42,6 @@ public class GroupBlacklistUser
         IsBot = isBot;
         UnionOpenId = unionOpenId;
     }
+
+    private string DebuggerDisplay => $"{Username} ({MemberId}, Blacklisted)";
 }

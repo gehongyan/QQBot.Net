@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示机器人在指定 QQ 群内的状态信息。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupBotState
 {
     /// <summary>
@@ -39,4 +42,6 @@ public class GroupBotState
         ReceiveSetting = receiveSetting;
         Role = role;
     }
+
+    private string DebuggerDisplay => $"{MemberId} ({Role})";
 }

@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示入群申请人的入群验证信息。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupJoinVerifyInfo
 {
     /// <summary>
@@ -27,4 +30,6 @@ public class GroupJoinVerifyInfo
         VerifyMessage = verifyMessage;
         ReviewQuestions = reviewQuestions;
     }
+
+    private string DebuggerDisplay => $"{Method} ({ReviewQuestions.Count} Questions)";
 }

@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示一条 QQ 群入群申请。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupJoinRequest
 {
     /// <summary>
@@ -70,4 +73,6 @@ public class GroupJoinRequest
         RiskTips = riskTips;
         VerifyInfo = verifyInfo;
     }
+
+    private string DebuggerDisplay => $"{Username} ({MemberId}, {Source})";
 }

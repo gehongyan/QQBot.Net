@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示指令面板中的一个元素。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class CommandPanelItem
 {
     /// <summary>
@@ -62,4 +65,6 @@ public class CommandPanelItem
     /// <param name="onlyAdmin"> 是否仅管理员可操作。 </param>
     public static CommandPanelItem CreateLink(string name, string url, string? description = null, bool onlyAdmin = false) =>
         new(name, description, CommandPanelItemType.Link, onlyAdmin, url);
+
+    private string DebuggerDisplay => $"{Name} ({Type}{(OnlyAdmin ? ", AdminOnly" : "")})";
 }

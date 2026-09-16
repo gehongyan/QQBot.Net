@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示群的全员禁言规则。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupGlobalMuteRule
 {
     /// <summary>
@@ -28,4 +31,7 @@ public class GroupGlobalMuteRule
         ScheduleRules = scheduleRules;
         RecurringRules = recurringRules;
     }
+
+    private string DebuggerDisplay =>
+        $"{Mode} ({ScheduleRules.Count} Schedule, {RecurringRules.Count} Recurring)";
 }

@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     Stores the gateway information related to the current bot including sharding information.
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class BotShardedGateway : BotGateway
 {
     /// <summary>
@@ -22,11 +25,14 @@ public class BotShardedGateway : BotGateway
         Shards = shards;
         SessionStartLimit = sessionStartLimit;
     }
+
+    private string DebuggerDisplay => $"{Url} ({Shards} Shards)";
 }
 
 /// <summary>
 ///     Stores the gateway information related to the current bot.
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class BotGateway
 {
     internal BotGateway(string url)
@@ -38,4 +44,6 @@ public class BotGateway
     ///     Gets the WSS URL that can be used for connecting to the gateway.
     /// </summary>
     public string Url { get; internal set; }
+
+    private string DebuggerDisplay => Url;
 }

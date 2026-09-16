@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     Stores the information related to the gateway identify request.
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SessionStartLimit
 {
     /// <summary>
@@ -34,4 +37,6 @@ public class SessionStartLimit
     ///     limited to the same rate limit key.
     /// </returns>
     public int MaxConcurrency { get; internal set; }
+
+    private string DebuggerDisplay => $"{Remaining}/{Total} (Resets in {ResetAfter}ms)";
 }

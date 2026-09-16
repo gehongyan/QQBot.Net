@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示流式消息分片发送后的结果。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class StreamMessageChunkResult
 {
     /// <summary>
@@ -39,4 +42,6 @@ public class StreamMessageChunkResult
         RemainingMessageLength = remainingMessageLength;
         ReplyReference = replyReference;
     }
+
+    private string DebuggerDisplay => $"{StreamMessageId} ({Timestamp:u})";
 }

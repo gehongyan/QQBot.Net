@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示一个当前处于禁言状态的群成员。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupMemberMuteState
 {
     /// <summary>
@@ -32,4 +35,6 @@ public class GroupMemberMuteState
         Username = username;
         UnionOpenId = unionOpenId;
     }
+
+    private string DebuggerDisplay => $"{Username} ({MemberId}, Muted until {ExpiresAt:u})";
 }

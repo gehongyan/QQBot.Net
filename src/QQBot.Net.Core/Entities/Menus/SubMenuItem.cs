@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示机器人全局自定义菜单中的一个二级菜单项。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class SubMenuItem
 {
     /// <summary>
@@ -48,4 +51,6 @@ public class SubMenuItem
     /// <param name="url"> 用户点击后跳转的链接，必须以 <c>https://</c> 开头。 </param>
     public static SubMenuItem CreateLink(string name, string url) =>
         new(name, SubMenuItemType.Link, null, url);
+
+    private string DebuggerDisplay => $"{Name} ({Type})";
 }

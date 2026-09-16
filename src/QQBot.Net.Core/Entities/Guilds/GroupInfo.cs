@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示一个 QQ 群的基本信息。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupInfo
 {
     /// <summary>
@@ -45,4 +48,6 @@ public class GroupInfo
         Tags = tags;
         MemberCount = memberCount;
     }
+
+    private string DebuggerDisplay => $"{Name} ({Id}, {MemberCount} Members)";
 }

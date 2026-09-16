@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示机器人全局自定义菜单中的一个一级菜单项。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class MenuItem
 {
     /// <summary>
@@ -78,4 +81,6 @@ public class MenuItem
     /// <param name="subMenuItems"> 子菜单项列表，最多 5 个。 </param>
     public static MenuItem CreateSubMenu(string name, IEnumerable<SubMenuItem> subMenuItems) =>
         new(name, MenuItemType.Menu, null, null, null, subMenuItems.ToArray());
+
+    private string DebuggerDisplay => $"{Name} ({Type})";
 }

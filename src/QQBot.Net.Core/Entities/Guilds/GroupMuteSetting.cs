@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示群的禁言状态，包含全员禁言规则与当前被禁言的成员列表。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupMuteSetting
 {
     /// <summary>
@@ -21,4 +24,6 @@ public class GroupMuteSetting
         GlobalRule = globalRule;
         MutedMembers = mutedMembers;
     }
+
+    private string DebuggerDisplay => $"{GlobalRule.Mode} ({MutedMembers.Count} Muted Members)";
 }

@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示入群申请中管理员设置的一条审核问答。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupJoinReviewQuestion
 {
     /// <summary>
@@ -20,4 +23,6 @@ public class GroupJoinReviewQuestion
         Question = question;
         Answer = answer;
     }
+
+    private string DebuggerDisplay => $"{Question}: {Answer}";
 }

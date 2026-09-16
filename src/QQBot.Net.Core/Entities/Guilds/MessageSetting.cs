@@ -1,8 +1,11 @@
-﻿namespace QQBot;
+﻿using System.Diagnostics;
+
+namespace QQBot;
 
 /// <summary>
 ///     表示一个频道的消息设置。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public readonly struct MessageSetting
 {
     /// <summary>
@@ -33,4 +36,7 @@ public readonly struct MessageSetting
         ChannelIds = channelIds;
         MaxPushMessagesPerChannel = maxPushMessagesPerChannel;
     }
+
+    private string DebuggerDisplay =>
+        $"DM: {(AllowDirectMessage ? "On" : "Off")}, Push: {(AllowPushMessage ? "On" : "Off")} ({ChannelIds.Count} Channels)";
 }

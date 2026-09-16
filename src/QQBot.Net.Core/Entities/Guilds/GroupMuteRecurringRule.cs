@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示一条群全员周期禁言规则。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupMuteRecurringRule
 {
     /// <summary>
@@ -39,4 +42,7 @@ public class GroupMuteRecurringRule
         EndTime = endTime;
         IsEnabled = isEnabled;
     }
+
+    private string DebuggerDisplay =>
+        $"{TaskId} ({StartTime}–{EndTime} ×{Weekdays.Count} days, {(IsEnabled ? "Enabled" : "Disabled")})";
 }

@@ -1,8 +1,11 @@
-﻿namespace QQBot;
+﻿using System.Diagnostics;
+
+namespace QQBot;
 
 /// <summary>
 ///     表示一个频道推荐。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class ChannelRecommendation
 {
     /// <summary>
@@ -35,4 +38,6 @@ public class ChannelRecommendation
         : this(channel.Id, introduction)
     {
     }
+
+    private string DebuggerDisplay => $"{ChannelId}: {Introduction}";
 }

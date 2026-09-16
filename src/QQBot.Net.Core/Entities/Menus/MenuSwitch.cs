@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示菜单开关项的配置。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class MenuSwitch
 {
     /// <summary>
@@ -24,4 +27,6 @@ public class MenuSwitch
         SwitchId = switchId;
         IsDefaultOn = isDefaultOn;
     }
+
+    private string DebuggerDisplay => $"{SwitchId} ({(IsDefaultOn ? "On" : "Off")})";
 }

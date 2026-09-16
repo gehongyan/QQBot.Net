@@ -1,8 +1,11 @@
+using System.Diagnostics;
+
 namespace QQBot;
 
 /// <summary>
 ///     表示一条群全员定时禁言规则。
 /// </summary>
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
 public class GroupMuteScheduleRule
 {
     /// <summary>
@@ -32,4 +35,7 @@ public class GroupMuteScheduleRule
         EndAt = endAt;
         IsEnabled = isEnabled;
     }
+
+    private string DebuggerDisplay =>
+        $"{TaskId} ({StartAt:u} – {EndAt:u}, {(IsEnabled ? "Enabled" : "Disabled")})";
 }
