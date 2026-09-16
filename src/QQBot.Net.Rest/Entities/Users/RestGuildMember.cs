@@ -52,6 +52,10 @@ public class RestGuildMember : RestGuildUser, IGuildMember
     public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
         UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
 
+    /// <inheritdoc cref="QQBot.IGuildMember.CreateDMChannelAsync(QQBot.RequestOptions)" />
+    public Task<RestDMChannel> CreateDMChannelAsync(RequestOptions? options = null) =>
+        ChannelHelper.CreateRestDMChannelAsync(Client, GuildId, Id, options);
+
     #region Roles
 
     /// <inheritdoc />
@@ -93,4 +97,12 @@ public class RestGuildMember : RestGuildUser, IGuildMember
 
     private string DebuggerDisplay =>
         $"{Nickname ?? Username} ({(Nickname is not null ? $"{Username}, " : string.Empty)}{Id}{(IsBot ?? false ? ", Bot" : "")}, GuildMember)";
+
+    #region IGuildMember
+
+    /// <inheritdoc />
+    async Task<IDMChannel> IGuildMember.CreateDMChannelAsync(RequestOptions? options) =>
+        await CreateDMChannelAsync(options).ConfigureAwait(false);
+
+    #endregion
 }

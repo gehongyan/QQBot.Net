@@ -158,6 +158,30 @@ internal static class ChannelHelper
 
     #endregion
 
+    #region Direct Messages
+
+    public static async Task<CreateDirectMessageChannelResponse> CreateDMChannelAsync(BaseQQBotClient client,
+        ulong sourceGuildId, ulong recipientId, RequestOptions? options)
+    {
+        CreateDirectMessageChannelParams args = new()
+        {
+            RecipientId = recipientId.ToIdString(),
+            SourceGuildId = sourceGuildId.ToIdString()
+        };
+        return await client.ApiClient.CreateDirectMessageChannelAsync(args, options).ConfigureAwait(false);
+    }
+
+    public static async Task<RestDMChannel> CreateRestDMChannelAsync(BaseQQBotClient client,
+        ulong sourceGuildId, ulong recipientId, RequestOptions? options)
+    {
+        CreateDirectMessageChannelResponse response = await CreateDMChannelAsync(client, sourceGuildId, recipientId, options)
+            .ConfigureAwait(false);
+        RestGuildUser recipient = new(client, recipientId);
+        return RestDMChannel.Create(client, response.GuildId, recipient);
+    }
+
+    #endregion
+
     #region Send Messages
 
     public static async Task TriggerTypingAsync(

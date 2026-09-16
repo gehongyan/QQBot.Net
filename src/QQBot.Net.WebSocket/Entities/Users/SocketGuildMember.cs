@@ -81,6 +81,10 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
     public Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null) =>
         UserHelper.KickAsync(this, Client, addBlacklist, pruneDays, options);
 
+    /// <inheritdoc cref="QQBot.IGuildMember.CreateDMChannelAsync(QQBot.RequestOptions)" />
+    public async Task<SocketDMChannel> CreateDMChannelAsync(RequestOptions? options = null) =>
+        await SocketChannelHelper.CreateDMChannelAsync(Client, GuildId, this, options).ConfigureAwait(false);
+
     #region Roles
 
     /// <inheritdoc />
@@ -130,10 +134,14 @@ public class SocketGuildMember : SocketGuildUser, IGuildMember, IUpdateable
         return clone;
     }
 
-    #region IGuild
+    #region IGuildMember
 
     /// <inheritdoc />
     IGuild IGuildMember.Guild => Guild;
+
+    /// <inheritdoc />
+    async Task<IDMChannel> IGuildMember.CreateDMChannelAsync(RequestOptions? options) =>
+        await CreateDMChannelAsync(options).ConfigureAwait(false);
 
     #endregion
 }

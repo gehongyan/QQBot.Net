@@ -606,6 +606,18 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<CreateDirectMessageChannelResponse> CreateDirectMessageChannelAsync(
+        CreateDirectMessageChannelParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendJsonAsync<CreateDirectMessageChannelResponse>(HttpMethod.Post,
+                () => "users/@me/dms", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));

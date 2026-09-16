@@ -138,6 +138,17 @@ public interface IGuild : IEntity<ulong>
     /// <returns> 一个表示异步下载操作的任务。 </returns>
     Task DownloadUsersAsync(RequestOptions? options = null);
 
+    /// <summary>
+    ///     创建从此频道向指定用户发起的私信会话。
+    /// </summary>
+    /// <remarks>
+    ///     此频道将作为私信会话的发起来源。创建成功后，可通过返回的私信子频道向该用户发送私信消息。
+    /// </remarks>
+    /// <param name="userId"> 要与之创建私信会话的用户的 ID。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果为与指定用户的私信子频道。 </returns>
+    Task<IDMChannel> CreateDMChannelAsync(ulong userId, RequestOptions? options = null);
+
     #endregion
 
     #region Channels

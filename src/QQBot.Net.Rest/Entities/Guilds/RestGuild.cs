@@ -329,12 +329,20 @@ public class RestGuild : RestEntity<ulong>, IGuild
     public IAsyncEnumerable<IReadOnlyCollection<IGuildMember>> GetUsersAsync(RequestOptions? options = null) =>
         GuildHelper.GetUsersAsync(this, Client, null, options);
 
+    /// <inheritdoc cref="QQBot.IGuild.CreateDMChannelAsync(System.UInt64,QQBot.RequestOptions)" />
+    public async Task<RestDMChannel> CreateDMChannelAsync(ulong userId, RequestOptions? options = null) =>
+        await ChannelHelper.CreateRestDMChannelAsync(Client, Id, userId, options).ConfigureAwait(false);
+
     #endregion
 
     #region IGuild
 
     /// <inheritdoc />
     bool IGuild.IsAvailable => IsAvailable;
+
+    /// <inheritdoc />
+    async Task<IDMChannel> IGuild.CreateDMChannelAsync(ulong userId, RequestOptions? options) =>
+        await CreateDMChannelAsync(userId, options).ConfigureAwait(false);
 
     /// <inheritdoc />
     async Task<IGuildMember?> IGuild.GetUserAsync(ulong id, CacheMode mode, RequestOptions? options) =>

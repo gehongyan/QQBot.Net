@@ -273,6 +273,17 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <returns> 与指定的 <paramref name="id"/> 关联的用户；如果未找到，则返回 <c>null</c>。 </returns>
     public SocketGuildMember? GetUser(ulong id) => _members.GetValueOrDefault(id);
 
+    /// <inheritdoc cref="QQBot.IGuild.CreateDMChannelAsync(System.UInt64,QQBot.RequestOptions)" />
+    public async Task<SocketDMChannel> CreateDMChannelAsync(ulong userId, RequestOptions? options = null)
+    {
+        SocketGuildUser recipient = GetUser(userId)
+            ?? SocketGuildUser.Create(Client, Client.State,
+                new API.User { Id = userId, Username = string.Empty, Avatar = string.Empty });
+        return await SocketChannelHelper
+            .CreateDMChannelAsync(Client, Id, recipient, options)
+            .ConfigureAwait(false);
+    }
+
     internal SocketGuildMember AddOrUpdateUser(API.User userModel, API.Member? memberModel)
     {
         if (_members.TryGetValue(userModel.Id, out SocketGuildMember? cachedMember))
@@ -673,6 +684,10 @@ public class SocketGuild : SocketEntity<ulong>, IGuild, IUpdateable
     /// <inheritdoc />
     async Task<IRole> IGuild.CreateRoleAsync(Action<RoleProperties> func, RequestOptions? options) =>
         await CreateRoleAsync(func, options);
+
+    /// <inheritdoc />
+    async Task<IDMChannel> IGuild.CreateDMChannelAsync(ulong userId, RequestOptions? options) =>
+        await CreateDMChannelAsync(userId, options).ConfigureAwait(false);
 
     #endregion
 }

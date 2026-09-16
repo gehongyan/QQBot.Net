@@ -4,6 +4,15 @@ namespace QQBot.WebSocket;
 
 internal static class SocketChannelHelper
 {
+    public static async Task<SocketDMChannel> CreateDMChannelAsync(QQBotSocketClient client,
+        ulong sourceGuildId, SocketGuildUser recipient, RequestOptions? options)
+    {
+        API.Rest.CreateDirectMessageChannelResponse response = await QQBot.Rest.ChannelHelper
+            .CreateDMChannelAsync(client, sourceGuildId, recipient.Id, options)
+            .ConfigureAwait(false);
+        return client.GetOrCreateDMChannel(client.State, response.GuildId, recipient);
+    }
+
     public static async Task UpdateAsync(SocketGuildChannel channel, RequestOptions? options)
     {
         Channel model = await channel.Client.ApiClient.GetChannelAsync(channel.Id, options).ConfigureAwait(false);

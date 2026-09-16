@@ -47,6 +47,16 @@ public interface IGuildMember : IGuildUser
     /// <returns> 一个表示异步踢出操作的任务。 </returns>
     Task KickAsync(bool addBlacklist = false, int pruneDays = 0, RequestOptions? options = null);
 
+    /// <summary>
+    ///     创建与此用户的私信会话。
+    /// </summary>
+    /// <remarks>
+    ///     私信会话将以此用户所属的频道作为发起来源。创建成功后，可通过返回的私信子频道向此用户发送私信消息。
+    /// </remarks>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果为与此用户的私信子频道。 </returns>
+    Task<IDMChannel> CreateDMChannelAsync(RequestOptions? options = null);
+
     #region Roles
 
     /// <summary>
