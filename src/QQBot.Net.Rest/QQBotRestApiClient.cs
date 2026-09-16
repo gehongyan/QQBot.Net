@@ -672,6 +672,43 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<GetGroupJoinRequestListResponse> GetGroupJoinRequestListAsync(Guid groupOpenid,
+        string? cursor, int? limit, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        options = RequestOptions.CreateOrClone(options);
+
+        List<string> queryParts = [];
+        if (limit.HasValue)
+            queryParts.Add($"limit={limit.Value}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParts.Add($"cursor={Uri.EscapeDataString(cursor)}");
+        string query = queryParts.Count > 0 ? $"?{string.Join("&", queryParts)}" : string.Empty;
+
+        BucketIds ids = new();
+        string id = groupOpenid.ToIdString();
+        return await SendAsync<GetGroupJoinRequestListResponse>(HttpMethod.Get,
+                () => $"v2/groups/{id}/join_request_list{query}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task ApproveGroupJoinRequestAsync(Guid groupOpenid, Guid memberOpenid,
+        ApproveGroupJoinRequestParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        Preconditions.NotEqual(memberOpenid, Guid.Empty, nameof(memberOpenid));
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string groupId = groupOpenid.ToIdString();
+        string memberId = memberOpenid.ToIdString();
+        await SendJsonAsync(HttpMethod.Post,
+                () => $"v2/groups/{groupId}/approval_join_request/{memberId}", args, ids,
+                ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));

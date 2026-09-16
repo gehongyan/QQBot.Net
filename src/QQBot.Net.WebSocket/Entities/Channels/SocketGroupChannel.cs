@@ -75,6 +75,28 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
     public Task<IGroupMember?> GetMemberAsync(Guid id, RequestOptions? options = null) =>
         GroupHelper.GetMemberAsync(this, Client, id, options);
 
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetJoinRequestsAsync(QQBot.RequestOptions)" />
+    public IAsyncEnumerable<IReadOnlyCollection<GroupJoinRequest>> GetJoinRequestsAsync(RequestOptions? options = null) =>
+        GroupHelper.GetJoinRequestsAsync(this, Client, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.ApproveJoinRequestAsync(QQBot.GroupJoinRequest,QQBot.RequestOptions)" />
+    public Task ApproveJoinRequestAsync(GroupJoinRequest request, RequestOptions? options = null) =>
+        GroupHelper.ApproveJoinRequestAsync(this, Client, request.MemberId, request.Id, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.ApproveJoinRequestAsync(System.Guid,System.String,QQBot.RequestOptions)" />
+    public Task ApproveJoinRequestAsync(Guid memberId, string? joinRequestId = null, RequestOptions? options = null) =>
+        GroupHelper.ApproveJoinRequestAsync(this, Client, memberId, joinRequestId, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.DeclineJoinRequestAsync(QQBot.GroupJoinRequest,System.String,System.Boolean,QQBot.RequestOptions)" />
+    public Task DeclineJoinRequestAsync(GroupJoinRequest request, string? reason = null,
+        bool addToBlacklist = false, RequestOptions? options = null) =>
+        GroupHelper.DeclineJoinRequestAsync(this, Client, request.MemberId, request.Id, reason, addToBlacklist, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.DeclineJoinRequestAsync(System.Guid,System.String,System.String,System.Boolean,QQBot.RequestOptions)" />
+    public Task DeclineJoinRequestAsync(Guid memberId, string? joinRequestId = null,
+        string? reason = null, bool addToBlacklist = false, RequestOptions? options = null) =>
+        GroupHelper.DeclineJoinRequestAsync(this, Client, memberId, joinRequestId, reason, addToBlacklist, options);
+
     #endregion
 
     #region ISocketMessageChannel

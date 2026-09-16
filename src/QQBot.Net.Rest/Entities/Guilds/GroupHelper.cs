@@ -1,5 +1,6 @@
 using QQBot.API;
 using QQBot.API.Rest;
+using ApiGroupJoinRequest = QQBot.API.GroupJoinRequest;
 
 namespace QQBot.Rest;
 
@@ -45,5 +46,62 @@ internal static class GroupHelper
                 return response.Members.Select(x => (IGroupMember)RestGroupMember.Create(client, x)).ToArray();
             },
             nextPage: (info, _) => !string.IsNullOrEmpty(info.Cookie));
+    }
+
+    public static IAsyncEnumerable<IReadOnlyCollection<GroupJoinRequest>> GetJoinRequestsAsync(IGroupChannel channel,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        return new PagedAsyncEnumerable<GroupJoinRequest>(
+            QQBotConfig.MaxGroupJoinRequestsPerBatch,
+            async (info, _) =>
+            {
+                GetGroupJoinRequestListResponse response = await client.ApiClient
+                    .GetGroupJoinRequestListAsync(channel.Id, info.Cookie,
+                        QQBotConfig.MaxGroupJoinRequestsPerBatch, options).ConfigureAwait(false);
+                info.Cookie = response.NextCursor;
+                return response.List.Select(ToGroupJoinRequest).ToArray();
+            },
+            nextPage: (info, _) => !string.IsNullOrEmpty(info.Cookie));
+    }
+
+    public static Task ApproveJoinRequestAsync(IGroupChannel channel, BaseQQBotClient client,
+        Guid memberId, string? joinRequestId, RequestOptions? options)
+    {
+        ApproveGroupJoinRequestParams args = new()
+        {
+            Op = "approve",
+            JoinRequestId = joinRequestId
+        };
+        return client.ApiClient.ApproveGroupJoinRequestAsync(channel.Id, memberId, args, options);
+    }
+
+    public static Task DeclineJoinRequestAsync(IGroupChannel channel, BaseQQBotClient client,
+        Guid memberId, string? joinRequestId, string? reason, bool addToBlacklist, RequestOptions? options)
+    {
+        ApproveGroupJoinRequestParams args = new()
+        {
+            Op = "decline",
+            JoinRequestId = joinRequestId,
+            RejectReason = reason,
+            AddToMemberBlacklist = addToBlacklist ? true : null
+        };
+        return client.ApiClient.ApproveGroupJoinRequestAsync(channel.Id, memberId, args, options);
+    }
+
+    private static GroupJoinRequest ToGroupJoinRequest(ApiGroupJoinRequest model)
+    {
+        GroupJoinVerifyInfo? verifyInfo = null;
+        if (model.VerifyInfo is { } info)
+        {
+            IReadOnlyCollection<GroupJoinReviewQuestion> questions = info.ReviewQaList is { } list
+                ? list.Select(x => new GroupJoinReviewQuestion(x.Question ?? string.Empty, x.Answer ?? string.Empty)).ToArray()
+                : [];
+            verifyInfo = new GroupJoinVerifyInfo(info.Method, info.VerifyMessage, questions);
+        }
+
+        return new GroupJoinRequest(model.JoinRequestId, model.MemberOpenId, model.Username ?? string.Empty,
+            model.UnionOpenId, model.Bot, model.ApplyAt, model.ApplySource,
+            model.InvitedBy is { } invitedBy && invitedBy != Guid.Empty ? invitedBy : null,
+            model.RiskTips, verifyInfo);
     }
 }
