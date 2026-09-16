@@ -169,4 +169,55 @@ public interface IQQBotClient : IDisposable
     Task<BotMenu> ModifyMenuAsync(IEnumerable<MenuItem> items, RequestOptions? options = null);
 
     #endregion
+
+    #region Command Panels
+
+    /// <summary>
+    ///     获取指定场景下当前生效的指令面板，以分页形式返回。
+    /// </summary>
+    /// <param name="scope"> 要筛选的生效场景。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的可枚举集合，包含指定场景下的指令面板。 </returns>
+    IAsyncEnumerable<IReadOnlyCollection<ICommandPanel>> GetCommandPanelsAsync(
+        CommandPanelScope scope, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取指定的指令面板。
+    /// </summary>
+    /// <param name="panelId"> 要获取的面板的标识符。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含指定的指令面板。 </returns>
+    Task<ICommandPanel> GetCommandPanelAsync(string panelId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     创建一个对指定场景下所有用户或群生效的指令面板。
+    /// </summary>
+    /// <remarks>
+    ///     一个机器人最多创建 20 个指令面板。
+    /// </remarks>
+    /// <param name="scope"> 面板的生效场景。 </param>
+    /// <param name="items"> 面板的元素列表，最多 20 个。 </param>
+    /// <param name="func"> 一个包含面板额外配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的指令面板。 </returns>
+    Task<ICommandPanel> CreateCommandPanelAsync(CommandPanelScope scope, IEnumerable<CommandPanelItem> items,
+        Action<CommandPanelProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     创建一个仅对指定用户或群生效的指令面板。
+    /// </summary>
+    /// <remarks>
+    ///     仅 <see cref="CommandPanelScope.C2C"/> 与 <see cref="CommandPanelScope.Group"/> 场景支持按指定对象生效。
+    ///     一个机器人最多创建 20 个指令面板。
+    /// </remarks>
+    /// <param name="scope"> 面板的生效场景，仅支持 C2C 或 Group。 </param>
+    /// <param name="targetIds"> 面板生效的用户或群的标识符集合，单次最多 20 个。 </param>
+    /// <param name="items"> 面板的元素列表，最多 20 个。 </param>
+    /// <param name="func"> 一个包含面板额外配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的指令面板。 </returns>
+    Task<ICommandPanel> CreateCommandPanelAsync(CommandPanelScope scope, IEnumerable<Guid> targetIds,
+        IEnumerable<CommandPanelItem> items, Action<CommandPanelProperties>? func = null, RequestOptions? options = null);
+
+    #endregion
 }

@@ -87,6 +87,11 @@ public class QQBotConfig
     public const int MaxJoinApprovalStrategiesPerBatch = 50;
 
     /// <summary>
+    ///     获取每请求获取指令面板的最大数量。
+    /// </summary>
+    public const int MaxCommandPanelsPerBatch = 50;
+
+    /// <summary>
     ///     获取每请求获取回应的用户的最大数量。
     /// </summary>
     public const int MaxReactionUsersPerBatch = 50;

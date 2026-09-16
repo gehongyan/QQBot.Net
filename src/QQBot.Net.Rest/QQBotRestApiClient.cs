@@ -882,6 +882,81 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<GetPanelListResponse> GetPanelListAsync(string scope, string? cursor, int? limit, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(scope, nameof(scope));
+        options = RequestOptions.CreateOrClone(options);
+
+        List<string> queryParts = [$"scope={scope}"];
+        if (limit.HasValue)
+            queryParts.Add($"limit={limit.Value}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParts.Add($"cursor={Uri.EscapeDataString(cursor)}");
+        string query = $"?{string.Join("&", queryParts)}";
+
+        BucketIds ids = new();
+        return await SendAsync<GetPanelListResponse>(HttpMethod.Get,
+                () => $"v2/panels{query}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<PanelRecord> GetPanelAsync(string panelId, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(panelId, nameof(panelId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendAsync<PanelRecord>(HttpMethod.Get,
+                () => $"v2/panels/{panelId}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<CreatePanelResponse> CreatePanelAsync(CreatePanelParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendJsonAsync<CreatePanelResponse>(HttpMethod.Post,
+                () => "v2/panels", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<ModifyPanelResponse> ModifyPanelAsync(string panelId, ModifyPanelParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(panelId, nameof(panelId));
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendJsonAsync<ModifyPanelResponse>(HttpMethod.Put,
+                () => $"v2/panels/{panelId}", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task DeletePanelAsync(string panelId, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(panelId, nameof(panelId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        await SendAsync(HttpMethod.Delete,
+                () => $"v2/panels/{panelId}", ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task ModifyPanelTargetAsync(string panelId, ModifyPanelTargetParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(panelId, nameof(panelId));
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        await SendJsonAsync(HttpMethod.Put,
+                () => $"v2/panels/{panelId}/target", args, ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));

@@ -295,4 +295,47 @@ public abstract class BaseQQBotClient : IQQBotClient
         MenuHelper.ModifyMenuAsync(this, items, options);
 
     #endregion
+
+    #region Command Panels
+
+    /// <inheritdoc cref="QQBot.IQQBotClient.GetCommandPanelsAsync(QQBot.CommandPanelScope,QQBot.RequestOptions)" />
+    public IAsyncEnumerable<IReadOnlyCollection<RestCommandPanel>> GetCommandPanelsAsync(
+        CommandPanelScope scope, RequestOptions? options = null) =>
+        PanelHelper.GetPanelsAsync(this, scope, options);
+
+    /// <inheritdoc cref="QQBot.IQQBotClient.GetCommandPanelAsync(System.String,QQBot.RequestOptions)" />
+    public Task<RestCommandPanel> GetCommandPanelAsync(string panelId, RequestOptions? options = null) =>
+        PanelHelper.GetPanelAsync(this, panelId, options);
+
+    /// <inheritdoc cref="QQBot.IQQBotClient.CreateCommandPanelAsync(QQBot.CommandPanelScope,System.Collections.Generic.IEnumerable{QQBot.CommandPanelItem},System.Action{QQBot.CommandPanelProperties},QQBot.RequestOptions)" />
+    public Task<RestCommandPanel> CreateCommandPanelAsync(CommandPanelScope scope, IEnumerable<CommandPanelItem> items,
+        Action<CommandPanelProperties>? func = null, RequestOptions? options = null) =>
+        PanelHelper.CreatePanelAsync(this, scope, null, items, func, options);
+
+    /// <inheritdoc cref="QQBot.IQQBotClient.CreateCommandPanelAsync(QQBot.CommandPanelScope,System.Collections.Generic.IEnumerable{System.Guid},System.Collections.Generic.IEnumerable{QQBot.CommandPanelItem},System.Action{QQBot.CommandPanelProperties},QQBot.RequestOptions)" />
+    public Task<RestCommandPanel> CreateCommandPanelAsync(CommandPanelScope scope, IEnumerable<Guid> targetIds,
+        IEnumerable<CommandPanelItem> items, Action<CommandPanelProperties>? func = null, RequestOptions? options = null) =>
+        PanelHelper.CreatePanelAsync(this, scope, targetIds, items, func, options);
+
+    /// <inheritdoc />
+    IAsyncEnumerable<IReadOnlyCollection<ICommandPanel>> IQQBotClient.GetCommandPanelsAsync(
+        CommandPanelScope scope, RequestOptions? options) =>
+        GetCommandPanelsAsync(scope, options);
+
+    /// <inheritdoc />
+    async Task<ICommandPanel> IQQBotClient.GetCommandPanelAsync(string panelId, RequestOptions? options) =>
+        await GetCommandPanelAsync(panelId, options).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    async Task<ICommandPanel> IQQBotClient.CreateCommandPanelAsync(CommandPanelScope scope,
+        IEnumerable<CommandPanelItem> items, Action<CommandPanelProperties>? func, RequestOptions? options) =>
+        await CreateCommandPanelAsync(scope, items, func, options).ConfigureAwait(false);
+
+    /// <inheritdoc />
+    async Task<ICommandPanel> IQQBotClient.CreateCommandPanelAsync(CommandPanelScope scope,
+        IEnumerable<Guid> targetIds, IEnumerable<CommandPanelItem> items,
+        Action<CommandPanelProperties>? func, RequestOptions? options) =>
+        await CreateCommandPanelAsync(scope, targetIds, items, func, options).ConfigureAwait(false);
+
+    #endregion
 }
