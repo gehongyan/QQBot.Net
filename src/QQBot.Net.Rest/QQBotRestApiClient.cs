@@ -782,6 +782,85 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<GetJoinApprovalStrategyListResponse> GetJoinApprovalStrategyListAsync(
+        string? cursor, int? limit, RequestOptions? options = null)
+    {
+        options = RequestOptions.CreateOrClone(options);
+
+        List<string> queryParts = [];
+        if (limit.HasValue)
+            queryParts.Add($"limit={limit.Value}");
+        if (!string.IsNullOrEmpty(cursor))
+            queryParts.Add($"cursor={Uri.EscapeDataString(cursor)}");
+        string query = queryParts.Count > 0 ? $"?{string.Join("&", queryParts)}" : string.Empty;
+
+        BucketIds ids = new();
+        return await SendAsync<GetJoinApprovalStrategyListResponse>(HttpMethod.Get,
+                () => $"v2/groups/join_approval_strategy{query}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<JoinApprovalStrategyMutationResponse> CreateJoinApprovalStrategyAsync(
+        CreateJoinApprovalStrategyParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendJsonAsync<JoinApprovalStrategyMutationResponse>(HttpMethod.Post,
+                () => "v2/groups/join_approval_strategy", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<JoinApprovalStrategyMutationResponse> ModifyJoinApprovalStrategyAsync(
+        string strategyId, ModifyJoinApprovalStrategyParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(strategyId, nameof(strategyId));
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        return await SendJsonAsync<JoinApprovalStrategyMutationResponse>(HttpMethod.Patch,
+                () => $"v2/groups/join_approval_strategy/{strategyId}", args, ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task DeleteJoinApprovalStrategyAsync(string strategyId, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(strategyId, nameof(strategyId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        await SendAsync(HttpMethod.Delete,
+                () => $"v2/groups/join_approval_strategy/{strategyId}", ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task ExecuteJoinApprovalStrategyAsync(string strategyId, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(strategyId, nameof(strategyId));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        await SendAsync(HttpMethod.Post,
+                () => $"v2/groups/join_approval_strategy/{strategyId}/execute", ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task OperateJoinApprovalWhitelistAsync(string strategyId,
+        OperateJoinApprovalWhitelistParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotNullOrWhiteSpace(strategyId, nameof(strategyId));
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        await SendJsonAsync(HttpMethod.Post,
+                () => $"v2/groups/join_approval_strategy/{strategyId}/whitelist_users", args, ids,
+                ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));

@@ -107,4 +107,41 @@ public interface IQQBotClient : IDisposable
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步获取操作的任务，其结果为包含当前 Bot 资料页的分享链接的 <see cref="Uri"/> 对象。 </returns>
     Task<Uri> GenerateProfileUrlAsync(string? callbackData = null, RequestOptions? options = null);
+
+    #region Group Join Approval Strategies
+
+    /// <summary>
+    ///     获取当前机器人生效中的入群自动审批策略，以分页形式返回。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的可枚举集合，包含当前机器人生效中的入群自动审批策略。 </returns>
+    IAsyncEnumerable<IReadOnlyCollection<IGroupJoinApprovalStrategy>> GetJoinApprovalStrategiesAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     创建一个关联指定群的入群自动审批策略。
+    /// </summary>
+    /// <remarks>
+    ///     一个机器人最多创建 20 个策略。
+    /// </remarks>
+    /// <param name="groupIds"> 要关联的群的标识符列表（最多 100 个）。 </param>
+    /// <param name="func"> 一个包含新策略额外配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的策略。 </returns>
+    Task<IGroupJoinApprovalStrategy> CreateJoinApprovalStrategyAsync(
+        IEnumerable<Guid> groupIds, Action<GroupJoinApprovalStrategyProperties>? func = null, RequestOptions? options = null);
+
+    /// <summary>
+    ///     创建一个关联指定 QQ 群号的入群自动审批策略。
+    /// </summary>
+    /// <remarks>
+    ///     一个机器人最多创建 20 个策略。
+    /// </remarks>
+    /// <param name="groupNumbers"> 要关联的 QQ 群号列表（最多 100 个）。 </param>
+    /// <param name="func"> 一个包含新策略额外配置的委托。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步创建操作的任务。任务的结果包含新创建的策略。 </returns>
+    Task<IGroupJoinApprovalStrategy> CreateJoinApprovalStrategyAsync(
+        IEnumerable<ulong> groupNumbers, Action<GroupJoinApprovalStrategyProperties>? func = null, RequestOptions? options = null);
+
+    #endregion
 }
