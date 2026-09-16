@@ -57,6 +57,26 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
 
     #endregion
 
+    #region Group
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetInfoAsync(QQBot.RequestOptions)" />
+    public Task<GroupInfo> GetInfoAsync(RequestOptions? options = null) =>
+        GroupHelper.GetInfoAsync(this, Client, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetBotStateAsync(QQBot.RequestOptions)" />
+    public Task<GroupBotState> GetBotStateAsync(RequestOptions? options = null) =>
+        GroupHelper.GetBotStateAsync(this, Client, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetMembersAsync(QQBot.RequestOptions)" />
+    public IAsyncEnumerable<IReadOnlyCollection<IGroupMember>> GetMembersAsync(RequestOptions? options = null) =>
+        GroupHelper.GetMembersAsync(this, Client, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetMemberAsync(System.Guid,QQBot.RequestOptions)" />
+    public Task<IGroupMember?> GetMemberAsync(Guid id, RequestOptions? options = null) =>
+        GroupHelper.GetMemberAsync(this, Client, id, options);
+
+    #endregion
+
     #region ISocketMessageChannel
 
     /// <inheritdoc />

@@ -67,6 +67,11 @@ public class QQBotConfig
     public const int MaxMembersPerBatch = 400;
 
     /// <summary>
+    ///     获取每请求获取群成员的最大数量。
+    /// </summary>
+    public const int MaxGroupMembersPerBatch = 30;
+
+    /// <summary>
     ///     获取每请求获取回应的用户的最大数量。
     /// </summary>
     public const int MaxReactionUsersPerBatch = 50;

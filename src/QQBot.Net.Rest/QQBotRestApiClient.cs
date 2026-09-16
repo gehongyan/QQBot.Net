@@ -618,6 +618,60 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<GetGroupInfoResponse> GetGroupInfoAsync(Guid groupOpenid, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = groupOpenid.ToIdString();
+        return await SendAsync<GetGroupInfoResponse>(HttpMethod.Get,
+                () => $"v2/groups/{id}/info", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<GetGroupBotStateResponse> GetGroupBotStateAsync(Guid groupOpenid, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = groupOpenid.ToIdString();
+        return await SendAsync<GetGroupBotStateResponse>(HttpMethod.Get,
+                () => $"v2/groups/{id}/bot_state", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<GetGroupMembersResponse> GetGroupMembersAsync(Guid groupOpenid, string? cursor, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        options = RequestOptions.CreateOrClone(options);
+
+        string query = string.IsNullOrEmpty(cursor)
+            ? string.Empty
+            : $"?cursor={Uri.EscapeDataString(cursor)}";
+
+        BucketIds ids = new();
+        string id = groupOpenid.ToIdString();
+        return await SendAsync<GetGroupMembersResponse>(HttpMethod.Get,
+                () => $"v2/groups/{id}/members{query}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<GroupMember> GetGroupMemberAsync(Guid groupOpenid, Guid memberOpenid, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        Preconditions.NotEqual(memberOpenid, Guid.Empty, nameof(memberOpenid));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string groupId = groupOpenid.ToIdString();
+        string memberId = memberOpenid.ToIdString();
+        return await SendAsync<GroupMember>(HttpMethod.Get,
+                () => $"v2/groups/{groupId}/members/{memberId}", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));
