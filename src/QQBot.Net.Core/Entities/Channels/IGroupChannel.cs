@@ -149,4 +149,81 @@ public interface IGroupChannel : IMessageChannel, IMediaUploadChannel, IEntity<G
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步解除禁言操作的任务。 </returns>
     Task UnmuteMemberAsync(Guid memberId, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量移除此群内的成员。
+    /// </summary>
+    /// <remarks>
+    ///     单次最多移除 20 个成员。机器人需拥有群管理员身份。
+    /// </remarks>
+    /// <param name="memberIds"> 要移除的成员的标识符集合。 </param>
+    /// <param name="addToBlacklist"> 是否在移除的同时将成员加入群黑名单。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步移除操作的任务。任务的结果包含移除操作的结果。 </returns>
+    Task<GroupRemoveMembersResult> RemoveMembersAsync(IEnumerable<Guid> memberIds,
+        bool addToBlacklist = false, RequestOptions? options = null);
+
+    /// <summary>
+    ///     批量移除此群内的成员。
+    /// </summary>
+    /// <remarks>
+    ///     单次最多移除 20 个成员。机器人需拥有群管理员身份。
+    /// </remarks>
+    /// <param name="members"> 要移除的成员集合。 </param>
+    /// <param name="addToBlacklist"> 是否在移除的同时将成员加入群黑名单。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步移除操作的任务。任务的结果包含移除操作的结果。 </returns>
+    Task<GroupRemoveMembersResult> RemoveMembersAsync(IEnumerable<IGroupMember> members,
+        bool addToBlacklist = false, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取此群的黑名单，以分页形式返回。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的可枚举集合，包含此群黑名单中的用户。 </returns>
+    IAsyncEnumerable<IReadOnlyCollection<GroupBlacklistUser>> GetBlacklistAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     将指定成员加入此群的黑名单。
+    /// </summary>
+    /// <remarks>
+    ///     单次最多操作 20 个成员，且仅当目标成员不在群中时才能加入黑名单。
+    /// </remarks>
+    /// <param name="memberIds"> 要加入黑名单的成员的标识符集合。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。任务的结果包含操作失败的成员标识符集合；若为空表示全部成功。 </returns>
+    Task<IReadOnlyCollection<Guid>> AddToBlacklistAsync(IEnumerable<Guid> memberIds, RequestOptions? options = null);
+
+    /// <summary>
+    ///     将指定成员加入此群的黑名单。
+    /// </summary>
+    /// <remarks>
+    ///     单次最多操作 20 个成员，且仅当目标成员不在群中时才能加入黑名单。
+    /// </remarks>
+    /// <param name="members"> 要加入黑名单的成员集合。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。任务的结果包含操作失败的成员标识符集合；若为空表示全部成功。 </returns>
+    Task<IReadOnlyCollection<Guid>> AddToBlacklistAsync(IEnumerable<IGroupMember> members, RequestOptions? options = null);
+
+    /// <summary>
+    ///     将指定成员移出此群的黑名单。
+    /// </summary>
+    /// <remarks>
+    ///     单次最多操作 20 个成员。
+    /// </remarks>
+    /// <param name="memberIds"> 要移出黑名单的成员的标识符集合。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。任务的结果包含操作失败的成员标识符集合；若为空表示全部成功。 </returns>
+    Task<IReadOnlyCollection<Guid>> RemoveFromBlacklistAsync(IEnumerable<Guid> memberIds, RequestOptions? options = null);
+
+    /// <summary>
+    ///     将指定成员移出此群的黑名单。
+    /// </summary>
+    /// <remarks>
+    ///     单次最多操作 20 个成员。
+    /// </remarks>
+    /// <param name="members"> 要移出黑名单的成员集合。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。任务的结果包含操作失败的成员标识符集合；若为空表示全部成功。 </returns>
+    Task<IReadOnlyCollection<Guid>> RemoveFromBlacklistAsync(IEnumerable<IGroupMember> members, RequestOptions? options = null);
 }

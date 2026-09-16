@@ -5,6 +5,7 @@ using ApiGroupGlobalMuteRule = QQBot.API.GroupGlobalMuteRule;
 using ApiGroupMuteScheduleRule = QQBot.API.GroupMuteScheduleRule;
 using ApiGroupMuteRecurringRule = QQBot.API.GroupMuteRecurringRule;
 using ApiGroupMemberMuteState = QQBot.API.GroupMemberMuteState;
+using ApiGroupBlacklistUser = QQBot.API.GroupBlacklistUser;
 
 namespace QQBot.Rest;
 
@@ -139,6 +140,72 @@ internal static class GroupHelper
         };
         return client.ApiClient.SetGroupMuteSettingAsync(groupId, args, options);
     }
+
+    public static async Task<GroupRemoveMembersResult> RemoveMembersAsync(Guid groupId, BaseQQBotClient client,
+        IEnumerable<Guid> memberIds, bool addToBlacklist, RequestOptions? options)
+    {
+        BatchRemoveGroupMembersParams args = new()
+        {
+            MemberOpenIds = memberIds.Select(x => x.ToIdString()).ToArray(),
+            AddToMemberBlacklist = addToBlacklist ? true : null
+        };
+        BatchRemoveGroupMembersResponse response = await client.ApiClient
+            .BatchRemoveGroupMembersAsync(groupId, args, options).ConfigureAwait(false);
+        return new GroupRemoveMembersResult(
+            string.Equals(response.RemoveMembersResult, "success", StringComparison.OrdinalIgnoreCase),
+            ParseOpenIds(response.AddToMemberBlacklistFailOpenids));
+    }
+
+    public static IAsyncEnumerable<IReadOnlyCollection<GroupBlacklistUser>> GetBlacklistAsync(Guid groupId,
+        BaseQQBotClient client, RequestOptions? options)
+    {
+        return new PagedAsyncEnumerable<GroupBlacklistUser>(
+            QQBotConfig.MaxGroupBlacklistPerBatch,
+            async (info, _) =>
+            {
+                GetGroupBlacklistResponse response = await client.ApiClient
+                    .GetGroupBlacklistAsync(groupId, info.Cookie,
+                        QQBotConfig.MaxGroupBlacklistPerBatch, options).ConfigureAwait(false);
+                info.Cookie = response.NextCursor;
+                return response.Users.Select(ToBlacklistUser).ToArray();
+            },
+            nextPage: (info, _) => !string.IsNullOrEmpty(info.Cookie));
+    }
+
+    public static async Task<IReadOnlyCollection<Guid>> AddToBlacklistAsync(Guid groupId, BaseQQBotClient client,
+        IEnumerable<Guid> memberIds, RequestOptions? options)
+    {
+        OperateGroupBlacklistParams args = new()
+        {
+            Op = "add",
+            MemberOpenIds = memberIds.Select(x => x.ToIdString()).ToArray()
+        };
+        OperateGroupBlacklistResponse response = await client.ApiClient
+            .OperateGroupBlacklistAsync(groupId, args, options).ConfigureAwait(false);
+        return ParseOpenIds(response.FailOpenids);
+    }
+
+    public static async Task<IReadOnlyCollection<Guid>> RemoveFromBlacklistAsync(Guid groupId, BaseQQBotClient client,
+        IEnumerable<Guid> memberIds, RequestOptions? options)
+    {
+        OperateGroupBlacklistParams args = new()
+        {
+            Op = "del",
+            MemberOpenIds = memberIds.Select(x => x.ToIdString()).ToArray()
+        };
+        OperateGroupBlacklistResponse response = await client.ApiClient
+            .OperateGroupBlacklistAsync(groupId, args, options).ConfigureAwait(false);
+        return ParseOpenIds(response.FailOpenids);
+    }
+
+    private static IReadOnlyCollection<Guid> ParseOpenIds(string[]? openIds) =>
+        openIds is null
+            ? []
+            : openIds.Select(x => Guid.TryParse(x, out Guid g) ? g : (Guid?)null)
+                .Where(x => x.HasValue).Select(x => x!.Value).ToArray();
+
+    private static GroupBlacklistUser ToBlacklistUser(ApiGroupBlacklistUser model) =>
+        new(model.MemberOpenId, model.Username ?? string.Empty, model.BannedAt, model.Bot, model.UnionOpenId);
 
     private static GroupGlobalMuteRule ToGlobalMuteRule(ApiGroupGlobalMuteRule? model)
     {

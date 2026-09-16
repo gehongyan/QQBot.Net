@@ -66,4 +66,32 @@ public interface IGroupMember : IUser
     /// <param name="options"> 发送请求时要使用的选项。 </param>
     /// <returns> 一个表示异步解除禁言操作的任务。 </returns>
     Task UnmuteAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     将此成员移出所在群。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份。
+    /// </remarks>
+    /// <param name="addToBlacklist"> 是否在移除的同时将此成员加入群黑名单。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步移除操作的任务。任务的结果包含移除操作的结果。 </returns>
+    Task<GroupRemoveMembersResult> KickAsync(bool addToBlacklist = false, RequestOptions? options = null);
+
+    /// <summary>
+    ///     将此成员加入所在群的黑名单。
+    /// </summary>
+    /// <remarks>
+    ///     仅当此成员不在群中时才能加入黑名单。
+    /// </remarks>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。任务的结果表示操作是否成功。 </returns>
+    Task<bool> AddToBlacklistAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     将此成员移出所在群的黑名单。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步操作的任务。任务的结果表示操作是否成功。 </returns>
+    Task<bool> RemoveFromBlacklistAsync(RequestOptions? options = null);
 }

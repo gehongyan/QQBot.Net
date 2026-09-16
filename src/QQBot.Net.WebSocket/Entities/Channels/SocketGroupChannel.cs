@@ -113,6 +113,36 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
     public Task UnmuteMemberAsync(Guid memberId, RequestOptions? options = null) =>
         GroupHelper.UnmuteMemberAsync(Id, Client, memberId, options);
 
+    /// <inheritdoc cref="QQBot.IGroupChannel.RemoveMembersAsync(System.Collections.Generic.IEnumerable{System.Guid},System.Boolean,QQBot.RequestOptions)" />
+    public Task<GroupRemoveMembersResult> RemoveMembersAsync(IEnumerable<Guid> memberIds,
+        bool addToBlacklist = false, RequestOptions? options = null) =>
+        GroupHelper.RemoveMembersAsync(Id, Client, memberIds, addToBlacklist, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.RemoveMembersAsync(System.Collections.Generic.IEnumerable{QQBot.IGroupMember},System.Boolean,QQBot.RequestOptions)" />
+    public Task<GroupRemoveMembersResult> RemoveMembersAsync(IEnumerable<IGroupMember> members,
+        bool addToBlacklist = false, RequestOptions? options = null) =>
+        RemoveMembersAsync(members.Select(x => x.Id), addToBlacklist, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetBlacklistAsync(QQBot.RequestOptions)" />
+    public IAsyncEnumerable<IReadOnlyCollection<GroupBlacklistUser>> GetBlacklistAsync(RequestOptions? options = null) =>
+        GroupHelper.GetBlacklistAsync(Id, Client, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.AddToBlacklistAsync(System.Collections.Generic.IEnumerable{System.Guid},QQBot.RequestOptions)" />
+    public Task<IReadOnlyCollection<Guid>> AddToBlacklistAsync(IEnumerable<Guid> memberIds, RequestOptions? options = null) =>
+        GroupHelper.AddToBlacklistAsync(Id, Client, memberIds, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.AddToBlacklistAsync(System.Collections.Generic.IEnumerable{QQBot.IGroupMember},QQBot.RequestOptions)" />
+    public Task<IReadOnlyCollection<Guid>> AddToBlacklistAsync(IEnumerable<IGroupMember> members, RequestOptions? options = null) =>
+        AddToBlacklistAsync(members.Select(x => x.Id), options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.RemoveFromBlacklistAsync(System.Collections.Generic.IEnumerable{System.Guid},QQBot.RequestOptions)" />
+    public Task<IReadOnlyCollection<Guid>> RemoveFromBlacklistAsync(IEnumerable<Guid> memberIds, RequestOptions? options = null) =>
+        GroupHelper.RemoveFromBlacklistAsync(Id, Client, memberIds, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.RemoveFromBlacklistAsync(System.Collections.Generic.IEnumerable{QQBot.IGroupMember},QQBot.RequestOptions)" />
+    public Task<IReadOnlyCollection<Guid>> RemoveFromBlacklistAsync(IEnumerable<IGroupMember> members, RequestOptions? options = null) =>
+        RemoveFromBlacklistAsync(members.Select(x => x.Id), options);
+
     #endregion
 
     #region ISocketMessageChannel

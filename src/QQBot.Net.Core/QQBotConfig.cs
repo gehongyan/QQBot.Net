@@ -77,6 +77,11 @@ public class QQBotConfig
     public const int MaxGroupJoinRequestsPerBatch = 50;
 
     /// <summary>
+    ///     获取每请求获取群黑名单的最大数量。
+    /// </summary>
+    public const int MaxGroupBlacklistPerBatch = 100;
+
+    /// <summary>
     ///     获取每请求获取回应的用户的最大数量。
     /// </summary>
     public const int MaxReactionUsersPerBatch = 50;

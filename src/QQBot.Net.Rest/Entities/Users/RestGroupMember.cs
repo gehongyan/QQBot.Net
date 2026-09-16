@@ -68,6 +68,26 @@ public class RestGroupMember : RestUser, IGroupMember
     public Task UnmuteAsync(RequestOptions? options = null) =>
         GroupHelper.UnmuteMemberAsync(GroupId, Client, Id, options);
 
+    /// <inheritdoc />
+    public Task<GroupRemoveMembersResult> KickAsync(bool addToBlacklist = false, RequestOptions? options = null) =>
+        GroupHelper.RemoveMembersAsync(GroupId, Client, [Id], addToBlacklist, options);
+
+    /// <inheritdoc />
+    public async Task<bool> AddToBlacklistAsync(RequestOptions? options = null)
+    {
+        IReadOnlyCollection<Guid> failed = await GroupHelper
+            .AddToBlacklistAsync(GroupId, Client, [Id], options).ConfigureAwait(false);
+        return !failed.Contains(Id);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> RemoveFromBlacklistAsync(RequestOptions? options = null)
+    {
+        IReadOnlyCollection<Guid> failed = await GroupHelper
+            .RemoveFromBlacklistAsync(GroupId, Client, [Id], options).ConfigureAwait(false);
+        return !failed.Contains(Id);
+    }
+
     /// <inheritdoc cref="QQBot.Rest.RestGroupMember.Username" />
     public override string ToString() => Username;
 
