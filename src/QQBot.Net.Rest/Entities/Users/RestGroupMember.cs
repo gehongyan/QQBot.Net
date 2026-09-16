@@ -27,16 +27,22 @@ public class RestGroupMember : RestUser, IGroupMember
     /// <inheritdoc />
     public string? UnionOpenId { get; private set; }
 
-    internal RestGroupMember(BaseQQBotClient client, Guid id)
+    /// <summary>
+    ///     获取此成员所属群的标识符。
+    /// </summary>
+    public Guid GroupId { get; }
+
+    internal RestGroupMember(BaseQQBotClient client, Guid id, Guid groupId)
         : base(client, id.ToIdString())
     {
         Id = id;
+        GroupId = groupId;
         Username = string.Empty;
     }
 
-    internal static RestGroupMember Create(BaseQQBotClient client, GroupMember model)
+    internal static RestGroupMember Create(BaseQQBotClient client, GroupMember model, Guid groupId)
     {
-        RestGroupMember entity = new(client, model.MemberOpenId);
+        RestGroupMember entity = new(client, model.MemberOpenId, groupId);
         entity.Update(model);
         return entity;
     }
@@ -49,6 +55,18 @@ public class RestGroupMember : RestUser, IGroupMember
         JoinedAt = model.JoinedAt;
         UnionOpenId = model.UnionOpenId;
     }
+
+    /// <inheritdoc />
+    public Task MuteAsync(DateTimeOffset expiresAt, RequestOptions? options = null) =>
+        GroupHelper.MuteMemberAsync(GroupId, Client, Id, expiresAt, options);
+
+    /// <inheritdoc />
+    public Task MuteAsync(TimeSpan duration, RequestOptions? options = null) =>
+        GroupHelper.MuteMemberAsync(GroupId, Client, Id, DateTimeOffset.UtcNow + duration, options);
+
+    /// <inheritdoc />
+    public Task UnmuteAsync(RequestOptions? options = null) =>
+        GroupHelper.UnmuteMemberAsync(GroupId, Client, Id, options);
 
     /// <inheritdoc cref="QQBot.Rest.RestGroupMember.Username" />
     public override string ToString() => Username;

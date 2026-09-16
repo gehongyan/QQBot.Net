@@ -107,4 +107,46 @@ public interface IGroupChannel : IMessageChannel, IMediaUploadChannel, IEntity<G
     /// <returns> 一个表示异步审批操作的任务。 </returns>
     Task DeclineJoinRequestAsync(Guid memberId, string? joinRequestId = null,
         string? reason = null, bool addToBlacklist = false, RequestOptions? options = null);
+
+    /// <summary>
+    ///     获取此群的禁言状态。
+    /// </summary>
+    /// <remarks>
+    ///     返回全员禁言规则（包含定时与周期规则）以及当前处于禁言状态的成员列表。机器人需拥有群管理员身份。
+    /// </remarks>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步获取操作的任务。任务的结果包含此群的禁言状态。 </returns>
+    Task<GroupMuteSetting> GetMuteSettingAsync(RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言此群内的指定成员。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份，最大禁言时长为 30 天，且仅可禁言普通成员。
+    /// </remarks>
+    /// <param name="memberId"> 要禁言的成员的标识符。 </param>
+    /// <param name="expiresAt"> 禁言到期时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步禁言操作的任务。 </returns>
+    Task MuteMemberAsync(Guid memberId, DateTimeOffset expiresAt, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言此群内的指定成员。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份，最大禁言时长为 30 天，且仅可禁言普通成员。
+    /// </remarks>
+    /// <param name="memberId"> 要禁言的成员的标识符。 </param>
+    /// <param name="duration"> 自当前时间起的禁言时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步禁言操作的任务。 </returns>
+    Task MuteMemberAsync(Guid memberId, TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     解除此群内指定成员的禁言。
+    /// </summary>
+    /// <param name="memberId"> 要解除禁言的成员的标识符。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步解除禁言操作的任务。 </returns>
+    Task UnmuteMemberAsync(Guid memberId, RequestOptions? options = null);
 }

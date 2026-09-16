@@ -97,6 +97,22 @@ public class SocketGroupChannel : SocketChannel, IGroupChannel, ISocketMessageCh
         string? reason = null, bool addToBlacklist = false, RequestOptions? options = null) =>
         GroupHelper.DeclineJoinRequestAsync(this, Client, memberId, joinRequestId, reason, addToBlacklist, options);
 
+    /// <inheritdoc cref="QQBot.IGroupChannel.GetMuteSettingAsync(QQBot.RequestOptions)" />
+    public Task<GroupMuteSetting> GetMuteSettingAsync(RequestOptions? options = null) =>
+        GroupHelper.GetMuteSettingAsync(this, Client, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.MuteMemberAsync(System.Guid,System.DateTimeOffset,QQBot.RequestOptions)" />
+    public Task MuteMemberAsync(Guid memberId, DateTimeOffset expiresAt, RequestOptions? options = null) =>
+        GroupHelper.MuteMemberAsync(Id, Client, memberId, expiresAt, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.MuteMemberAsync(System.Guid,System.TimeSpan,QQBot.RequestOptions)" />
+    public Task MuteMemberAsync(Guid memberId, TimeSpan duration, RequestOptions? options = null) =>
+        GroupHelper.MuteMemberAsync(Id, Client, memberId, DateTimeOffset.UtcNow + duration, options);
+
+    /// <inheritdoc cref="QQBot.IGroupChannel.UnmuteMemberAsync(System.Guid,QQBot.RequestOptions)" />
+    public Task UnmuteMemberAsync(Guid memberId, RequestOptions? options = null) =>
+        GroupHelper.UnmuteMemberAsync(Id, Client, memberId, options);
+
     #endregion
 
     #region ISocketMessageChannel

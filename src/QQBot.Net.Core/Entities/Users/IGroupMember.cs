@@ -37,4 +37,33 @@ public interface IGroupMember : IUser
     ///     此字段需要特殊申请并配置后才会返回。如需申请，请联系平台运营人员。
     /// </remarks>
     string? UnionOpenId { get; }
+
+    /// <summary>
+    ///     禁言此成员。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份，最大禁言时长为 30 天，且仅可禁言普通成员。
+    /// </remarks>
+    /// <param name="expiresAt"> 禁言到期时间。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步禁言操作的任务。 </returns>
+    Task MuteAsync(DateTimeOffset expiresAt, RequestOptions? options = null);
+
+    /// <summary>
+    ///     禁言此成员。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份，最大禁言时长为 30 天，且仅可禁言普通成员。
+    /// </remarks>
+    /// <param name="duration"> 自当前时间起的禁言时长。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步禁言操作的任务。 </returns>
+    Task MuteAsync(TimeSpan duration, RequestOptions? options = null);
+
+    /// <summary>
+    ///     解除此成员的禁言。
+    /// </summary>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步解除禁言操作的任务。 </returns>
+    Task UnmuteAsync(RequestOptions? options = null);
 }

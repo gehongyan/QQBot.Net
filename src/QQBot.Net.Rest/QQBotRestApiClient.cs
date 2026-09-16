@@ -709,6 +709,31 @@ internal class QQBotRestApiClient : IDisposable
             .ConfigureAwait(false);
     }
 
+    public async Task<GetGroupMuteSettingResponse> GetGroupMuteSettingAsync(Guid groupOpenid, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = groupOpenid.ToIdString();
+        return await SendAsync<GetGroupMuteSettingResponse>(HttpMethod.Get,
+                () => $"v2/groups/{id}/restrict_chat_setting", ids, ClientBucketType.SendEdit, false, options)
+            .ConfigureAwait(false);
+    }
+
+    public async Task SetGroupMuteSettingAsync(Guid groupOpenid, SetGroupMuteSettingParams args, RequestOptions? options = null)
+    {
+        Preconditions.NotEqual(groupOpenid, Guid.Empty, nameof(groupOpenid));
+        Preconditions.NotNull(args, nameof(args));
+        options = RequestOptions.CreateOrClone(options);
+
+        BucketIds ids = new();
+        string id = groupOpenid.ToIdString();
+        await SendJsonAsync(HttpMethod.Post,
+                () => $"v2/groups/{id}/restrict_chat_setting", args, ids, ClientBucketType.SendEdit, options)
+            .ConfigureAwait(false);
+    }
+
     public async Task<ChannelMessage> SendDirectMessageAsync(ulong directGuildId, SendChannelMessageParams args, RequestOptions? options = null)
     {
         Preconditions.NotEqual(directGuildId, 0, nameof(directGuildId));
