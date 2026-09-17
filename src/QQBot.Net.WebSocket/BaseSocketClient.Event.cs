@@ -337,6 +337,46 @@ public abstract partial class BaseSocketClient
 
     #endregion
 
+    #region Reactions
+
+    /// <summary>
+    ///     当用户对目标对象添加表情表态时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.GuildMessageReactions"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketReaction"/> 参数是本次添加的表情表态。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketReaction, Task> ReactionAdded
+    {
+        add => _reactionAddedEvent.Add(value);
+        remove => _reactionAddedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketReaction, Task>> _reactionAddedEvent = new();
+
+    /// <summary>
+    ///     当用户对目标对象移除表情表态时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.GuildMessageReactions"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketReaction"/> 参数是本次移除的表情表态。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketReaction, Task> ReactionRemoved
+    {
+        add => _reactionRemovedEvent.Add(value);
+        remove => _reactionRemovedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketReaction, Task>> _reactionRemovedEvent = new();
+
+    #endregion
+
     #region Voices
 
     /// <summary>

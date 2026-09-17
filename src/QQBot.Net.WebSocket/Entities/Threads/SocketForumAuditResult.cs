@@ -89,7 +89,8 @@ public class SocketForumAuditResult
             API.Gateway.AuditType.Thread => ForumAuditType.Thread,
             API.Gateway.AuditType.Post => ForumAuditType.Post,
             API.Gateway.AuditType.Reply => ForumAuditType.Reply,
-            _ => ForumAuditType.Thread
+            _ => throw new ArgumentOutOfRangeException(nameof(model), model.AuditType,
+                "Unknown forum audit type.")
         };
         ForumAuditResult result = model.Failed ? ForumAuditResult.Rejected : ForumAuditResult.Passed;
         string? errorMessage = string.IsNullOrEmpty(model.ErrorMessage) ? null : model.ErrorMessage;

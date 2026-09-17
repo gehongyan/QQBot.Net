@@ -409,6 +409,34 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Reactions
+
+    private async Task HandleMessageReactionAddedAsync(object? payload, string dispatch) =>
+        await HandleMessageReactionAsync(payload, dispatch, _reactionAddedEvent).ConfigureAwait(false);
+
+    private async Task HandleMessageReactionRemovedAsync(object? payload, string dispatch) =>
+        await HandleMessageReactionAsync(payload, dispatch, _reactionRemovedEvent).ConfigureAwait(false);
+
+    private async Task HandleMessageReactionAsync(object? payload, string dispatch,
+        AsyncEvent<Func<SocketReaction, Task>> @event)
+    {
+        if (DeserializePayload<MessageReactionEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(dispatch, data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetTextChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(dispatch, data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketReaction reaction = SocketReaction.Create(channel, data);
+        await TimedInvokeAsync(@event, dispatch, reaction).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Guilds
 
     private async Task HandleGuildCreatedAsync(object? payload)

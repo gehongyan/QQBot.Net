@@ -616,6 +616,17 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
+            #region Reactions
+
+            case "MESSAGE_REACTION_ADD":
+                await HandleMessageReactionAddedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "MESSAGE_REACTION_REMOVE":
+                await HandleMessageReactionRemovedAsync(payload, type).ConfigureAwait(false);
+                break;
+
+            #endregion
+
             #region Guilds
 
             case "GUILD_CREATE":
