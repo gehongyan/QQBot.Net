@@ -605,6 +605,12 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "DIRECT_MESSAGE_DELETE":
                 await HandleDirectMessageDeletedAsync(payload, type).ConfigureAwait(false);
                 break;
+            case "MESSAGE_AUDIT_PASS":
+                await HandleMessageAuditPassedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "MESSAGE_AUDIT_REJECT":
+                await HandleMessageAuditRejectedAsync(payload, type).ConfigureAwait(false);
+                break;
 
             #endregion
 

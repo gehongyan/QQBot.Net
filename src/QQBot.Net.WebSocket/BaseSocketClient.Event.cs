@@ -299,6 +299,26 @@ public abstract partial class BaseSocketClient
 
     internal readonly AsyncEvent<Func<Cacheable<IMessage, string>, ISocketMessageChannel, ulong, Task>> _messageDeletedEvent = new();
 
+    /// <summary>
+    ///     当消息审核完成时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.MessageAudit"/> 网关意图。 <br />
+    ///     机器人主动发送的频道消息经过审核后，无论通过或不通过均会引发此事件；可通过
+    ///     <see cref="QQBot.WebSocket.SocketMessageAudit.Result"/> 区分。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketMessageAudit"/> 参数是本次消息审核的结果。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketMessageAudit, Task> MessageAudited
+    {
+        add => _messageAuditedEvent.Add(value);
+        remove => _messageAuditedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketMessageAudit, Task>> _messageAuditedEvent = new();
+
     #endregion
 
     #region Interactions

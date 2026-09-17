@@ -363,6 +363,29 @@ public partial class QQBotSocketClient
             cacheableMessage, channel, data.OpUser.Id).ConfigureAwait(false);
     }
 
+    private async Task HandleMessageAuditPassedAsync(object? payload, string dispatch) =>
+        await HandleMessageAuditAsync(payload, dispatch, MessageAuditResult.Passed).ConfigureAwait(false);
+
+    private async Task HandleMessageAuditRejectedAsync(object? payload, string dispatch) =>
+        await HandleMessageAuditAsync(payload, dispatch, MessageAuditResult.Rejected).ConfigureAwait(false);
+
+    private async Task HandleMessageAuditAsync(object? payload, string dispatch, MessageAuditResult result)
+    {
+        if (DeserializePayload<MessageAuditEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(dispatch, data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetTextChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(dispatch, data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketMessageAudit audit = SocketMessageAudit.Create(channel, data, result);
+        await TimedInvokeAsync(_messageAuditedEvent, nameof(MessageAudited), audit).ConfigureAwait(false);
+    }
+
     #endregion
 
     #region Interactions
