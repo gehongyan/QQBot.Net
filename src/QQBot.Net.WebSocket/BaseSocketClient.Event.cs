@@ -272,6 +272,33 @@ public abstract partial class BaseSocketClient
 
     internal readonly AsyncEvent<Func<SocketUserMessage, Task>> _messageReceivedEvent = new();
 
+    /// <summary>
+    ///     当消息被撤回时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件涵盖文字子频道消息（私域需 <see cref="QQBot.GatewayIntents.GuildMessages"/>、公域需
+    ///     <see cref="QQBot.GatewayIntents.PublicGuildMessages"/>）与频道私信（<see cref="QQBot.GatewayIntents.DirectMessages"/>）的撤回。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item>
+    ///         <see cref="QQBot.Cacheable{TEntity,TId}"/> 参数是被撤回的消息。如果缓存中存在此消息实体，那么该结构内包含该
+    ///         <see cref="QQBot.WebSocket.SocketMessage"/> 消息；否则，包含 <see cref="System.String"/> 消息 ID。
+    ///         <note type="important">
+    ///             被撤回的消息无法通过 <see cref="QQBot.Cacheable{TEntity,TId}.DownloadAsync"/> 方法下载。
+    ///         </note>
+    ///     </item>
+    ///     <item> <see cref="QQBot.WebSocket.ISocketMessageChannel"/> 参数是消息被撤回的子频道或私信频道。 </item>
+    ///     <item> <see cref="System.UInt64"/> 参数是执行撤回操作的用户的 ID。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<Cacheable<IMessage, string>, ISocketMessageChannel, ulong, Task> MessageDeleted
+    {
+        add => _messageDeletedEvent.Add(value);
+        remove => _messageDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<Cacheable<IMessage, string>, ISocketMessageChannel, ulong, Task>> _messageDeletedEvent = new();
+
     #endregion
 
     #region Interactions

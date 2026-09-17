@@ -314,6 +314,55 @@ public partial class QQBotSocketClient
         await TimedInvokeAsync(_messageReceivedEvent, nameof(MessageReceived), message).ConfigureAwait(false);
     }
 
+    private async Task HandleChannelMessageDeletedAsync(object? payload, string dispatch)
+    {
+        if (DeserializePayload<MessageDeletedEvent>(payload) is not { } data) return;
+        if (data.Message.GuildId is not { } guildId)
+        {
+            await LogGatewayErrorAsync(dispatch, "Received channel message delete with no GuildId.", payload).ConfigureAwait(false);
+            return;
+        }
+        if (GetGuild(guildId) is not { } guild)
+        {
+            await UnknownGuildAsync(dispatch, guildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetTextChannel(data.Message.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(dispatch, data.Message.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        await InvokeMessageDeletedAsync(channel, data, dispatch).ConfigureAwait(false);
+    }
+
+    private async Task HandleDirectMessageDeletedAsync(object? payload, string dispatch)
+    {
+        if (DeserializePayload<MessageDeletedEvent>(payload) is not { } data) return;
+        if (data.Message.GuildId is not { } guildId)
+        {
+            await LogGatewayErrorAsync(dispatch, "Received direct message delete with no GuildId.", payload).ConfigureAwait(false);
+            return;
+        }
+        if (data.Message.Author is not { } authorModel)
+        {
+            await UnknownUserAsync(dispatch, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketGuildUser recipient = State.GetGuildUser(authorModel.Id)
+            ?? State.GetOrAddGuildUser(authorModel.Id, _ => SocketGuildUser.Create(this, State, authorModel));
+        SocketDMChannel channel = GetOrCreateDMChannel(State, guildId, recipient);
+        await InvokeMessageDeletedAsync(channel, data, dispatch).ConfigureAwait(false);
+    }
+
+    private async Task InvokeMessageDeletedAsync(ISocketMessageChannel channel, MessageDeletedEvent data, string dispatch)
+    {
+        SocketMessage? cachedMessage = channel.GetCachedMessage(data.Message.Id);
+        Cacheable<IMessage, string> cacheableMessage = new(cachedMessage, data.Message.Id,
+            cachedMessage is not null, () => Task.FromResult<IMessage?>(null));
+        await TimedInvokeAsync(_messageDeletedEvent, nameof(MessageDeleted),
+            cacheableMessage, channel, data.OpUser.Id).ConfigureAwait(false);
+    }
+
     #endregion
 
     #region Interactions

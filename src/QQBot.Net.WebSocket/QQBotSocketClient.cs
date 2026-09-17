@@ -598,6 +598,13 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "MESSAGE_CREATE":
                 await HandleChannelMessageCreatedAsync(payload, type).ConfigureAwait(false);
                 break;
+            case "MESSAGE_DELETE":
+            case "PUBLIC_MESSAGE_DELETE":
+                await HandleChannelMessageDeletedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "DIRECT_MESSAGE_DELETE":
+                await HandleDirectMessageDeletedAsync(payload, type).ConfigureAwait(false);
+                break;
 
             #endregion
 
