@@ -477,6 +477,25 @@ public abstract partial class BaseSocketClient
 
     internal readonly AsyncEvent<Func<SocketReply, Task>> _forumReplyDeletedEvent = new();
 
+    /// <summary>
+    ///     当论坛发表内容的审核结果送达时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.ForumsEvent"/> 网关意图，且仅私域机器人可订阅。 <br />
+    ///     用户在论坛发表主题、评论或回复后，内容经过审核，审核完成时引发此事件。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketForumAuditResult"/> 参数是本次发表内容的审核结果。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketForumAuditResult, Task> ForumPublishAudited
+    {
+        add => _forumPublishAuditedEvent.Add(value);
+        remove => _forumPublishAuditedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketForumAuditResult, Task>> _forumPublishAuditedEvent = new();
+
     #endregion
 
     #region Groups

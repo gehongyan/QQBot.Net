@@ -680,9 +680,9 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "FORUM_REPLY_DELETE":
                 await HandleForumReplyDeletedAsync(payload).ConfigureAwait(false);
                 break;
-            // case "FORUM_PUBLISH_AUDIT_RESULT":
-            //     await HandleForumPublishAuditResultAsync(payload).ConfigureAwait(false);
-            //     break;
+            case "FORUM_PUBLISH_AUDIT_RESULT":
+                await HandleForumPublishAuditResultAsync(payload).ConfigureAwait(false);
+                break;
 
             // case "OPEN_FORUM_THREAD_CREATE":
             //     await HandleOpenForumThreadCreatedAsync(payload).ConfigureAwait(false);

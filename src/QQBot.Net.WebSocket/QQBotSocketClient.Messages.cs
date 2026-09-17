@@ -712,6 +712,23 @@ public partial class QQBotSocketClient
         await TimedInvokeAsync(_forumReplyDeletedEvent, nameof(ForumReplyDeleted), reply).ConfigureAwait(false);
     }
 
+    private async Task HandleForumPublishAuditResultAsync(object? payload)
+    {
+        if (DeserializePayload<ForumPublishAuditResultEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(nameof(ForumPublishAudited), data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(nameof(ForumPublishAudited), data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketForumAuditResult result = SocketForumAuditResult.Create(channel, data);
+        await TimedInvokeAsync(_forumPublishAuditedEvent, nameof(ForumPublishAudited), result).ConfigureAwait(false);
+    }
+
     #endregion
 
     #region Groups
