@@ -731,6 +731,49 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Open Forums
+
+    private async Task HandleOpenForumEventAsync(object? payload, string dispatch,
+        AsyncEvent<Func<SocketOpenForumEvent, Task>> @event)
+    {
+        if (DeserializePayload<OpenForumEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(dispatch, data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetForumChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(dispatch, data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketOpenForumEvent openForumEvent = SocketOpenForumEvent.Create(channel, data);
+        await TimedInvokeAsync(@event, dispatch, openForumEvent).ConfigureAwait(false);
+    }
+
+    private Task HandleOpenForumThreadCreatedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumThreadCreatedEvent);
+
+    private Task HandleOpenForumThreadUpdatedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumThreadUpdatedEvent);
+
+    private Task HandleOpenForumThreadDeletedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumThreadDeletedEvent);
+
+    private Task HandleOpenForumPostCreatedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumPostCreatedEvent);
+
+    private Task HandleOpenForumPostDeletedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumPostDeletedEvent);
+
+    private Task HandleOpenForumReplyCreatedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumReplyCreatedEvent);
+
+    private Task HandleOpenForumReplyDeletedAsync(object? payload, string dispatch) =>
+        HandleOpenForumEventAsync(payload, dispatch, _openForumReplyDeletedEvent);
+
+    #endregion
+
     #region Groups
 
     private async Task HandleGroupRobotAddedAsync(object? payload)

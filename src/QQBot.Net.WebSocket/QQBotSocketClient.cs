@@ -684,27 +684,27 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
                 await HandleForumPublishAuditResultAsync(payload).ConfigureAwait(false);
                 break;
 
-            // case "OPEN_FORUM_THREAD_CREATE":
-            //     await HandleOpenForumThreadCreatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "OPEN_FORUM_THREAD_UPDATE":
-            //     await HandleOpenForumThreadUpdatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "OPEN_FORUM_THREAD_DELETE":
-            //     await HandleOpenForumThreadDeletedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "OPEN_FORUM_POST_CREATE":
-            //     await HandleOpenForumPostCreatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "OPEN_FORUM_POST_DELETE":
-            //     await HandleOpenForumPostDeletedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "OPEN_FORUM_REPLY_CREATE":
-            //     await HandleOpenForumReplyCreatedAsync(payload).ConfigureAwait(false);
-            //     break;
-            // case "OPEN_FORUM_REPLY_DELETE":
-            //     await HandleOpenForumReplyDeletedAsync(payload).ConfigureAwait(false);
-            //     break;
+            case "OPEN_FORUM_THREAD_CREATE":
+                await HandleOpenForumThreadCreatedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "OPEN_FORUM_THREAD_UPDATE":
+                await HandleOpenForumThreadUpdatedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "OPEN_FORUM_THREAD_DELETE":
+                await HandleOpenForumThreadDeletedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "OPEN_FORUM_POST_CREATE":
+                await HandleOpenForumPostCreatedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "OPEN_FORUM_POST_DELETE":
+                await HandleOpenForumPostDeletedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "OPEN_FORUM_REPLY_CREATE":
+                await HandleOpenForumReplyCreatedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "OPEN_FORUM_REPLY_DELETE":
+                await HandleOpenForumReplyDeletedAsync(payload, type).ConfigureAwait(false);
+                break;
 
             #endregion
 

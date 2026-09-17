@@ -498,6 +498,143 @@ public abstract partial class BaseSocketClient
 
     #endregion
 
+    #region Open Forums
+
+    /// <summary>
+    ///     当公域论坛主题被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含主题内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛主题创建事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumThreadCreated
+    {
+        add => _openForumThreadCreatedEvent.Add(value);
+        remove => _openForumThreadCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumThreadCreatedEvent = new();
+
+    /// <summary>
+    ///     当公域论坛主题被更新时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含主题内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛主题更新事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumThreadUpdated
+    {
+        add => _openForumThreadUpdatedEvent.Add(value);
+        remove => _openForumThreadUpdatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumThreadUpdatedEvent = new();
+
+    /// <summary>
+    ///     当公域论坛主题被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含主题内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛主题删除事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumThreadDeleted
+    {
+        add => _openForumThreadDeletedEvent.Add(value);
+        remove => _openForumThreadDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumThreadDeletedEvent = new();
+
+    /// <summary>
+    ///     当公域论坛主题评论被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含评论内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛评论创建事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumPostCreated
+    {
+        add => _openForumPostCreatedEvent.Add(value);
+        remove => _openForumPostCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumPostCreatedEvent = new();
+
+    /// <summary>
+    ///     当公域论坛主题评论被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含评论内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛评论删除事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumPostDeleted
+    {
+        add => _openForumPostDeletedEvent.Add(value);
+        remove => _openForumPostDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumPostDeletedEvent = new();
+
+    /// <summary>
+    ///     当公域论坛主题评论回复被创建时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含回复内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛回复创建事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumReplyCreated
+    {
+        add => _openForumReplyCreatedEvent.Add(value);
+        remove => _openForumReplyCreatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumReplyCreatedEvent = new();
+
+    /// <summary>
+    ///     当公域论坛主题评论回复被删除时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.OpenForumsEvent"/> 网关意图。 <br />
+    ///     开放论坛事件仅携带频道与操作者信息，不包含回复内容详情。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketOpenForumEvent"/> 参数是本次开放论坛回复删除事件。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketOpenForumEvent, Task> OpenForumReplyDeleted
+    {
+        add => _openForumReplyDeletedEvent.Add(value);
+        remove => _openForumReplyDeletedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketOpenForumEvent, Task>> _openForumReplyDeletedEvent = new();
+
+    #endregion
+
     #region Groups
 
     /// <summary>
