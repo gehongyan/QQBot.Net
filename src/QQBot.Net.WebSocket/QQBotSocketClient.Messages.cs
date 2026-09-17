@@ -691,6 +691,40 @@ public partial class QQBotSocketClient
 
     #endregion
 
+    #region Audio
+
+    private async Task HandleAudioStartedAsync(object? payload, string dispatch) =>
+        await HandleAudioActionAsync(payload, dispatch, _audioStartedEvent).ConfigureAwait(false);
+
+    private async Task HandleAudioFinishedAsync(object? payload, string dispatch) =>
+        await HandleAudioActionAsync(payload, dispatch, _audioFinishedEvent).ConfigureAwait(false);
+
+    private async Task HandleAudioOnMicAsync(object? payload, string dispatch) =>
+        await HandleAudioActionAsync(payload, dispatch, _audioOnMicEvent).ConfigureAwait(false);
+
+    private async Task HandleAudioOffMicAsync(object? payload, string dispatch) =>
+        await HandleAudioActionAsync(payload, dispatch, _audioOffMicEvent).ConfigureAwait(false);
+
+    private async Task HandleAudioActionAsync(object? payload, string dispatch,
+        AsyncEvent<Func<SocketAudioAction, Task>> @event)
+    {
+        if (DeserializePayload<AudioActionEvent>(payload) is not { } data) return;
+        if (GetGuild(data.GuildId) is not { } guild)
+        {
+            await UnknownGuildAsync(dispatch, data.GuildId, payload).ConfigureAwait(false);
+            return;
+        }
+        if (guild.GetVoiceChannel(data.ChannelId) is not { } channel)
+        {
+            await UnknownChannelAsync(dispatch, data.ChannelId, payload).ConfigureAwait(false);
+            return;
+        }
+        SocketAudioAction audioAction = SocketAudioAction.Create(channel, data);
+        await TimedInvokeAsync(@event, dispatch, audioAction).ConfigureAwait(false);
+    }
+
+    #endregion
+
     #region Forums
 
     private async Task HandleForumThreadCreatedAsync(object? payload)

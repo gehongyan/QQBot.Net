@@ -443,6 +443,82 @@ public abstract partial class BaseSocketClient
 
     #endregion
 
+    #region Audio
+
+    /// <summary>
+    ///     当语音子频道内音频开始播放时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.AudioAction"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketAudioAction"/> 参数是本次音频动作。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketAudioAction, Task> AudioStarted
+    {
+        add => _audioStartedEvent.Add(value);
+        remove => _audioStartedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketAudioAction, Task>> _audioStartedEvent = new();
+
+    /// <summary>
+    ///     当语音子频道内音频播放结束时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.AudioAction"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketAudioAction"/> 参数是本次音频动作。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketAudioAction, Task> AudioFinished
+    {
+        add => _audioFinishedEvent.Add(value);
+        remove => _audioFinishedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketAudioAction, Task>> _audioFinishedEvent = new();
+
+    /// <summary>
+    ///     当机器人在语音子频道上麦时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.AudioAction"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketAudioAction"/> 参数是本次音频动作。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketAudioAction, Task> AudioOnMic
+    {
+        add => _audioOnMicEvent.Add(value);
+        remove => _audioOnMicEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketAudioAction, Task>> _audioOnMicEvent = new();
+
+    /// <summary>
+    ///     当机器人在语音子频道下麦时引发。
+    /// </summary>
+    /// <remarks>
+    ///     此事件需要订阅 <see cref="QQBot.GatewayIntents.AudioAction"/> 网关意图。 <br />
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketAudioAction"/> 参数是本次音频动作。 </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketAudioAction, Task> AudioOffMic
+    {
+        add => _audioOffMicEvent.Add(value);
+        remove => _audioOffMicEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketAudioAction, Task>> _audioOffMicEvent = new();
+
+    #endregion
+
     #region Forums
 
     /// <summary>

@@ -681,6 +681,23 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
 
             #endregion
 
+            #region Audio
+
+            case "AUDIO_START":
+                await HandleAudioStartedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "AUDIO_FINISH":
+                await HandleAudioFinishedAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "AUDIO_ON_MIC":
+                await HandleAudioOnMicAsync(payload, type).ConfigureAwait(false);
+                break;
+            case "AUDIO_OFF_MIC":
+                await HandleAudioOffMicAsync(payload, type).ConfigureAwait(false);
+                break;
+
+            #endregion
+
             #region Forums
 
             case "FORUM_THREAD_CREATE":
