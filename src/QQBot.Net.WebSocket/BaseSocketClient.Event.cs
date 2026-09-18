@@ -847,6 +847,27 @@ public abstract partial class BaseSocketClient
     internal readonly AsyncEvent<Func<SocketGroupChannel, Cacheable<SocketUser, string>, Task>> _leftGroupEvent = new();
 
     /// <summary>
+    ///     当用户申请加入群组时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item> <see cref="QQBot.WebSocket.SocketGroupChannel"/> 参数是收到入群申请的群组。 </item>
+    ///     <item> <see cref="QQBot.GroupJoinRequest"/> 参数是入群申请，可直接调用其 <see cref="QQBot.GroupJoinRequest.ApproveAsync"/> 或 <see cref="QQBot.GroupJoinRequest.DeclineAsync"/> 进行审批。 </item>
+    ///     <item>
+    ///         <see cref="System.String"/> 参数是自动审批通过此申请的策略标识符；仅当此申请已被自动审批策略通过时有值，否则为 <see langword="null"/>。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<SocketGroupChannel, GroupJoinRequest, string?, Task> GroupJoinRequested
+    {
+        add => _groupJoinRequestedEvent.Add(value);
+        remove => _groupJoinRequestedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<SocketGroupChannel, GroupJoinRequest, string?, Task>> _groupJoinRequestedEvent = new();
+
+    /// <summary>
     ///     当群成员加入群组时引发。
     /// </summary>
     /// <remarks>

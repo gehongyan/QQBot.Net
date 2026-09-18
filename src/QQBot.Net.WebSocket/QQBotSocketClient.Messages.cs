@@ -934,6 +934,30 @@ public partial class QQBotSocketClient
         await TimedInvokeAsync(_leftGroupEvent, nameof(LeftGroup), channel, user).ConfigureAwait(false);
     }
 
+    private async Task HandleGroupJoinRequestAsync(object? payload)
+    {
+        if (DeserializePayload<GroupJoinRequestEvent>(payload) is not { } data) return;
+        SocketGroupChannel channel = GetOrCreateGroupChannel(State, data.GroupOpenid);
+
+        GroupJoinVerifyInfo? verifyInfo = null;
+        if (data.VerifyInfo is { } info)
+        {
+            IReadOnlyCollection<GroupJoinReviewQuestion> questions = info.ReviewQaList is { } list
+                ? list.Select(x => new GroupJoinReviewQuestion(x.Question ?? string.Empty, x.Answer ?? string.Empty)).ToArray()
+                : [];
+            verifyInfo = new GroupJoinVerifyInfo(info.Method, info.VerifyMessage, questions);
+        }
+
+        GroupJoinRequest request = new(channel, data.JoinRequestId, data.MemberOpenId,
+            data.Username ?? string.Empty, data.UnionOpenId, data.Bot, data.ApplyAt, data.ApplySource,
+            data.InvitedBy is { } invitedBy && invitedBy != Guid.Empty ? invitedBy : null,
+            data.RiskTips, verifyInfo);
+
+        string? autoApprovedStrategyId = data.AutoApproved?.StrategyId;
+        await TimedInvokeAsync(_groupJoinRequestedEvent, nameof(GroupJoinRequested),
+            channel, request, autoApprovedStrategyId).ConfigureAwait(false);
+    }
+
     private async Task HandleGroupMemberAddedAsync(object? payload)
     {
         if (DeserializePayload<GroupMemberEvent>(payload) is not { } data) return;

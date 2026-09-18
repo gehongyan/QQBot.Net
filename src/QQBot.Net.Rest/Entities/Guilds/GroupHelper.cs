@@ -64,7 +64,7 @@ internal static class GroupHelper
                     .GetGroupJoinRequestListAsync(channel.Id, info.Cookie,
                         QQBotConfig.MaxGroupJoinRequestsPerBatch, options).ConfigureAwait(false);
                 info.Cookie = response.NextCursor;
-                return response.List.Select(ToGroupJoinRequest).ToArray();
+                return response.List.Select(x => ToGroupJoinRequest(channel, x)).ToArray();
             },
             nextPage: (info, _) => !string.IsNullOrEmpty(info.Cookie));
     }
@@ -241,7 +241,7 @@ internal static class GroupHelper
     private static GroupMemberMuteState ToMemberMuteState(ApiGroupMemberMuteState model) =>
         new(model.MemberOpenId, model.MuteExpireAt, model.Username ?? string.Empty, model.UnionOpenId);
 
-    private static GroupJoinRequest ToGroupJoinRequest(ApiGroupJoinRequest model)
+    private static GroupJoinRequest ToGroupJoinRequest(IGroupChannel channel, ApiGroupJoinRequest model)
     {
         GroupJoinVerifyInfo? verifyInfo = null;
         if (model.VerifyInfo is { } info)
@@ -252,7 +252,7 @@ internal static class GroupHelper
             verifyInfo = new GroupJoinVerifyInfo(info.Method, info.VerifyMessage, questions);
         }
 
-        return new GroupJoinRequest(model.JoinRequestId, model.MemberOpenId, model.Username ?? string.Empty,
+        return new GroupJoinRequest(channel, model.JoinRequestId, model.MemberOpenId, model.Username ?? string.Empty,
             model.UnionOpenId, model.Bot, model.ApplyAt, model.ApplySource,
             model.InvitedBy is { } invitedBy && invitedBy != Guid.Empty ? invitedBy : null,
             model.RiskTips, verifyInfo);

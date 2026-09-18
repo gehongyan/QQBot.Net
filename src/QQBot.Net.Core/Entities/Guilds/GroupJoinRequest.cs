@@ -6,11 +6,19 @@ namespace QQBot;
 ///     表示一条 QQ 群入群申请。
 /// </summary>
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
-public class GroupJoinRequest
+public class GroupJoinRequest : IEntity<string>
 {
     /// <summary>
-    ///     获取此申请的唯一标识符。
+    ///     获取此申请所属的群组子频道。
     /// </summary>
+    public IGroupChannel Channel { get; }
+
+    /// <summary>
+    ///     获取此申请所属群的标识符。
+    /// </summary>
+    public Guid GroupId => Channel.Id;
+
+    /// <inheritdoc />
     public string Id { get; }
 
     /// <summary>
@@ -58,10 +66,11 @@ public class GroupJoinRequest
     /// </summary>
     public GroupJoinVerifyInfo? VerifyInfo { get; }
 
-    internal GroupJoinRequest(string id, Guid memberId, string username, string? unionOpenId,
-        bool isBot, DateTimeOffset appliedAt, GroupJoinSource source, Guid? invitedBy,
-        string? riskTips, GroupJoinVerifyInfo? verifyInfo)
+    internal GroupJoinRequest(IGroupChannel channel, string id, Guid memberId,
+        string username, string? unionOpenId, bool isBot, DateTimeOffset appliedAt,
+        GroupJoinSource source, Guid? invitedBy, string? riskTips, GroupJoinVerifyInfo? verifyInfo)
     {
+        Channel = channel;
         Id = id;
         MemberId = memberId;
         Username = username;
@@ -73,6 +82,30 @@ public class GroupJoinRequest
         RiskTips = riskTips;
         VerifyInfo = verifyInfo;
     }
+
+    /// <summary>
+    ///     通过此入群申请。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份。
+    /// </remarks>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步审批操作的任务。 </returns>
+    public Task ApproveAsync(RequestOptions? options = null) =>
+        Channel.ApproveJoinRequestAsync(this, options);
+
+    /// <summary>
+    ///     拒绝此入群申请。
+    /// </summary>
+    /// <remarks>
+    ///     机器人需拥有群管理员身份。
+    /// </remarks>
+    /// <param name="reason"> 拒绝理由。 </param>
+    /// <param name="addToBlacklist"> 是否在拒绝的同时将申请人加入群黑名单。 </param>
+    /// <param name="options"> 发送请求时要使用的选项。 </param>
+    /// <returns> 一个表示异步审批操作的任务。 </returns>
+    public Task DeclineAsync(string? reason = null, bool addToBlacklist = false, RequestOptions? options = null) =>
+        Channel.DeclineJoinRequestAsync(this, reason, addToBlacklist, options);
 
     private string DebuggerDisplay => $"{Username} ({MemberId}, {Source})";
 }

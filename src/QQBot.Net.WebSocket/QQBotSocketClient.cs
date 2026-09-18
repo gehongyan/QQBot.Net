@@ -757,6 +757,9 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "GROUP_DEL_ROBOT":
                 await HandleGroupRobotRemovedAsync(payload).ConfigureAwait(false);
                 break;
+            case "GROUP_JOIN_REQUEST":
+                await HandleGroupJoinRequestAsync(payload).ConfigureAwait(false);
+                break;
             case "GROUP_MSG_REJECT":
                 await HandleGroupMessageRejectedAsync(payload).ConfigureAwait(false);
                 break;
