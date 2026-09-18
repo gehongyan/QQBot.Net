@@ -772,6 +772,9 @@ public partial class QQBotSocketClient : BaseSocketClient, IQQBotClient
             case "GROUP_MEMBER_REMOVE":
                 await HandleGroupMemberRemovedAsync(payload).ConfigureAwait(false);
                 break;
+            case "SUBSCRIBE_MESSAGE_STATUS":
+                await HandleSubscribeMessageStatusAsync(payload).ConfigureAwait(false);
+                break;
 
             #endregion
 

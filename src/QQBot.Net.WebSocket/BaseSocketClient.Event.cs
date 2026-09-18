@@ -868,6 +868,29 @@ public abstract partial class BaseSocketClient
     internal readonly AsyncEvent<Func<SocketGroupChannel, GroupJoinRequest, string?, Task>> _groupJoinRequestedEvent = new();
 
     /// <summary>
+    ///     当用户或群对机器人订阅消息模板的授权状态变更时引发。
+    /// </summary>
+    /// <remarks>
+    ///     事件参数：
+    ///     <list type="number">
+    ///     <item>
+    ///         <see cref="QQBot.WebSocket.ISocketMessageChannel"/> 参数是发生授权变更的来源频道。若为群订阅消息，则为
+    ///         <see cref="QQBot.WebSocket.SocketGroupChannel"/>；若为用户订阅消息，则为 <see cref="QQBot.WebSocket.SocketUserChannel"/>。
+    ///     </item>
+    ///     <item>
+    ///         <see cref="System.Collections.Generic.IReadOnlyCollection{T}"/> 参数是本次变更涉及的各订阅消息模板的授权结果。
+    ///     </item>
+    ///     </list>
+    /// </remarks>
+    public event Func<ISocketMessageChannel, IReadOnlyCollection<SubscribeMessageTemplateResult>, Task> SubscribeMessageStatusUpdated
+    {
+        add => _subscribeMessageStatusUpdatedEvent.Add(value);
+        remove => _subscribeMessageStatusUpdatedEvent.Remove(value);
+    }
+
+    internal readonly AsyncEvent<Func<ISocketMessageChannel, IReadOnlyCollection<SubscribeMessageTemplateResult>, Task>> _subscribeMessageStatusUpdatedEvent = new();
+
+    /// <summary>
     ///     当群成员加入群组时引发。
     /// </summary>
     /// <remarks>

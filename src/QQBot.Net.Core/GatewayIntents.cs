@@ -57,7 +57,7 @@ public enum GatewayIntents
     /// <summary>
     ///     此网关意图包括 <c>C2C_MESSAGE_CREATE</c>, <c>FRIEND_ADD</c>, <c>FRIEND_DEL</c>, <c>C2C_MSG_REJECT</c>,
     ///     <c>C2C_MSG_RECEIVE</c>, <c>GROUP_AT_MESSAGE_CREATE</c>, <c>GROUP_ADD_ROBOT</c>, <c>GROUP_DEL_ROBOT</c>,
-    ///     <c>GROUP_MSG_REJECT</c>, <c>GROUP_MSG_RECEIVE</c>
+    ///     <c>GROUP_MSG_REJECT</c>, <c>GROUP_MSG_RECEIVE</c>, <c>SUBSCRIBE_MESSAGE_STATUS</c>
     /// </summary>
     GroupAndC2CEvent = 1 << 25,
 

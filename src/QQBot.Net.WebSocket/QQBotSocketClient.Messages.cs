@@ -958,6 +958,30 @@ public partial class QQBotSocketClient
             channel, request, autoApprovedStrategyId).ConfigureAwait(false);
     }
 
+    private async Task HandleSubscribeMessageStatusAsync(object? payload)
+    {
+        if (DeserializePayload<SubscribeMessageStatusEvent>(payload) is not { } data) return;
+
+        ISocketMessageChannel channel = data.GroupOpenid is { } groupId
+            ? GetOrCreateGroupChannel(State, groupId)
+            : GetOrCreateUserChannel(State, data.Openid ?? Guid.Empty);
+
+        SubscribeMessageTemplateResult[] results = data.Result
+            .Select(x => new QQBot.SubscribeMessageTemplateResult(x.TemplateId, x.CustomTemplateId,
+                x.Op switch
+                {
+                    1 => SubscribeMessageAuthorization.Allowed,
+                    2 => SubscribeMessageAuthorization.Rejected,
+                    _ => throw new ArgumentOutOfRangeException(nameof(payload), x.Op,
+                        "Unknown subscribe message authorization operation.")
+                },
+                x.SubscribeId ?? string.Empty, x.UpdateTs))
+            .ToArray();
+
+        await TimedInvokeAsync(_subscribeMessageStatusUpdatedEvent, nameof(SubscribeMessageStatusUpdated),
+            channel, results).ConfigureAwait(false);
+    }
+
     private async Task HandleGroupMemberAddedAsync(object? payload)
     {
         if (DeserializePayload<GroupMemberEvent>(payload) is not { } data) return;
