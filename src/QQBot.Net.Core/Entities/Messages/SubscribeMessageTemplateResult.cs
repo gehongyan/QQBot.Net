@@ -26,7 +26,7 @@ public class SubscribeMessageTemplateResult
     /// <summary>
     ///     获取此订阅的标识符。
     /// </summary>
-    public string SubscribeId { get; }
+    public string SubscriptionId { get; }
 
     /// <summary>
     ///     获取此授权状态的更新时间。
@@ -34,12 +34,12 @@ public class SubscribeMessageTemplateResult
     public DateTimeOffset UpdatedAt { get; }
 
     internal SubscribeMessageTemplateResult(int templateId, string? customTemplateId,
-        SubscribeMessageAuthorization authorization, string subscribeId, DateTimeOffset updatedAt)
+        SubscribeMessageAuthorization authorization, string subscriptionId, DateTimeOffset updatedAt)
     {
         TemplateId = templateId;
         CustomTemplateId = customTemplateId;
         Authorization = authorization;
-        SubscribeId = subscribeId;
+        SubscriptionId = subscriptionId;
         UpdatedAt = updatedAt;
     }
 
