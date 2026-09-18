@@ -1,0 +1,156 @@
+---
+uid: Guides.QuickReference
+title: 快速参考指南
+---
+
+# 快速参考指南
+
+快速参考指南将会介绍 [QQ 机器人开放平台] 文档中所列出的 HTTP 接口与网关事件在 QQBot.Net 中的使用方法。
+
+本指南的页面结构与 [QQ 机器人开放平台] 文档保持一致，便于开发者对照官方文档速查各接口与事件的调用方式。
+
+[QQ 机器人开放平台]: https://bot.q.qq.com/wiki/develop/api-v2/
+
+- 登录与启动
+  - @Guides.QuickReference.Startup.Rest
+  - @Guides.QuickReference.Startup.WebSocket
+  - @Guides.QuickReference.Startup.Webhook
+- 服务端接口
+  - 消息收发
+    - 单聊消息
+      - @Guides.QuickReference.Message.C2C.SendMessage
+      - @Guides.QuickReference.Message.C2C.SendStreamMessage
+      - @Guides.QuickReference.Message.C2C.RecallMessage
+      - @Guides.QuickReference.Message.C2C.Event.MessageCreate
+    - 群聊消息
+      - @Guides.QuickReference.Message.Group.SendMessage
+      - @Guides.QuickReference.Message.Group.RecallMessage
+      - @Guides.QuickReference.Message.Group.Event.MessageCreate
+      - @Guides.QuickReference.Message.Group.Event.AtMessageCreate
+    - 频道消息
+      - @Guides.QuickReference.Message.Channel.SendMessage
+      - @Guides.QuickReference.Message.Channel.Format
+      - @Guides.QuickReference.Message.Channel.RecallMessage
+      - @Guides.QuickReference.Message.Channel.DirectMessage
+      - @Guides.QuickReference.Message.Channel.Reaction
+      - @Guides.QuickReference.Message.Channel.Event
+    - 消息类型
+      - @Guides.QuickReference.Message.Type.Markdown
+      - @Guides.QuickReference.Message.Type.Ark
+      - @Guides.QuickReference.Message.Type.Embed
+      - @Guides.QuickReference.Message.Type.RichMedia
+    - 消息交互
+      - 按钮互动
+        - @Guides.QuickReference.Message.Interaction.Button.Event
+        - @Guides.QuickReference.Message.Interaction.Button.Response
+      - @Guides.QuickReference.Message.Interaction.Text
+  - 机器人
+    - @Guides.QuickReference.Bot.GetBot
+    - @Guides.QuickReference.Bot.GetGuilds
+    - @Guides.QuickReference.Bot.GenerateShareLink
+    - 自定义菜单与指令面板
+      - @Guides.QuickReference.Bot.MenuPanel.GetMenu
+      - @Guides.QuickReference.Bot.MenuPanel.UpdateMenu
+      - @Guides.QuickReference.Bot.MenuPanel.GetPanels
+      - @Guides.QuickReference.Bot.MenuPanel.CreatePanel
+      - @Guides.QuickReference.Bot.MenuPanel.GetPanel
+      - @Guides.QuickReference.Bot.MenuPanel.UpdatePanel
+      - @Guides.QuickReference.Bot.MenuPanel.DeletePanel
+      - @Guides.QuickReference.Bot.MenuPanel.UpdatePanelTarget
+    - 事件
+      - @Guides.QuickReference.Bot.Event.FriendAdd
+      - @Guides.QuickReference.Bot.Event.FriendDelete
+      - @Guides.QuickReference.Bot.Event.C2CMsgReceive
+      - @Guides.QuickReference.Bot.Event.C2CMsgReject
+  - 群聊管理
+    - 接口
+      - @Guides.QuickReference.Group.GetInfo
+      - @Guides.QuickReference.Group.GetBotState
+      - @Guides.QuickReference.Group.GetJoinRequests
+      - @Guides.QuickReference.Group.ApproveJoinRequest
+      - @Guides.QuickReference.Group.GetRestrictChat
+      - @Guides.QuickReference.Group.SetRestrictChat
+      - 入群自动审批
+        - @Guides.QuickReference.Group.JoinApproval.GetStrategies
+        - @Guides.QuickReference.Group.JoinApproval.CreateStrategy
+        - @Guides.QuickReference.Group.JoinApproval.UpdateStrategy
+        - @Guides.QuickReference.Group.JoinApproval.DeleteStrategy
+        - @Guides.QuickReference.Group.JoinApproval.ExecuteStrategy
+        - @Guides.QuickReference.Group.JoinApproval.UpdateWhitelist
+    - 群成员管理
+      - @Guides.QuickReference.Group.Member.GetMembers
+      - @Guides.QuickReference.Group.Member.GetMember
+      - @Guides.QuickReference.Group.Member.BatchRemove
+      - @Guides.QuickReference.Group.Member.GetBlacklist
+      - @Guides.QuickReference.Group.Member.SetBlacklist
+    - 事件
+      - @Guides.QuickReference.Group.Event.AddRobot
+      - @Guides.QuickReference.Group.Event.DelRobot
+      - @Guides.QuickReference.Group.Event.MsgReceive
+      - @Guides.QuickReference.Group.Event.MsgReject
+      - @Guides.QuickReference.Group.Event.MemberAdd
+      - @Guides.QuickReference.Group.Event.MemberRemove
+      - @Guides.QuickReference.Group.Event.JoinRequest
+  - 频道管理
+    - 事件
+      - @Guides.QuickReference.Guild.Event.GuildCreate
+      - @Guides.QuickReference.Guild.Event.GuildUpdate
+      - @Guides.QuickReference.Guild.Event.GuildDelete
+      - @Guides.QuickReference.Guild.Event.ChannelCreate
+      - @Guides.QuickReference.Guild.Event.ChannelUpdate
+      - @Guides.QuickReference.Guild.Event.ChannelDelete
+    - 频道管理
+      - @Guides.QuickReference.Guild.GetGuild
+      - @Guides.QuickReference.Guild.GetChannels
+      - @Guides.QuickReference.Guild.CreateChannel
+      - @Guides.QuickReference.Guild.GetChannel
+      - @Guides.QuickReference.Guild.ModifyChannel
+      - @Guides.QuickReference.Guild.DeleteChannel
+    - 频道成员
+      - @Guides.QuickReference.Guild.Member.GetOnlineNums
+      - @Guides.QuickReference.Guild.Member.GetMembers
+      - @Guides.QuickReference.Guild.Member.GetRoleMembers
+      - @Guides.QuickReference.Guild.Member.GetMember
+      - @Guides.QuickReference.Guild.Member.DeleteMember
+      - @Guides.QuickReference.Guild.Member.Event.GuildMember
+      - @Guides.QuickReference.Guild.Member.Event.AudioLiveMember
+    - 身份组与权限管理
+      - @Guides.QuickReference.Guild.Role.GetRoles
+      - @Guides.QuickReference.Guild.Role.CreateRole
+      - @Guides.QuickReference.Guild.Role.ModifyRole
+      - @Guides.QuickReference.Guild.Role.DeleteRole
+      - @Guides.QuickReference.Guild.Role.AddRoleMember
+      - @Guides.QuickReference.Guild.Role.RemoveRoleMember
+      - @Guides.QuickReference.Guild.Role.GetChannelUserPermissions
+      - @Guides.QuickReference.Guild.Role.ModifyChannelUserPermissions
+      - @Guides.QuickReference.Guild.Role.GetChannelRolePermissions
+      - @Guides.QuickReference.Guild.Role.ModifyChannelRolePermissions
+    - 接口授权管理
+      - @Guides.QuickReference.Guild.ApiPermission.GetPermissions
+      - @Guides.QuickReference.Guild.ApiPermission.DemandPermission
+    - 发言管理
+      - @Guides.QuickReference.Guild.Speak.GetMessageSetting
+      - @Guides.QuickReference.Guild.Speak.MuteAll
+      - @Guides.QuickReference.Guild.Speak.MuteMember
+      - @Guides.QuickReference.Guild.Speak.MuteMembers
+    - 内容管理
+      - @Guides.QuickReference.Guild.Content.CreateAnnouncement
+      - @Guides.QuickReference.Guild.Content.DeleteAnnouncement
+      - @Guides.QuickReference.Guild.Content.AddPin
+      - @Guides.QuickReference.Guild.Content.DeletePin
+      - @Guides.QuickReference.Guild.Content.GetPin
+      - @Guides.QuickReference.Guild.Content.GetSchedules
+      - @Guides.QuickReference.Guild.Content.GetSchedule
+      - @Guides.QuickReference.Guild.Content.CreateSchedule
+      - @Guides.QuickReference.Guild.Content.ModifySchedule
+      - @Guides.QuickReference.Guild.Content.DeleteSchedule
+      - @Guides.QuickReference.Guild.Content.AudioControl
+      - @Guides.QuickReference.Guild.Content.BotOnMic
+      - @Guides.QuickReference.Guild.Content.BotOffMic
+      - @Guides.QuickReference.Guild.Content.GetThreads
+      - @Guides.QuickReference.Guild.Content.GetThread
+      - @Guides.QuickReference.Guild.Content.CreateThread
+      - @Guides.QuickReference.Guild.Content.DeleteThread
+    - 小程序相关
+      - @Guides.QuickReference.Guild.MiniApp.OpenData
+      - @Guides.QuickReference.Guild.MiniApp.GetInfo

@@ -1,6 +1,9 @@
 - name: 用户指南
   href: guides/
   topicUid: Guides.Introduction
+- name: 快速参考指南
+  href: quick_reference/
+  topicUid: Guides.QuickReference
 - name: 示例项目
   href: demos/
   topicUid: Guides.Demos

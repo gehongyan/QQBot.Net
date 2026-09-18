@@ -1,0 +1,292 @@
+- name: 快速参考指南
+  topicUid: Guides.QuickReference
+- name: 登录与启动
+  items:
+    - name: Rest 客户端
+      topicUid: Guides.QuickReference.Startup.Rest
+    - name: WebSocket 客户端
+      topicUid: Guides.QuickReference.Startup.WebSocket
+    - name: Webhook 服务端
+      topicUid: Guides.QuickReference.Startup.Webhook
+- name: 服务端接口
+  items:
+    - name: 消息收发
+      items:
+        - name: 单聊消息
+          items:
+            - name: 发送单聊消息
+              topicUid: Guides.QuickReference.Message.C2C.SendMessage
+            - name: 流式发送单聊消息
+              topicUid: Guides.QuickReference.Message.C2C.SendStreamMessage
+            - name: 撤回单聊消息
+              topicUid: Guides.QuickReference.Message.C2C.RecallMessage
+            - name: 事件
+              items:
+                - name: 单聊消息事件
+                  topicUid: Guides.QuickReference.Message.C2C.Event.MessageCreate
+        - name: 群聊消息
+          items:
+            - name: 发送群聊消息
+              topicUid: Guides.QuickReference.Message.Group.SendMessage
+            - name: 撤回群聊消息
+              topicUid: Guides.QuickReference.Message.Group.RecallMessage
+            - name: 事件
+              items:
+                - name: 群消息（全量模式）
+                  topicUid: Guides.QuickReference.Message.Group.Event.MessageCreate
+                - name: 群@机器人消息
+                  topicUid: Guides.QuickReference.Message.Group.Event.AtMessageCreate
+        - name: 频道消息
+          items:
+            - name: 发送子频道消息
+              topicUid: Guides.QuickReference.Message.Channel.SendMessage
+            - name: 内嵌格式
+              topicUid: Guides.QuickReference.Message.Channel.Format
+            - name: 撤回子频道消息
+              topicUid: Guides.QuickReference.Message.Channel.RecallMessage
+            - name: 频道私信
+              topicUid: Guides.QuickReference.Message.Channel.DirectMessage
+            - name: 表情表态
+              topicUid: Guides.QuickReference.Message.Channel.Reaction
+            - name: 频道消息事件
+              topicUid: Guides.QuickReference.Message.Channel.Event
+        - name: 消息类型
+          items:
+            - name: Markdown 消息
+              topicUid: Guides.QuickReference.Message.Type.Markdown
+            - name: Ark 消息
+              topicUid: Guides.QuickReference.Message.Type.Ark
+            - name: Embed 消息
+              topicUid: Guides.QuickReference.Message.Type.Embed
+            - name: 富媒体上传
+              topicUid: Guides.QuickReference.Message.Type.RichMedia
+        - name: 消息交互
+          items:
+            - name: 按钮互动
+              items:
+                - name: 互动事件
+                  topicUid: Guides.QuickReference.Message.Interaction.Button.Event
+                - name: 互动事件响应
+                  topicUid: Guides.QuickReference.Message.Interaction.Button.Response
+            - name: 文本交互
+              topicUid: Guides.QuickReference.Message.Interaction.Text
+    - name: 机器人
+      items:
+        - name: 获取机器人详情
+          topicUid: Guides.QuickReference.Bot.GetBot
+        - name: 获取机器人频道列表
+          topicUid: Guides.QuickReference.Bot.GetGuilds
+        - name: 生成分享链接
+          topicUid: Guides.QuickReference.Bot.GenerateShareLink
+        - name: 自定义菜单与指令面板
+          items:
+            - name: 查询全局自定义菜单
+              topicUid: Guides.QuickReference.Bot.MenuPanel.GetMenu
+            - name: 修改全局自定义菜单
+              topicUid: Guides.QuickReference.Bot.MenuPanel.UpdateMenu
+            - name: 查询指令面板列表
+              topicUid: Guides.QuickReference.Bot.MenuPanel.GetPanels
+            - name: 创建指令面板
+              topicUid: Guides.QuickReference.Bot.MenuPanel.CreatePanel
+            - name: 查询指令面板详情
+              topicUid: Guides.QuickReference.Bot.MenuPanel.GetPanel
+            - name: 修改指令面板
+              topicUid: Guides.QuickReference.Bot.MenuPanel.UpdatePanel
+            - name: 删除指令面板
+              topicUid: Guides.QuickReference.Bot.MenuPanel.DeletePanel
+            - name: 修改指令面板关联对象
+              topicUid: Guides.QuickReference.Bot.MenuPanel.UpdatePanelTarget
+        - name: 事件
+          items:
+            - name: 用户添加好友
+              topicUid: Guides.QuickReference.Bot.Event.FriendAdd
+            - name: 用户删除好友
+              topicUid: Guides.QuickReference.Bot.Event.FriendDelete
+            - name: 单聊消息接收开启
+              topicUid: Guides.QuickReference.Bot.Event.C2CMsgReceive
+            - name: 单聊消息接收关闭
+              topicUid: Guides.QuickReference.Bot.Event.C2CMsgReject
+    - name: 群聊管理
+      items:
+        - name: 接口
+          items:
+            - name: 获取群基本信息
+              topicUid: Guides.QuickReference.Group.GetInfo
+            - name: 获取机器人群内状态
+              topicUid: Guides.QuickReference.Group.GetBotState
+            - name: 入群申请列表拉取
+              topicUid: Guides.QuickReference.Group.GetJoinRequests
+            - name: 入群申请审批
+              topicUid: Guides.QuickReference.Group.ApproveJoinRequest
+            - name: 查询群禁言状态
+              topicUid: Guides.QuickReference.Group.GetRestrictChat
+            - name: 设置群成员禁言
+              topicUid: Guides.QuickReference.Group.SetRestrictChat
+            - name: 入群自动审批
+              items:
+                - name: 查询入群自动审批策略列表
+                  topicUid: Guides.QuickReference.Group.JoinApproval.GetStrategies
+                - name: 创建入群自动审批策略
+                  topicUid: Guides.QuickReference.Group.JoinApproval.CreateStrategy
+                - name: 修改入群自动审批策略
+                  topicUid: Guides.QuickReference.Group.JoinApproval.UpdateStrategy
+                - name: 删除入群自动审批策略
+                  topicUid: Guides.QuickReference.Group.JoinApproval.DeleteStrategy
+                - name: 执行入群自动审批策略
+                  topicUid: Guides.QuickReference.Group.JoinApproval.ExecuteStrategy
+                - name: 修改入群自动审批策略的白名单号码
+                  topicUid: Guides.QuickReference.Group.JoinApproval.UpdateWhitelist
+        - name: 群成员管理
+          items:
+            - name: 获取群成员列表
+              topicUid: Guides.QuickReference.Group.Member.GetMembers
+            - name: 获取群成员信息
+              topicUid: Guides.QuickReference.Group.Member.GetMember
+            - name: 群成员批量移除
+              topicUid: Guides.QuickReference.Group.Member.BatchRemove
+            - name: 群黑名单查询
+              topicUid: Guides.QuickReference.Group.Member.GetBlacklist
+            - name: 群黑名单操作
+              topicUid: Guides.QuickReference.Group.Member.SetBlacklist
+        - name: 事件
+          items:
+            - name: 机器人加入群聊
+              topicUid: Guides.QuickReference.Group.Event.AddRobot
+            - name: 机器人退出群聊
+              topicUid: Guides.QuickReference.Group.Event.DelRobot
+            - name: 群聊消息接收开启
+              topicUid: Guides.QuickReference.Group.Event.MsgReceive
+            - name: 群聊消息接收关闭
+              topicUid: Guides.QuickReference.Group.Event.MsgReject
+            - name: 群成员加入
+              topicUid: Guides.QuickReference.Group.Event.MemberAdd
+            - name: 群成员退出
+              topicUid: Guides.QuickReference.Group.Event.MemberRemove
+            - name: 用户申请加群事件
+              topicUid: Guides.QuickReference.Group.Event.JoinRequest
+    - name: 频道管理
+      items:
+        - name: 事件
+          items:
+            - name: 频道创建
+              topicUid: Guides.QuickReference.Guild.Event.GuildCreate
+            - name: 频道更新
+              topicUid: Guides.QuickReference.Guild.Event.GuildUpdate
+            - name: 频道解散
+              topicUid: Guides.QuickReference.Guild.Event.GuildDelete
+            - name: 子频道创建
+              topicUid: Guides.QuickReference.Guild.Event.ChannelCreate
+            - name: 子频道更新
+              topicUid: Guides.QuickReference.Guild.Event.ChannelUpdate
+            - name: 子频道删除
+              topicUid: Guides.QuickReference.Guild.Event.ChannelDelete
+        - name: 频道管理
+          items:
+            - name: 获取频道详情
+              topicUid: Guides.QuickReference.Guild.GetGuild
+            - name: 获取子频道列表
+              topicUid: Guides.QuickReference.Guild.GetChannels
+            - name: 创建子频道
+              topicUid: Guides.QuickReference.Guild.CreateChannel
+            - name: 获取子频道详情
+              topicUid: Guides.QuickReference.Guild.GetChannel
+            - name: 修改子频道
+              topicUid: Guides.QuickReference.Guild.ModifyChannel
+            - name: 删除子频道
+              topicUid: Guides.QuickReference.Guild.DeleteChannel
+        - name: 频道成员
+          items:
+            - name: 获取子频道在线成员数
+              topicUid: Guides.QuickReference.Guild.Member.GetOnlineNums
+            - name: 获取频道成员列表
+              topicUid: Guides.QuickReference.Guild.Member.GetMembers
+            - name: 获取频道身份组成员列表
+              topicUid: Guides.QuickReference.Guild.Member.GetRoleMembers
+            - name: 获取频道成员详情
+              topicUid: Guides.QuickReference.Guild.Member.GetMember
+            - name: 删除频道成员
+              topicUid: Guides.QuickReference.Guild.Member.DeleteMember
+            - name: 频道成员事件
+              topicUid: Guides.QuickReference.Guild.Member.Event.GuildMember
+            - name: 音视频/直播子频道成员进出事件
+              topicUid: Guides.QuickReference.Guild.Member.Event.AudioLiveMember
+        - name: 身份组与权限管理
+          items:
+            - name: 获取频道身份组列表
+              topicUid: Guides.QuickReference.Guild.Role.GetRoles
+            - name: 创建频道身份组
+              topicUid: Guides.QuickReference.Guild.Role.CreateRole
+            - name: 修改频道身份组
+              topicUid: Guides.QuickReference.Guild.Role.ModifyRole
+            - name: 删除频道身份组
+              topicUid: Guides.QuickReference.Guild.Role.DeleteRole
+            - name: 创建频道身份组成员
+              topicUid: Guides.QuickReference.Guild.Role.AddRoleMember
+            - name: 删除频道身份组成员
+              topicUid: Guides.QuickReference.Guild.Role.RemoveRoleMember
+            - name: 获取子频道用户权限
+              topicUid: Guides.QuickReference.Guild.Role.GetChannelUserPermissions
+            - name: 修改子频道用户权限
+              topicUid: Guides.QuickReference.Guild.Role.ModifyChannelUserPermissions
+            - name: 获取子频道身份组权限
+              topicUid: Guides.QuickReference.Guild.Role.GetChannelRolePermissions
+            - name: 修改子频道身份组权限
+              topicUid: Guides.QuickReference.Guild.Role.ModifyChannelRolePermissions
+        - name: 接口授权管理
+          items:
+            - name: 获取机器人在频道可用权限列表
+              topicUid: Guides.QuickReference.Guild.ApiPermission.GetPermissions
+            - name: 发送机器人在频道接口权限的授权链接
+              topicUid: Guides.QuickReference.Guild.ApiPermission.DemandPermission
+        - name: 发言管理
+          items:
+            - name: 获取频道消息频率的设置详情
+              topicUid: Guides.QuickReference.Guild.Speak.GetMessageSetting
+            - name: 频道全员禁言
+              topicUid: Guides.QuickReference.Guild.Speak.MuteAll
+            - name: 频道指定成员禁言
+              topicUid: Guides.QuickReference.Guild.Speak.MuteMember
+            - name: 频道批量成员禁言
+              topicUid: Guides.QuickReference.Guild.Speak.MuteMembers
+        - name: 内容管理
+          items:
+            - name: 创建频道公告
+              topicUid: Guides.QuickReference.Guild.Content.CreateAnnouncement
+            - name: 删除频道公告
+              topicUid: Guides.QuickReference.Guild.Content.DeleteAnnouncement
+            - name: 添加精华消息
+              topicUid: Guides.QuickReference.Guild.Content.AddPin
+            - name: 删除精华消息
+              topicUid: Guides.QuickReference.Guild.Content.DeletePin
+            - name: 获取精华消息
+              topicUid: Guides.QuickReference.Guild.Content.GetPin
+            - name: 获取频道日程列表
+              topicUid: Guides.QuickReference.Guild.Content.GetSchedules
+            - name: 获取日程详情
+              topicUid: Guides.QuickReference.Guild.Content.GetSchedule
+            - name: 创建日程
+              topicUid: Guides.QuickReference.Guild.Content.CreateSchedule
+            - name: 修改日程
+              topicUid: Guides.QuickReference.Guild.Content.ModifySchedule
+            - name: 删除日程
+              topicUid: Guides.QuickReference.Guild.Content.DeleteSchedule
+            - name: 音频控制
+              topicUid: Guides.QuickReference.Guild.Content.AudioControl
+            - name: 机器人上麦
+              topicUid: Guides.QuickReference.Guild.Content.BotOnMic
+            - name: 机器人下麦
+              topicUid: Guides.QuickReference.Guild.Content.BotOffMic
+            - name: 获取帖子列表
+              topicUid: Guides.QuickReference.Guild.Content.GetThreads
+            - name: 获取帖子详情
+              topicUid: Guides.QuickReference.Guild.Content.GetThread
+            - name: 发表帖子
+              topicUid: Guides.QuickReference.Guild.Content.CreateThread
+            - name: 删除帖子
+              topicUid: Guides.QuickReference.Guild.Content.DeleteThread
+        - name: 小程序相关
+          items:
+            - name: 开放数据加密
+              topicUid: Guides.QuickReference.Guild.MiniApp.OpenData
+            - name: 获取频道和当前人信息
+              topicUid: Guides.QuickReference.Guild.MiniApp.GetInfo
